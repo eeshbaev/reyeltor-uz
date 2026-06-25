@@ -231,14 +231,11 @@ export default function MapScreen() {
         />
       </View>
 
-      {!mapChromeHidden && !drawMode ? (
-        <View style={[styles.brandMark, { top: controlsTop }]} pointerEvents="none">
-          <JumpingEmblem size={42} jumpHeight={10} pauseMs={1200} />
-        </View>
-      ) : null}
-
       {!mapChromeHidden ? (
         <View style={[styles.topLeft, { top: controlsTop }]} pointerEvents={drawMode ? 'none' : 'box-none'}>
+          {!drawMode ? (
+            <JumpingEmblem variant="inline" size={44} jumpHeight={7} pauseMs={1400} />
+          ) : null}
           <CurrencyToggle />
           <DrawAreaButton active={drawMode} onPress={toggleDrawMode} />
         </View>
@@ -357,13 +354,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: spacing.md,
     zIndex: 10,
-  },
-  brandMark: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    zIndex: 9,
   },
   drawHint: { position: 'absolute', left: spacing.md, right: spacing.md, zIndex: 11 },
   drawHintInner: { padding: spacing.sm, borderRadius: 12, alignSelf: 'flex-start', maxWidth: 280 },

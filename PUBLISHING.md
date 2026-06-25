@@ -36,13 +36,46 @@ eas secret:create --name EXPO_PUBLIC_MAPTILER_KEY --value "YOUR_MAPTILER_KEY" --
 
 ### 1. Production Android build (AAB)
 
-Cloud build (recommended — avoids local NDK issues):
+**Cloud build** (recommended if EAS free quota available):
 
 ```bash
 npx eas-cli build --platform android --profile production
 ```
 
-Download the `.aab` from the Expo dashboard when the build finishes.
+**Local AAB** (on your Mac — uses `.env` for `EXPO_PUBLIC_*` vars):
+
+```bash
+cd /Users/Erkin/Documents/Reyeltor.uz
+
+# 1. Prerequisites (one-time): Android Studio, SDK, NDK 27.1.12297006, Java 17
+#    Open Android Studio → SDK Manager → SDK Tools → NDK (Side by side) → 27.1.12297006
+
+# 2. Ensure .env has real values (not placeholders)
+#    EXPO_PUBLIC_SUPABASE_URL, EXPO_PUBLIC_SUPABASE_ANON_KEY, EXPO_PUBLIC_MAPTILER_KEY
+
+# 3. Install deps
+npm install
+
+# 4. Log in to Expo (if not already)
+npx eas-cli login
+
+# 5. Build signed .aab locally (first run may prompt for Android keystore — let EAS create one)
+npx eas-cli build --platform android --profile production --local
+
+# Output: path printed in terminal, usually *.aab in project directory
+```
+
+Alternative **Gradle-only** path (manual signing):
+
+```bash
+npx expo prebuild --platform android --clean
+cd android
+./gradlew bundleRelease
+# Unsigned: android/app/build/outputs/bundle/release/app-release.aab
+# Configure signing in android/gradle.properties + upload keystore first
+```
+
+Download cloud `.aab` from the [Expo dashboard](https://expo.dev/accounts/eeshbaev95/projects/reyeltor-uz/builds) when using cloud build.
 
 ### 2. Play Console — create app
 
@@ -55,8 +88,8 @@ Download the `.aab` from the Expo dashboard when the build finishes.
    - App icon: `assets/google-play-icon-512.png` (512×512).
    - Feature graphic: 1024×500 (create in Canva/Figma if needed).
    - Phone screenshots (min 2): capture from emulator or device.
-4. **Release → Production** (or Internal testing first)
-   - Upload the `.aab` from EAS.
+4. **Release → Internal testing** (recommended first) or Production
+   - Upload the `.aab` from EAS local/cloud build.
    - Release name e.g. `1.0.0 (1)`.
 
 ### 3. Optional: EAS Submit

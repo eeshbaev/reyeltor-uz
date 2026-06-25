@@ -27,7 +27,7 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { usePin } from '@/lib/context/PinContext';
 import { fetchActiveListingCount } from '@/lib/hooks/useListings';
 import { requestNotificationPermission, scheduleListingNotifications } from '@/lib/notifications';
-import { supabase } from '@/lib/supabase';
+import { LISTINGS_STORAGE_BUCKET, supabase } from '@/lib/supabase';
 import { colors, fontSize, spacing } from '@/lib/theme';
 import type { Listing, ListingCategory, ListingType, PropertyLevel, PropertyView } from '@/types';
 
@@ -160,7 +160,7 @@ export function PostListingForm({ bottomPadding = spacing.xl }: PostListingFormP
       const path = `${listing.id}/${Date.now()}_${i}.jpg`;
       const response = await fetch(photo.uri);
       const blob = await response.blob();
-      await supabase.storage.from('listings').upload(path, blob, { contentType: 'image/jpeg' });
+      await supabase.storage.from(LISTINGS_STORAGE_BUCKET).upload(path, blob, { contentType: 'image/jpeg' });
       await supabase.from('listing_photos').insert({ listing_id: listing.id, storage_path: path, order_index: i });
     }
 

@@ -13,6 +13,9 @@ export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKe
 
 export const maptilerKey = process.env.EXPO_PUBLIC_MAPTILER_KEY ?? '';
 
+/** Supabase Storage bucket for listing photos (must match dashboard bucket name). */
+export const LISTINGS_STORAGE_BUCKET = 'reyeltor-listings';
+
 const PLACEHOLDER_KEY_PATTERN = /placeholder|your_|example|test|dummy|invalid|changeme/i;
 
 export function isMaptilerConfigured(): boolean {
@@ -65,6 +68,6 @@ export function shouldUseDemoData(): boolean {
 export function getPhotoUrl(storagePath: string): string {
   if (storagePath.startsWith('demo:')) return storagePath.slice(5);
   if (storagePath.startsWith('http://') || storagePath.startsWith('https://')) return storagePath;
-  const { data } = supabase.storage.from('reyeltor-listings').getPublicUrl(storagePath);
+  const { data } = supabase.storage.from(LISTINGS_STORAGE_BUCKET).getPublicUrl(storagePath);
   return data.publicUrl;
 }

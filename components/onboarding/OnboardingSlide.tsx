@@ -3,7 +3,9 @@ import { useCallback, useEffect, useRef } from 'react';
 import { Animated, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+import { JumpingEmblem } from '@/components/brand/JumpingEmblem';
 import { AppText } from '@/components/ui/AppText';
+import { APP_NAME } from '@/lib/constants';
 import { spacing } from '@/lib/design/spacing';
 import type { OnboardingSlideData } from '@/lib/onboarding/slides';
 
@@ -75,6 +77,32 @@ export function OnboardingSlide({ slide, active, onComplete }: OnboardingSlidePr
         <Rect width={width} height={height} fill={`url(#grad-${slide.id})`} />
       </Svg>
 
+      {slide.id === 'welcome' ? (
+        <Animated.View
+          style={[
+            styles.hero,
+            {
+              top: insets.top + 88,
+              opacity: contentOpacity,
+              transform: [{ translateY: contentTranslateY }],
+            },
+          ]}
+          pointerEvents="none"
+        >
+          <JumpingEmblem
+            variant="hero"
+            size={64}
+            jumpHeight={14}
+            pauseMs={1200}
+            entrance
+            paused={!active}
+          />
+          <AppText variant="h2" style={styles.brandName}>
+            {APP_NAME}
+          </AppText>
+        </Animated.View>
+      ) : null}
+
       <Animated.View
         style={[
           styles.content,
@@ -107,6 +135,20 @@ const styles = StyleSheet.create({
   slide: {
     overflow: 'hidden',
     backgroundColor: '#0A0A0A',
+  },
+  hero: {
+    position: 'absolute',
+    left: spacing.lg,
+    right: spacing.lg,
+    alignItems: 'center',
+    gap: spacing.md,
+    zIndex: 2,
+    overflow: 'visible',
+  },
+  brandName: {
+    color: '#FFFFFF',
+    letterSpacing: -0.3,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
