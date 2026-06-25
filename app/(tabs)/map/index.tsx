@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CurrencyToggle } from '@/components/map/CurrencyToggle';
 import { DrawAreaButton } from '@/components/map/DrawAreaButton';
 import { FilterButton } from '@/components/map/FilterButton';
+import { JumpingEmblem } from '@/components/brand/JumpingEmblem';
 import { FilterSheet } from '@/components/map/FilterSheet';
 import { MapListingCarousel, MAP_LISTING_CAROUSEL_HEIGHT, mapListingCarouselBottomOffset } from '@/components/map/MapListingCarousel';
 import { MapNoResultsOverlay } from '@/components/map/MapNoResultsOverlay';
@@ -230,6 +231,12 @@ export default function MapScreen() {
         />
       </View>
 
+      {!mapChromeHidden && !drawMode ? (
+        <View style={[styles.brandMark, { top: controlsTop }]} pointerEvents="none">
+          <JumpingEmblem size={42} jumpHeight={10} pauseMs={1200} />
+        </View>
+      ) : null}
+
       {!mapChromeHidden ? (
         <View style={[styles.topLeft, { top: controlsTop }]} pointerEvents={drawMode ? 'none' : 'box-none'}>
           <CurrencyToggle />
@@ -350,6 +357,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: spacing.md,
     zIndex: 10,
+  },
+  brandMark: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 9,
   },
   drawHint: { position: 'absolute', left: spacing.md, right: spacing.md, zIndex: 11 },
   drawHintInner: { padding: spacing.sm, borderRadius: 12, alignSelf: 'flex-start', maxWidth: 280 },

@@ -6,14 +6,14 @@ Static policy pages live in [`docs/`](docs/):
 
 | File | URL (after Pages is enabled) |
 |------|------------------------------|
-| English | https://eeshbaev95.github.io/reyeltor-uz/privacy.html |
-| Uzbek | https://eeshbaev95.github.io/reyeltor-uz/privacy-uz.html |
+| English | https://eeshbaev.github.io/reyeltor-uz/privacy.html |
+| Uzbek | https://eeshbaev.github.io/reyeltor-uz/privacy-uz.html |
 
 The app uses the English URL as `PRIVACY_POLICY_URL` in [`lib/constants.ts`](lib/constants.ts) — paste the same URL into **Google Play Console → App content → Privacy policy**.
 
 ### One-time GitHub setup
 
-1. Create a public repo named **reyeltor-uz** under **eeshbaev95** (or push this project and update `PRIVACY_POLICY_URL` if the repo name differs).
+1. Create a public repo named **reyeltor-uz** under **eeshbaev** (or push this project and update `PRIVACY_POLICY_URL` if the repo name differs).
 2. Push `main` to GitHub.
 3. **Settings → Pages → Build and deployment → Source:** Deploy from branch **main**, folder **/docs**.
 4. Wait ~1 minute, then open the privacy URL above.
@@ -48,7 +48,7 @@ Download the `.aab` from the Expo dashboard when the build finishes.
 
 1. **Create app** → name **Reyeltor.uz**, default language, app/game, free.
 2. **App content**
-   - Privacy policy URL: `https://eeshbaev95.github.io/reyeltor-uz/privacy.html`
+   - Privacy policy URL: `https://eeshbaev.github.io/reyeltor-uz/privacy.html`
    - Complete Data safety, Ads (if none), Content rating, Target audience, News app (No), COVID (No), etc.
 3. **Store listing**
    - Short & full description (Uzbek and/or English).

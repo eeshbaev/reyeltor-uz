@@ -98,7 +98,7 @@ export const POST_DRAFT_KEY = '@reyeltor/post_draft';
 export const PRIVACY_CONTACT_EMAIL = 'privacy@reyeltor.uz';
 
 /** Public privacy policy (GitHub Pages). Use in Google Play Console and in-app link. */
-export const PRIVACY_POLICY_URL = 'https://eeshbaev95.github.io/reyeltor-uz/privacy.html';
+export const PRIVACY_POLICY_URL = 'https://eeshbaev.github.io/reyeltor-uz/privacy.html';
 
 export const APP_NAME = 'Reyeltor.uz';
 export const APP_HOME_URL = 'https://reyeltor.uz';

@@ -7,6 +7,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { JumpingEmblem } from '@/components/brand/JumpingEmblem';
 import { OnboardingDotIndicator } from './OnboardingDotIndicator';
 import { OnboardingSlide } from './OnboardingSlide';
 import { useOnboardingSlides } from '@/lib/hooks/useOnboardingSlides';
@@ -61,6 +62,9 @@ export function OnboardingPager({ onComplete }: OnboardingPagerProps) {
           />
         )}
       />
+      <View style={[styles.emblem, { top: insets.top + 52 }]} pointerEvents="none">
+        <JumpingEmblem size={68} jumpHeight={18} pauseMs={1100} entrance />
+      </View>
       <View style={[styles.dots, { bottom: insets.bottom + spacing.lg }]}>
         <OnboardingDotIndicator
           count={slides.length}
@@ -74,6 +78,13 @@ export function OnboardingPager({ onComplete }: OnboardingPagerProps) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0A0A0A' },
+  emblem: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 5,
+  },
   dots: {
     position: 'absolute',
     left: 0,
