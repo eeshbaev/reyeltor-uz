@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Reyeltor.uz",
+    "name": "Reyeltor-uz",
     "slug": "reyeltor-uz",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "reyeltor",
@@ -193,7 +193,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Upload photos of your property listing."
+          "photosPermission": "Upload photos for your listings and profile."
         }
       ]
     ],
