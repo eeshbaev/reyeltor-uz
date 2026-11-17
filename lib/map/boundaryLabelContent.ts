@@ -1,5 +1,5 @@
-import type { BoundaryTier } from '@/lib/map/districtBoundaries';
 import { BOUNDARY_MARKET_LABEL_MIN_ZOOM } from '@/lib/map/boundaryConstants';
+import type { BoundaryTier } from '@/lib/map/districtBoundaries';
 
 export interface BoundaryLabelContent {
   title: string;

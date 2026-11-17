@@ -1,8 +1,8 @@
+import { getFurniturePerRoomUzs } from '@/lib/market/marketDataStore';
 import {
   getRenovationCostPerM2,
   type RenovationLevel,
 } from '@/lib/tools/renovationRates';
-import { getFurniturePerRoomUzs } from '@/lib/market/marketDataStore';
 
 export interface RenovationParams {
   areaM2: number;

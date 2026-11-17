@@ -199,17 +199,40 @@ function computeMacroRates(
   };
 }
 
+// Cache for market data snapshot to avoid redundant JSON parsing
+let _cachedSnapshot: MarketDataSnapshot | null = null;
+let _cacheTime = 0;
+const PARSE_CACHE_TTL = 60000; // 1 minute
+
 async function readStoredSnapshot(): Promise<MarketDataSnapshot | null> {
   try {
+    const now = Date.now();
+
+    // Return cached if fresh
+    if (_cachedSnapshot && now - _cacheTime < PARSE_CACHE_TTL) {
+      return _cachedSnapshot;
+    }
+
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw) as MarketDataSnapshot;
+    if (!raw) {
+      _cachedSnapshot = null;
+      return null;
+    }
+
+    _cachedSnapshot = JSON.parse(raw) as MarketDataSnapshot;
+    _cacheTime = now;
+    return _cachedSnapshot;
   } catch {
+    _cachedSnapshot = null;
     return null;
   }
 }
 
 async function writeStoredSnapshot(snapshot: MarketDataSnapshot): Promise<void> {
+  // Update cache immediately
+  _cachedSnapshot = snapshot;
+  _cacheTime = Date.now();
+  // Write to storage asynchronously (non-blocking)
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
 }
 

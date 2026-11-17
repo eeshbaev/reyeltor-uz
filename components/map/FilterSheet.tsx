@@ -1,19 +1,27 @@
+import React, { forwardRef, useCallback, useMemo, useState } from 'react';
 import BottomSheet, {
   BottomSheetBackdrop,
+  BottomSheetFooter,
   BottomSheetScrollView,
   useBottomSheetSpringConfigs,
+  type BottomSheetFooterProps,
 } from '@gorhom/bottom-sheet';
-import { forwardRef, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CommercialFilterFields } from '@/components/filters/CommercialFilterFields';
+import { FilterSegmentedControl } from '@/components/filters/FilterSegmentedControl';
 import { ResidentialFilterFields } from '@/components/filters/ResidentialFilterFields';
-import { useExchangeRate } from '@/lib/hooks/useExchangeRate';
-import { countFilterResults } from '@/lib/filters';
+import { AppText } from '@/components/ui/AppText';
 import { getCategoryColors } from '@/lib/design/categoryColors';
-import { SHEET_BEHIND_TAB_Z_INDEX, sheetBottomInset } from '@/lib/sheetChrome';
-import { fontSize, spacing, useTheme } from '@/lib/theme';
+import { countActiveFilters, countFilterResults } from '@/lib/filters';
+import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
+import { hapticLight } from '@/lib/haptics';
+import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
+import { useExchangeRate } from '@/lib/hooks/useExchangeRate';
+import { TAB_BAR_CLEARANCE } from '@/lib/navigation/tabBarMetrics';
+import { SHEET_BEHIND_TAB_Z_INDEX } from '@/lib/sheetChrome';
+import { spacing, useTheme } from '@/lib/theme';
 import type { ListingFilters, ListingWithPhotos } from '@/types';
 
 interface FilterSheetProps {
@@ -23,22 +31,26 @@ interface FilterSheetProps {
   onClear: () => void;
   allListings: ListingWithPhotos[];
   onIndexChange?: (index: number) => void;
+  /** When mounted already open (map mounts sheet only while visible). */
+  initialIndex?: number;
 }
 
-const screenHeight = Dimensions.get('window').height;
-const FILTER_FOOTER_HEIGHT = 76;
+const FILTER_SHEET_HEIGHT = '80%';
+/** Clear + Apply row height (matches footer styles below). */
+const FILTER_FOOTER_HEIGHT = 52 + spacing.sm + 4 + spacing.sm;
 
 export const FilterSheet = forwardRef<BottomSheet, FilterSheetProps>(
-  ({ filters, onChange, onApply, onClear, allListings, onIndexChange }, ref) => {
+  ({ filters, onChange, onApply, onClear, allListings, onIndexChange, initialIndex = -1 }, ref) => {
     const { t } = useTranslation();
     const theme = useTheme();
     const insets = useSafeAreaInsets();
     const { usdRate } = useExchangeRate();
-    const tabBarClearance = sheetBottomInset(insets.bottom);
-    const sheetHeight = Math.round(screenHeight * 0.92);
-    const [sheetIndex, setSheetIndex] = useState(-1);
+    const activeFilterCount = countActiveFilters(filters);
+    const tabBarPadding = Math.max(insets.bottom, spacing.sm) + TAB_BAR_CLEARANCE;
+    const footerBlockHeight = FILTER_FOOTER_HEIGHT + tabBarPadding;
+    const [sheetIndex, setSheetIndex] = useState(initialIndex);
 
-    const snapPoints = useMemo(() => [sheetHeight], [sheetHeight]);
+    const snapPoints = useMemo(() => [FILTER_SHEET_HEIGHT], []);
     const animationConfigs = useBottomSheetSpringConfigs({
       damping: 68,
       stiffness: 420,
@@ -51,15 +63,27 @@ export const FilterSheet = forwardRef<BottomSheet, FilterSheetProps>(
     );
     const residentialColors = getCategoryColors(theme.scheme, 'residential');
     const commercialColors = getCategoryColors(theme.scheme, 'commercial');
+    const categoryAccent = filters.category === 'residential' ? residentialColors.main : commercialColors.main;
+    const categoryOnAccent = filters.category === 'residential' ? residentialColors.onMain : commercialColors.onMain;
+
+    const clearPress = useAnimatedPress(() => {
+      hapticLight();
+      onClear();
+    });
+    const applyPress = useAnimatedPress(() => {
+      hapticLight();
+      onApply();
+    });
 
     const renderBackdrop = useCallback(
       (props: React.ComponentProps<typeof BottomSheetBackdrop>) => (
-        <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.45} />
+        <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.5} />
       ),
       [],
     );
 
     const setCategory = (category: ListingFilters['category']) => {
+      hapticLight();
       onChange({
         ...filters,
         category,
@@ -73,101 +97,138 @@ export const FilterSheet = forwardRef<BottomSheet, FilterSheetProps>(
       });
     };
 
-    return (
-      <BottomSheet
-        ref={ref}
-        index={-1}
-        snapPoints={snapPoints}
-        animationConfigs={animationConfigs}
-        enablePanDownToClose
-        enableContentPanningGesture
-        enableHandlePanningGesture
-        enableOverDrag={false}
-        backdropComponent={renderBackdrop}
-        onChange={(index) => {
-          setSheetIndex(index);
-          onIndexChange?.(index);
-        }}
-        bottomInset={0}
-        containerStyle={sheetIndex < 0 ? styles.passThrough : undefined}
-        style={styles.sheet}
-        backgroundStyle={{ backgroundColor: theme.colors.surfaceElevated }}
-        handleIndicatorStyle={{ backgroundColor: theme.colors.borderStrong }}
-      >
-        <View style={styles.body}>
-          <BottomSheetScrollView
-            style={styles.scroll}
-            contentContainerStyle={[styles.content, { paddingBottom: spacing.lg }]}
-            keyboardShouldPersistTaps="handled"
-            nestedScrollEnabled
-            showsVerticalScrollIndicator={false}
-          >
-            <Text style={[styles.title, { color: theme.colors.primary }]}>{t('filters.title')}</Text>
+    const handleSheetChange = useCallback(
+      (index: number) => {
+        setSheetIndex(index);
+        onIndexChange?.(index);
+      },
+      [onIndexChange],
+    );
 
-            <View style={styles.categoryRow}>
-              {(['residential', 'commercial'] as const).map((cat) => {
-                const active = filters.category === cat;
-                const colors = cat === 'residential' ? residentialColors : commercialColors;
-                return (
-                <Pressable
-                  key={cat}
-                  style={[
-                    styles.categoryPill,
-                    {
-                      borderColor: active ? colors.main : theme.colors.border,
-                      backgroundColor: active ? colors.main : theme.colors.surface,
-                    },
-                  ]}
-                  onPress={() => setCategory(cat)}
-                >
-                  <Text
-                    style={[
-                      styles.categoryText,
-                      { color: active ? colors.onMain : theme.colors.primary },
-                    ]}
-                  >
-                    {t(`filters.${cat}`)}
-                  </Text>
-                </Pressable>
-              );
-              })}
-            </View>
+    const scrollBottomPadding = footerBlockHeight + spacing.sm;
+    const styles = useMemo(() => createStyles(theme), [theme]);
 
-            {filters.category === 'residential' ? (
-              <ResidentialFilterFields key="residential-filters" filters={filters} onChange={onChange} usdRate={usdRate} />
-            ) : (
-              <CommercialFilterFields key="commercial-filters" filters={filters} onChange={onChange} usdRate={usdRate} />
-            )}
-          </BottomSheetScrollView>
-
+    const renderFooter = useCallback(
+      (props: BottomSheetFooterProps) => (
+        <BottomSheetFooter {...props} bottomInset={0}>
           <View
             style={[
-              styles.footerBar,
+              styles.footer,
               {
-                backgroundColor: theme.colors.surfaceElevated,
                 borderTopColor: theme.colors.border,
-                paddingBottom: tabBarClearance,
+                paddingBottom: tabBarPadding,
               },
             ]}
           >
-            <View style={styles.actions}>
-              <Pressable
-                style={[styles.clearButton, { borderColor: theme.colors.border }]}
-                onPress={onClear}
+            <Pressable
+              onPressIn={clearPress.onPressIn}
+              onPressOut={clearPress.onPressOut}
+              onPress={clearPress.handlePress}
+              style={styles.clearPress}
+            >
+              <Animated.View style={[styles.clearButton, { transform: [{ scale: clearPress.scale }] }]}>
+                <AppText variant="label" style={{ fontWeight: '600' }}>
+                  {t('common.clearAll')}
+                </AppText>
+              </Animated.View>
+            </Pressable>
+
+            <Pressable
+              onPressIn={applyPress.onPressIn}
+              onPressOut={applyPress.onPressOut}
+              onPress={applyPress.handlePress}
+              style={styles.applyPress}
+            >
+              <Animated.View
+                style={[
+                  styles.applyButton,
+                  { backgroundColor: categoryAccent, transform: [{ scale: applyPress.scale }] },
+                ]}
               >
-                <Text style={[styles.clearText, { color: theme.colors.primary }]}>{t('common.clearAll')}</Text>
-              </Pressable>
-              <Pressable
-                style={[styles.applyButton, { backgroundColor: theme.colors.primary }]}
-                onPress={onApply}
-              >
-                <Text style={[styles.applyText, { color: theme.colors.onAccent }]}>
+                <AppText variant="label" color="onAccent" style={{ fontWeight: '700' }}>
                   {t('filters.results', { count: resultCount })}
-                </Text>
-              </Pressable>
+                </AppText>
+              </Animated.View>
+            </Pressable>
+          </View>
+        </BottomSheetFooter>
+      ),
+      [
+        applyPress,
+        categoryAccent,
+        clearPress,
+        resultCount,
+        t,
+        tabBarPadding,
+        theme.colors.border,
+        styles,
+      ],
+    );
+
+    return (
+      <BottomSheet
+        ref={ref}
+        index={initialIndex}
+        snapPoints={snapPoints}
+        animationConfigs={animationConfigs}
+        enablePanDownToClose
+        enableDynamicSizing={false}
+        backdropComponent={renderBackdrop}
+        onChange={handleSheetChange}
+        footerComponent={renderFooter}
+        bottomInset={0}
+        {...BOTTOM_SHEET_GESTURE_PROPS}
+        enableContentPanningGesture={false}
+        enableHandlePanningGesture={sheetIndex >= 0}
+        style={styles.sheet}
+        backgroundStyle={styles.sheetBackground}
+        handleIndicatorStyle={styles.handle}
+      >
+        <BottomSheetScrollView
+          style={styles.scroll}
+          contentContainerStyle={[styles.content, { paddingBottom: scrollBottomPadding }]}
+          keyboardShouldPersistTaps="handled"
+          nestedScrollEnabled
+          showsVerticalScrollIndicator
+          overScrollMode="never"
+        >
+          <View style={styles.header}>
+            <View style={styles.headerCopy}>
+              <AppText variant="h2" style={styles.title}>
+                {t('filters.title')}
+              </AppText>
+              {activeFilterCount > 0 ? (
+                <AppText variant="caption" color="secondary">
+                  {t('filters.results', { count: resultCount })}
+                </AppText>
+              ) : (
+                <AppText variant="caption" color="secondary">
+                  {t('map.filterTooltip')}
+                </AppText>
+              )}
             </View>
           </View>
-        </View>
+
+          <View style={styles.categoryCard}>
+            <FilterSegmentedControl
+              options={[
+                { value: 'residential' as const, label: t('filters.residential') },
+                { value: 'commercial' as const, label: t('filters.commercial') },
+              ]}
+              value={filters.category}
+              onChange={(category) => category && setCategory(category)}
+              allowDeselect={false}
+              activeColor={categoryAccent}
+              activeTextColor={categoryOnAccent}
+            />
+          </View>
+
+          {filters.category === 'residential' ? (
+            <ResidentialFilterFields key="residential-filters" filters={filters} onChange={onChange} usdRate={usdRate} />
+          ) : (
+            <CommercialFilterFields key="commercial-filters" filters={filters} onChange={onChange} usdRate={usdRate} />
+          )}
+        </BottomSheetScrollView>
       </BottomSheet>
     );
   },
@@ -175,42 +236,77 @@ export const FilterSheet = forwardRef<BottomSheet, FilterSheetProps>(
 
 FilterSheet.displayName = 'FilterSheet';
 
-const styles = StyleSheet.create({
-  sheet: { zIndex: SHEET_BEHIND_TAB_Z_INDEX },
-  passThrough: { pointerEvents: 'none' },
-  body: { flex: 1 },
-  scroll: { flex: 1 },
-  content: { padding: spacing.md },
-  title: { fontSize: fontSize.lg, fontWeight: '700', marginBottom: spacing.md },
-  categoryRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.lg },
-  categoryPill: {
-    flex: 1,
-    paddingVertical: spacing.md,
-    borderRadius: 12,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  categoryText: { fontWeight: '700' },
-  footerBar: {
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.md,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    minHeight: FILTER_FOOTER_HEIGHT,
-  },
-  actions: { flexDirection: 'row', gap: spacing.sm },
-  clearButton: {
-    flex: 1,
-    padding: spacing.md,
-    borderRadius: 8,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  clearText: { fontWeight: '600' },
-  applyButton: {
-    flex: 1.4,
-    padding: spacing.md,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  applyText: { fontWeight: '700' },
-});
+function createStyles(theme: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    sheet: { zIndex: SHEET_BEHIND_TAB_Z_INDEX },
+    sheetBackground: {
+      backgroundColor: theme.colors.background,
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+    },
+    handle: {
+      backgroundColor: theme.colors.borderStrong,
+      width: 44,
+      height: 4,
+      marginTop: spacing.sm,
+    },
+    scroll: {
+      flex: 1,
+    },
+    content: {
+      paddingHorizontal: spacing.md,
+      paddingTop: spacing.xs,
+    },
+    header: {
+      marginBottom: spacing.lg,
+      paddingTop: spacing.xs,
+    },
+    headerCopy: {
+      gap: spacing.xs,
+    },
+    title: {
+      letterSpacing: -0.5,
+    },
+    categoryCard: {
+      marginBottom: spacing.sm,
+    },
+    footer: {
+      flexDirection: 'row',
+      gap: spacing.sm + 4,
+      paddingHorizontal: spacing.md,
+      paddingTop: spacing.sm + 4,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      backgroundColor: theme.colors.background,
+    },
+    clearPress: { flex: 1 },
+    applyPress: { flex: 1.5 },
+    clearButton: {
+      minHeight: 52,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: spacing.md,
+      backgroundColor: theme.isDark ? 'rgba(255,255,255,0.04)' : theme.colors.surface,
+    },
+    applyButton: {
+      minHeight: 52,
+      borderRadius: 14,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: spacing.md,
+      ...Platform.select({
+        ios: {
+          shadowColor: '#2563EB',
+          shadowOpacity: 0.28,
+          shadowRadius: 12,
+          shadowOffset: { width: 0, height: 4 },
+        },
+        android: { elevation: 4 },
+      }),
+    },
+  });
+}

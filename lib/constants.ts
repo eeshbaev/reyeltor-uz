@@ -1,7 +1,7 @@
 export const TASHKENT_CITY_DISTRICTS = [
   'Bektemir',
   'Chilanzar',
-  'Hamza',
+  // 'Hamza' was renamed Yashnobod in 2014 — not offered any more.
   'Mirobod',
   'Mirzo Ulugbek',
   'Olmazor',
@@ -12,6 +12,8 @@ export const TASHKENT_CITY_DISTRICTS = [
   'Yashnobod',
   'Yunusobod',
   'Yangihayot',
+  // 13th district since March 2024 (New Tashkent). Boundary: scripts/add-new-tashkent-boundary.mjs
+  'Yangi Toshkent',
 ] as const;
 
 export const TASHKENT_REGION_DISTRICTS = [
@@ -38,7 +40,8 @@ export const TASHKENT_DISTRICTS = [
 export type MapCoverage = 'city' | 'region';
 
 export const MAP_COVERAGE_BOUNDS = {
-  city: [69.10, 41.20, 69.44, 41.40] as [number, number, number, number],
+  // Includes Yangihayot (south) and Yangi Toshkent (east / south-east).
+  city: [69.10, 41.14, 69.55, 41.40] as [number, number, number, number],
   region: [68.70, 40.75, 70.20, 41.70] as [number, number, number, number],
 };
 
@@ -49,14 +52,14 @@ export const TASHKENT_MAP_MAX_BOUNDS: [number, number, number, number] = [68.55,
 export const LISTING_MAP_FOCUS_ZOOM = 15;
 
 export const MAP_COVERAGE_CENTER = {
-  city: { latitude: 41.2995, longitude: 69.2401, zoom: 12 },
+  city: { latitude: 41.2995, longitude: 69.2401, zoom: 13 },
   region: { latitude: 41.22, longitude: 69.32, zoom: 10 },
 };
 
 export const TASHKENT_CENTER = {
   latitude: 41.2995,
   longitude: 69.2401,
-  zoom: 12,
+  zoom: 13,
 } as const;
 
 export const CLUSTER_MAX_ZOOM = 14;
@@ -67,7 +70,7 @@ export const CHECKIN_COINS = 1;
 export const LISTING_EXPIRY_DAYS = 90;
 export const ARCHIVE_DELETE_DAYS = 30;
 
-export const SUPPORTED_LANGUAGES = ['uz', 'ru', 'en', 'fr', 'de', 'es', 'zh', 'ja', 'ko', 'ar'] as const;
+export const SUPPORTED_LANGUAGES = ['uz', 'ru', 'en', 'zh', 'tr'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const DEFAULT_LANGUAGE: SupportedLanguage = 'uz';
@@ -76,13 +79,8 @@ export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
   uz: "O'zbek",
   ru: 'Русский',
   en: 'English',
-  fr: 'Français',
-  de: 'Deutsch',
-  es: 'Español',
   zh: '中文',
-  ja: '日本語',
-  ko: '한국어',
-  ar: 'العربية',
+  tr: 'Türkçe',
 };
 
 export const LANGUAGE_STORAGE_KEY = '@reyeltor/language';
@@ -95,12 +93,34 @@ export const LIST_SWIPE_HINT_KEY = '@reyeltor/list_swipe_hint';
 export const MY_LISTINGS_HINT_KEY = '@reyeltor/my_listings_hint';
 export const POST_DRAFT_KEY = '@reyeltor/post_draft';
 
-export const PRIVACY_CONTACT_EMAIL = 'privacy@reyeltor.uz';
+export const PRIVACY_CONTACT_EMAIL = 'eeshbaev@outlook.com';
+export const SUPPORT_CONTACT_EMAIL = 'eeshbaev@outlook.com';
 
 /** Public privacy policy (GitHub Pages). Use in Google Play Console and in-app link. */
 export const PRIVACY_POLICY_URL = 'https://eeshbaev.github.io/reyeltor-uz/privacy.html';
 
-export const APP_NAME = 'Reyeltor.uz';
-export const APP_HOME_URL = 'https://reyeltor.uz';
+/** Public listing page (docs/listing.html on GitHub Pages) — works for people without the app. */
+export const LISTING_WEB_URL = 'https://eeshbaev.github.io/reyeltor-uz/listing.html';
+
+export const APP_NAME = 'Reyeltor-uz';
+export const APP_SCHEME = 'reyeltor';
+
+/** Google Play listing — primary CTA for viral shares (no public website). */
+export const PLAY_STORE_URL =
+  'https://play.google.com/store/apps/details?id=uz.reyeltor.app';
+
+/** App deep-link base for in-app navigation only (not viral shares). */
+export const APP_HOME_URL = `${APP_SCHEME}://`;
+
+export const REFERRAL_REGISTER_COINS = 2;
+export const REFERRAL_FIRST_POST_COINS = 2;
+export const REFERRAL_FIRST_FAVORITE_COINS = 1;
+export const PENDING_REFERRAL_CODE_KEY = '@reyeltor/pending_referral_code';
+export const MIN_SAVE_COUNT_FOR_BADGE = 3;
+
+export function appDeepLink(path: string): string {
+  const normalized = path.startsWith('/') ? path.slice(1) : path;
+  return `${APP_SCHEME}://${normalized}`;
+}
 
 export const CHECKIN_DAYS = [2, 4, 6]; // Tuesday, Thursday, Saturday (0=Sunday)

@@ -1,16 +1,17 @@
 import { useMemo } from 'react';
-import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg';
 import { View, StyleSheet, useWindowDimensions } from 'react-native';
+import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg';
 import { AppText } from '@/components/ui/AppText';
+import { spacing } from '@/lib/design/spacing';
 import type { CbuRatePoint } from '@/lib/exchange/cbuRateHistory';
 import { formatRateDateLabel } from '@/lib/exchange/cbuRateHistory';
-import { spacing } from '@/lib/design/spacing';
 
 interface CurrencyRateChartProps {
   data: CbuRatePoint[];
   accentColor: string;
   gridColor: string;
   labelColor: string;
+  dateLocale?: string;
   height?: number;
 }
 
@@ -21,6 +22,7 @@ export function CurrencyRateChart({
   accentColor,
   gridColor,
   labelColor,
+  dateLocale = 'en-GB',
   height = 220,
 }: CurrencyRateChartProps) {
   const { width: screenWidth } = useWindowDimensions();
@@ -119,7 +121,7 @@ export function CurrencyRateChart({
               fontSize={10}
               textAnchor={index === 0 ? 'start' : index === chart.labelIndexes.length - 1 ? 'end' : 'middle'}
             >
-              {formatRateDateLabel(coord.point.date)}
+              {formatRateDateLabel(coord.point.date, dateLocale)}
             </SvgText>
           );
         })}

@@ -61,9 +61,32 @@ export function ListingCardSkeleton() {
   );
 }
 
+export function FavoriteListingCardSkeleton() {
+  const theme = useTheme();
+  return (
+    <View style={[skeletonStyles.favoriteCard, { backgroundColor: theme.colors.surfaceElevated, borderColor: theme.colors.border }]}>
+      <Skeleton width="100%" height={220} borderRadius={0} />
+      <View style={skeletonStyles.favoriteBody}>
+        <View style={skeletonStyles.favoritePills}>
+          <Skeleton width={64} height={26} borderRadius={13} />
+          <Skeleton width={72} height={26} borderRadius={13} />
+        </View>
+        <View style={skeletonStyles.favoriteFooter}>
+          <Skeleton width="34%" height={14} borderRadius={7} />
+          <Skeleton width={96} height={26} borderRadius={13} />
+        </View>
+      </View>
+    </View>
+  );
+}
+
 const skeletonStyles = StyleSheet.create({
   card: { borderRadius: 12, borderWidth: 1, overflow: 'hidden', marginBottom: 16 },
   image: { borderTopLeftRadius: 12, borderTopRightRadius: 12 },
   content: { padding: 16 },
   pills: { flexDirection: 'row', gap: 8, marginTop: 12 },
+  favoriteCard: { borderRadius: 22, borderWidth: 1, overflow: 'hidden' },
+  favoriteBody: { padding: 16, gap: 12 },
+  favoritePills: { flexDirection: 'row', gap: 8 },
+  favoriteFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
 });

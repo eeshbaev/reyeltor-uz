@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { StyleSheet, View, type ViewStyle } from 'react-native';
 import { AppText } from './AppText';
 import { spacing } from '@/lib/design/spacing';
@@ -10,7 +10,7 @@ interface BadgeProps {
   style?: ViewStyle;
 }
 
-export function Badge({ label, variant = 'default', style }: BadgeProps) {
+function BadgeComponent({ label, variant = 'default', style }: BadgeProps) {
   const theme = useTheme();
   const styles = useMemo(() => createVariantStyles(theme), [theme]);
   const v = styles[variant] ?? styles.default;
@@ -23,6 +23,12 @@ export function Badge({ label, variant = 'default', style }: BadgeProps) {
     </View>
   );
 }
+
+/**
+ * Memoized Badge component
+ * Frequently rendered in lists, prevents unnecessary re-renders
+ */
+export const Badge = memo(BadgeComponent);
 
 function createVariantStyles(theme: ReturnType<typeof useTheme>) {
   return {

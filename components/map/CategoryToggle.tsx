@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import { Animated, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
-import { spacing } from '@/lib/design/spacing';
-import { getCategoryColors } from '@/lib/design/categoryColors';
+import { FrostedView } from '@/components/ui/FrostedView';
 import { useListingsCache } from '@/lib/context/ListingsContext';
-import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
+import { getCategoryColors } from '@/lib/design/categoryColors';
+import { mapChromeBorder } from '@/lib/design/mapChrome';
+import { spacing } from '@/lib/design/spacing';
 import { hapticLight } from '@/lib/haptics';
+import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
 import type { ListingFilters } from '@/types';
 
@@ -26,7 +28,7 @@ function nextCategoryFilters(filters: ListingFilters, category: ListingFilters['
   };
 }
 
-export function CategoryToggle() {
+export function CategoryToggle({ variant: _variant }: { variant?: 'map' } = {}) {
   const { t } = useTranslation();
   const theme = useTheme();
   const { filters, setFilters } = useListingsCache();
@@ -35,28 +37,7 @@ export function CategoryToggle() {
 
   return (
     <View style={styles.mapWrap}>
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: theme.colors.surfaceElevated,
-            ...Platform.select({
-              ios: {
-                shadowColor: '#000000',
-                shadowOpacity: theme.isDark ? 0.35 : 0.14,
-                shadowRadius: 10,
-                shadowOffset: { width: 0, height: 3 },
-              },
-              android: { elevation: 5 },
-              default: {
-                boxShadow: theme.isDark
-                  ? '0 3px 12px rgba(0,0,0,0.35)'
-                  : '0 3px 12px rgba(0,0,0,0.14)',
-              },
-            }),
-          },
-        ]}
-      >
+      <FrostedView style={[styles.container, mapChromeBorder(theme)]} intensity={76}>
         {CATEGORIES.map((category) => (
           <TogglePill
             key={category}
@@ -69,7 +50,7 @@ export function CategoryToggle() {
             }}
           />
         ))}
-      </View>
+      </FrostedView>
     </View>
   );
 }
@@ -88,7 +69,7 @@ function TogglePill({
   const { scale, onPressIn, onPressOut, handlePress } = useAnimatedPress(onPress);
 
   return (
-    <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onPress={handlePress}>
+    <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onPress={handlePress} style={styles.pillPress}>
       <Animated.View
         style={[
           styles.pill,
@@ -98,7 +79,7 @@ function TogglePill({
           },
         ]}
       >
-        <AppText variant="label" color={active ? 'onAccent' : 'primary'}>
+        <AppText variant="caption" color={active ? 'onAccent' : 'secondary'} style={styles.pillText}>
           {label}
         </AppText>
       </Animated.View>
@@ -110,19 +91,31 @@ const styles = StyleSheet.create({
   mapWrap: {
     paddingHorizontal: spacing.md,
     marginBottom: spacing.xs,
+    alignItems: 'center',
   },
   container: {
     flexDirection: 'row',
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     borderRadius: 999,
-    padding: spacing.xs,
-    gap: spacing.xs,
+    padding: 3,
+    gap: 3,
+    minWidth: 220,
+    maxWidth: 280,
+  },
+  pillPress: {
+    flex: 1,
   },
   pill: {
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.xs + 2,
     borderRadius: 999,
-    minHeight: 36,
+    minHeight: 30,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pillText: {
+    fontWeight: '600',
+    fontSize: 13,
+    letterSpacing: 0.1,
   },
 });

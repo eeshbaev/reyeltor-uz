@@ -1,142 +1,278 @@
-import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GuestPrompt } from '@/components/auth/GuestPrompt';
 import { LanguageTopBar } from '@/components/i18n/LanguageTopBar';
-import { Avatar } from '@/components/ui/Avatar';
+import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
+import { NotificationPreferencesSection } from '@/components/profile/NotificationPreferencesSection';
+import { ProfileAvatarEditor } from '@/components/profile/ProfileAvatarEditor';
+import { ProfileCoinCard } from '@/components/profile/ProfileCoinCard';
+import { ProfileIdentitySection } from '@/components/profile/ProfileIdentitySection';
+import { ProfileMenuRow } from '@/components/profile/ProfileMenuRow';
+import { ProfilePurposesSection } from '@/components/profile/ProfilePurposesSection';
+import { ProfileScreenSkeleton } from '@/components/profile/ProfileScreenSkeleton';
+import { ProfileSetupForm } from '@/components/profile/ProfileSetupForm';
+import { AppText } from '@/components/ui/AppText';
+import { Button } from '@/components/ui/Button';
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { ScreenAmbientBackground } from '@/components/ui/ScreenAmbientBackground';
+import { ScreenScroll } from '@/components/ui/ScreenScroll';
+import { ScreenSection } from '@/components/ui/ScreenSection';
+import { TextField } from '@/components/ui/TextField';
+import { openSupportEmail } from '@/lib/contact/supportEmail';
 import { useAuth } from '@/lib/context/AuthContext';
-import { normalizeTelegramUsername } from '@/lib/contact';
+import { screenBottomPadding } from '@/lib/design/layout';
+import { spacing } from '@/lib/design/spacing';
+import { useUserDisplayName } from '@/lib/hooks/useUserDisplayName';
+import { normalizeBio, PROFILE_BIO_MAX_LENGTH } from '@/lib/profile/bio';
+import { isProfileComplete } from '@/lib/profile/complete';
 import { supabase } from '@/lib/supabase';
-import { colors, fontSize, spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/theme';
 
-export default function ProfileScreen() {
+function ProfileScreenContent() {
   const { t } = useTranslation();
+  const theme = useTheme();
   const router = useRouter();
-  const { session, profile, signOut, refreshProfile } = useAuth();
-  const [telegramInput, setTelegramInput] = useState('');
-  const [savingTelegram, setSavingTelegram] = useState(false);
+  const { session, profile, loading, profileLoading, signOut, refreshProfile, deleteAllUserData } = useAuth();
+  const { displayName } = useUserDisplayName();
+  const insets = useSafeAreaInsets();
+  const [bioInput, setBioInput] = useState('');
+  const [savingBio, setSavingBio] = useState(false);
+  const [deletingData, setDeletingData] = useState(false);
 
   useEffect(() => {
-    setTelegramInput(profile?.telegram_username ? `@${profile.telegram_username}` : '');
-  }, [profile?.telegram_username]);
+    if (session && !profile && !loading && !profileLoading) {
+      void refreshProfile();
+    }
+  }, [session, profile, loading, profileLoading, refreshProfile]);
 
-  const saveTelegram = async () => {
+  useEffect(() => {
+    setBioInput(profile?.bio ?? '');
+  }, [profile?.bio]);
+
+  const saveBio = async () => {
     if (!session?.user?.id) return;
-    setSavingTelegram(true);
-    const normalized = normalizeTelegramUsername(telegramInput);
-    const { error } = await supabase
-      .from('users')
-      .update({ telegram_username: normalized })
-      .eq('id', session.user.id);
-    setSavingTelegram(false);
+    setSavingBio(true);
+    const bio = normalizeBio(bioInput);
+    const { error } = await supabase.from('users').update({ bio }).eq('id', session.user.id);
+    setSavingBio(false);
     if (error) {
       Alert.alert(t('common.error'));
       return;
     }
     await refreshProfile();
-    Alert.alert(t('profile.telegramSaved'));
+    Alert.alert(t('profile.bioSaved'));
   };
 
-  if (!session || !profile) {
+  const handleDeleteAllData = () => {
+    Alert.alert(t('profile.deleteDataTitle'), t('profile.deleteDataWarning'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('profile.deleteDataConfirm'),
+        onPress: async () => {
+          setDeletingData(true);
+          try {
+            await deleteAllUserData();
+            Alert.alert(t('profile.deleteDataSuccess'), t('profile.deleteDataSuccessMessage'));
+            router.replace('/auth/welcome');
+          } catch {
+            setDeletingData(false);
+            Alert.alert(t('common.error'), t('profile.deleteDataError'));
+          }
+        },
+        style: 'destructive',
+      },
+    ]);
+  };
+
+  const handleReportIssue = () => {
+    openSupportEmail(t('auth.reportIssueSubject'), t('auth.reportIssueBody'));
+  };
+
+  if (loading) {
     return (
-      <View style={styles.screen}>
+      <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
+        <ScreenAmbientBackground />
+        <LanguageTopBar />
+        <ScreenScroll contentContainerStyle={styles.scrollContent}>
+          <ProfileScreenSkeleton />
+        </ScreenScroll>
+      </View>
+    );
+  }
+
+  if (!session) {
+    return (
+      <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
         <GuestPrompt title={t('profile.guestTitle')} subtitle={t('profile.guestSubtitle')} />
-        <Pressable style={styles.privacyLink} onPress={() => router.push('/profile/privacy')}>
-          <Text style={styles.privacyLinkText}>{t('profile.privacyPolicy')}</Text>
+        <Pressable
+          style={[styles.privacyLink, { paddingBottom: screenBottomPadding(insets.bottom) }]}
+          onPress={() => router.push('/profile/privacy')}
+        >
+          <AppText variant="caption" color="accent" style={styles.privacyLinkText}>
+            {t('profile.privacyPolicy')}
+          </AppText>
         </Pressable>
       </View>
     );
   }
 
+  if (!profile) {
+    return (
+      <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
+        <ScreenAmbientBackground />
+        <LanguageTopBar />
+        <View style={styles.setup}>
+          {profileLoading ? (
+            <ProfileScreenSkeleton />
+          ) : (
+            <>
+              <AppText variant="h2" style={styles.setupTitle}>
+                {t('profile.profileLoadFailed')}
+              </AppText>
+              <AppText variant="body" color="secondary" style={styles.setupSubtitle}>
+                {t('profile.loadingProfileHint')}
+              </AppText>
+              <Button label={t('common.retry')} onPress={() => void refreshProfile()} />
+              <Button
+                label={t('auth.logout')}
+                variant="secondary"
+                onPress={() => void signOut()}
+                style={styles.setupSecondary}
+              />
+            </>
+          )}
+        </View>
+      </View>
+    );
+  }
+
+  if (!isProfileComplete(profile)) {
+    return (
+      <ProfileSetupForm
+        userId={profile.id}
+        fullName={profile.full_name}
+        phone={profile.phone}
+        phoneVisible={profile.phone_visible}
+        avatarPath={profile.avatar_url}
+        onComplete={refreshProfile}
+      />
+    );
+  }
+
+  const profileName = displayName ?? profile.full_name;
+  const bioHelper = t('profile.bioCharCount', { count: bioInput.length, max: PROFILE_BIO_MAX_LENGTH });
+
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
+      <ScreenAmbientBackground />
       <LanguageTopBar />
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScreenScroll
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: screenBottomPadding(insets.bottom) + TAB_BAR_CLEARANCE },
+        ]}
+      >
         <View style={styles.header}>
-          <Avatar name={profile.full_name} size={72} />
-          <Text style={styles.name}>{profile.full_name}</Text>
-          <Text style={styles.email}>{profile.email}</Text>
-        </View>
-
-        <View style={styles.telegramSection}>
-          <Text style={styles.sectionTitle}>{t('profile.telegram')}</Text>
-          <Text style={styles.telegramHint}>{t('profile.telegramHint')}</Text>
-          <TextInput
-            value={telegramInput}
-            onChangeText={setTelegramInput}
-            placeholder={t('profile.telegramPlaceholder')}
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={styles.telegramInput}
+          <ProfileAvatarEditor
+            userId={profile.id}
+            name={profileName}
+            avatarPath={profile.avatar_url}
+            onUpdated={refreshProfile}
           />
-          <Pressable style={styles.telegramSave} onPress={saveTelegram} disabled={savingTelegram}>
-            <Text style={styles.telegramSaveText}>{t('common.save')}</Text>
-          </Pressable>
+          <AppText variant="h3" style={styles.name}>
+            {profileName}
+          </AppText>
         </View>
 
-        <Pressable style={styles.menuItem} onPress={() => router.push('/profile/my-listings')}>
-          <Text style={styles.menuText}>{t('profile.myListings')}</Text>
-        </Pressable>
-        <Pressable style={styles.menuItem} onPress={() => router.push('/profile/coins')}>
-          <Text style={styles.menuText}>{t('profile.coins')} — {profile.coin_balance} 🪙</Text>
-        </Pressable>
-        <Pressable style={styles.menuItem} onPress={() => router.push('/profile/privacy')}>
-          <Text style={styles.menuText}>{t('profile.privacyPolicy')}</Text>
-        </Pressable>
+        <ProfileCoinCard balance={profile.coin_balance} label={t('profile.coins')} />
+
+        <ProfilePurposesSection userId={profile.id} purposes={profile.purposes} onSaved={refreshProfile} />
+
+        <ProfileIdentitySection
+          userId={profile.id}
+          fullName={profile.full_name}
+          phone={profile.phone}
+          email={profile.email}
+          phoneVerified={!!profile.phone_verified_at}
+          phoneVisible={profile.phone_visible}
+          emailVisible={profile.email_visible}
+          onSaved={refreshProfile}
+        />
+
+        <ScreenSection title={t('profile.bio')} subtitle={t('profile.bioHint')}>
+          <TextField
+            value={bioInput}
+            onChangeText={(text) => setBioInput(text.slice(0, PROFILE_BIO_MAX_LENGTH))}
+            placeholder={t('profile.bioPlaceholder')}
+            multiline
+            textAlignVertical="top"
+            style={styles.bioInput}
+            helperText={bioHelper}
+          />
+          <Button label={t('common.save')} onPress={saveBio} loading={savingBio} fullWidth={false} />
+        </ScreenSection>
+
+        <NotificationPreferencesSection userId={profile.id} />
+
+        <ProfileMenuRow
+          label={t('profile.myListings')}
+          icon="home-outline"
+          onPress={() => router.push('/profile/my-listings')}
+        />
+        <ProfileMenuRow
+          label={t('profile.privacyPolicy')}
+          icon="shield-checkmark-outline"
+          onPress={() => router.push('/profile/privacy')}
+        />
+        <ProfileMenuRow
+          label={t('profile.reportIssue')}
+          icon="mail-outline"
+          onPress={handleReportIssue}
+        />
 
         <Pressable style={styles.logout} onPress={signOut}>
-          <Text style={styles.logoutText}>{t('auth.logout')}</Text>
+          <AppText variant="label" color="danger">
+            {t('auth.logout')}
+          </AppText>
         </Pressable>
-      </ScrollView>
+
+        <Pressable style={styles.deleteData} onPress={handleDeleteAllData} disabled={deletingData}>
+          {deletingData ? (
+            <ActivityIndicator size="small" color={theme.colors.danger} />
+          ) : (
+            <AppText variant="label" color="danger">
+              {t('profile.deleteAllData')}
+            </AppText>
+          )}
+        </Pressable>
+      </ScreenScroll>
     </View>
   );
 }
 
+export default function ProfileScreen() {
+  return (
+    <ErrorBoundary context="ProfileScreen">
+      <ProfileScreenContent />
+    </ErrorBoundary>
+  );
+}
+
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
-  container: { padding: spacing.lg, paddingTop: spacing.sm },
-  header: { alignItems: 'center', marginBottom: spacing.lg },
-  name: { fontSize: fontSize.lg, fontWeight: '700', marginTop: spacing.sm, color: colors.text },
-  email: { fontSize: fontSize.sm, color: colors.textSecondary },
-  telegramSection: {
-    marginBottom: spacing.lg,
-    padding: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  telegramHint: { fontSize: fontSize.sm, color: colors.textSecondary, marginBottom: spacing.sm },
-  telegramInput: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 8,
-    padding: spacing.sm,
-    fontSize: fontSize.md,
-    color: colors.text,
-    marginBottom: spacing.sm,
-  },
-  telegramSave: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: 8,
-  },
-  telegramSaveText: { color: colors.surface, fontWeight: '700' },
-  menuItem: {
-    padding: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: 10,
-    marginBottom: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  menuText: { fontSize: fontSize.md, fontWeight: '600', color: colors.text },
+  screen: { flex: 1 },
+  scrollContent: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
+  header: { alignItems: 'center', marginBottom: spacing.md },
+  name: { marginTop: spacing.sm, textAlign: 'center' },
+  bioInput: { minHeight: 100, textAlignVertical: 'top' },
   logout: { marginTop: spacing.lg, alignItems: 'center' },
-  logoutText: { color: colors.error, fontWeight: '600' },
-  privacyLink: { alignItems: 'center', paddingVertical: spacing.md, paddingBottom: spacing.lg },
-  privacyLinkText: { fontSize: fontSize.sm, color: colors.accent, fontWeight: '600' },
-  sectionTitle: { fontSize: fontSize.md, fontWeight: '700', marginBottom: spacing.sm, color: colors.text },
+  deleteData: { marginTop: spacing.md, alignItems: 'center', paddingVertical: spacing.sm },
+  privacyLink: { alignItems: 'center', paddingTop: spacing.md },
+  privacyLinkText: { fontWeight: '600' },
+  setup: { flex: 1, justifyContent: 'center', paddingHorizontal: spacing.lg, paddingBottom: spacing.xl },
+  setupTitle: { textAlign: 'center', marginBottom: spacing.sm },
+  setupSubtitle: { textAlign: 'center', marginBottom: spacing.xl, maxWidth: 320, alignSelf: 'center' },
+  setupSecondary: { marginTop: spacing.sm },
 });

@@ -1,8 +1,10 @@
+import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { FilterEmblemIcon } from '@/components/icons/FilterEmblemIcon';
 import { AppText } from '@/components/ui/AppText';
+import { FrostedView } from '@/components/ui/FrostedView';
+import { mapChromeBorder } from '@/lib/design/mapChrome';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
-import { Animated, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 interface FilterButtonProps {
   count: number;
@@ -12,48 +14,40 @@ interface FilterButtonProps {
 export function FilterButton({ count, onPress }: FilterButtonProps) {
   const theme = useTheme();
   const { scale, onPressIn, onPressOut, handlePress } = useAnimatedPress(onPress);
+  const active = count > 0;
+  const badgeLabel = count > 9 ? '9+' : String(count);
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Filters"
+      accessibilityLabel={active ? `Filters, ${count} active` : 'Filters'}
+      accessibilityState={{ selected: active }}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       onPress={handlePress}
     >
       <Animated.View style={{ transform: [{ scale }] }}>
-        <View
-          style={[
-            styles.button,
-            {
-              backgroundColor: theme.colors.surfaceElevated,
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#000000',
-                  shadowOpacity: theme.isDark ? 0.35 : 0.14,
-                  shadowRadius: 10,
-                  shadowOffset: { width: 0, height: 3 },
-                },
-                android: { elevation: 5 },
-                default: {
-                  boxShadow: theme.isDark
-                    ? '0 3px 12px rgba(0,0,0,0.35)'
-                    : '0 3px 12px rgba(0,0,0,0.14)',
-                },
-              }),
-            },
-          ]}
-        >
-          <FilterEmblemIcon color={theme.colors.accent} size={20} />
-          {count > 0 ? (
+        <View style={styles.wrapper}>
+          <FrostedView
+            style={[
+              styles.button,
+              mapChromeBorder(theme),
+              active && styles.buttonActive,
+              active && { borderColor: theme.colors.accent },
+            ]}
+            intensity={72}
+          >
+            <FilterEmblemIcon color={theme.colors.accent} size={20} />
+          </FrostedView>
+          {active ? (
             <View
               style={[
                 styles.badge,
                 { backgroundColor: theme.colors.accent, borderColor: theme.colors.surfaceElevated },
               ]}
             >
-              <AppText variant="micro" color="onAccent">
-                {count}
+              <AppText variant="micro" color="onAccent" style={styles.badgeText}>
+                {badgeLabel}
               </AppText>
             </View>
           ) : null}
@@ -64,12 +58,21 @@ export function FilterButton({ count, onPress }: FilterButtonProps) {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+  wrapper: {
+    width: 50,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  button: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonActive: {
+    borderWidth: 1.5,
   },
   badge: {
     position: 'absolute',
@@ -82,6 +85,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 4,
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    zIndex: 2,
+  },
+  badgeText: {
+    fontWeight: '700',
   },
 });

@@ -12,12 +12,14 @@ export function useOnboardingSlides(): OnboardingSlideData[] {
     () =>
       ONBOARDING_SLIDE_CONFIG.map((slide) => ({
         id: slide.id,
-        imageUri: slide.imageUri,
+        image: slide.image,
         heading: t(slide.headingKey),
         subtitle: t(slide.subtitleKey),
         showCta: slide.showCta,
         ctaLabel: slide.ctaLabelKey ? t(slide.ctaLabelKey) : undefined,
       })),
+    // i18n.language: rebuild the slides when the user switches language.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [t, i18n.language],
   );
 }

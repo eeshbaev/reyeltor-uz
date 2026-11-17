@@ -1,0 +1,162 @@
+Key,English Source Text,Current Value (if exists),TRANSLATOR: ENTER TRANSLATION HERE,Domain,Notes
+auth.firstName,First name,[MISSING],,auth,"HIGH PRIORITY - New key, not yet in this language"
+auth.lastName,Last name,[MISSING],,auth,"HIGH PRIORITY - New key, not yet in this language"
+coins.typeReferralBonus,Referral bonus,[MISSING],,coins,"HIGH PRIORITY - New key, not yet in this language"
+coins.typeReferralFirstFavorite,Friend's first favorite,[MISSING],,coins,"HIGH PRIORITY - New key, not yet in this language"
+coins.typeReferralFirstPost,Friend's first listing,[MISSING],,coins,"HIGH PRIORITY - New key, not yet in this language"
+coins.typeReferralRegister,Referral signup bonus,[MISSING],,coins,"HIGH PRIORITY - New key, not yet in this language"
+favorites.remove,Remove,[MISSING],,favorites,"HIGH PRIORITY - New key, not yet in this language"
+profile.addPhoto,Add photo,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.changePhotoAction,Change photo,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.continue,Continue,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.identity,Profile information,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.identityHint,Your name and phone are saved to your account. You can update them anytime.,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.identitySaved,Profile information saved,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.invalidFirstName,Enter a valid first name (at least 2 characters),[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.invalidLastName,Enter a valid last name (at least 2 characters),[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.photoRemoved,Profile photo removed,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.removePhotoConfirm,Your photo will be deleted from your profile. You can add a new one anytime.,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.removePhotoTitle,Remove profile photo?,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.setupSubtitle,Add your name and phone number to continue.,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.setupTitle,Complete your profile,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.showPhonePublicly,Show phone to buyers,[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+profile.showPhonePubliclyHint,"When off, your phone stays on your account but is hidden on listings and your public profile.",[MISSING],,profile,"HIGH PRIORITY - New key, not yet in this language"
+agent.activeListings,Active listings,Active listings,,agent,Currently shows English - needs translation
+agent.avgDaysOnMarket,Avg days on market,Avg days on market,,agent,Currently shows English - needs translation
+agent.closeRate,Close rate,Close rate,,agent,Currently shows English - needs translation
+agent.currentlyActive,Currently active,Currently active,,agent,Currently shows English - needs translation
+agent.totalExpired,Total expired,Total expired,,agent,Currently shows English - needs translation
+agent.totalPosted,Total posted,Total posted,,agent,Currently shows English - needs translation
+agent.totalRented,Total rented,Total rented,,agent,Currently shows English - needs translation
+agent.totalSold,Total sold,Total sold,,agent,Currently shows English - needs translation
+agent.trustActive,Active agent,Active agent,,agent,Currently shows English - needs translation
+agent.trustEstablished,Established agent,Established agent,,agent,Currently shows English - needs translation
+agent.trustNew,New agent,New agent,,agent,Currently shows English - needs translation
+auth.backendNotConfigured,Server is not configured. Set EXPO_PUBLIC_SUPABASE_URL and ANON_KEY in your .env file.,Server is not configured. Set EXPO_PUBLIC_SUPABASE_URL and ANON_KEY in your .env file.,,auth,Currently shows English - needs translation
+auth.confirmPassword,Confirm password,Confirm password,,auth,Currently shows English - needs translation
+auth.fieldRequired,This field is required,This field is required,,auth,Currently shows English - needs translation
+auth.fullName,Full name,Full name,,auth,Currently shows English - needs translation
+auth.hasAccount,Already have an account?,Already have an account?,,auth,Currently shows English - needs translation
+auth.login,Sign in,Sign in,,auth,Currently shows English - needs translation
+auth.loginError,Invalid email or password,Invalid email or password,,auth,Currently shows English - needs translation
+auth.logout,Sign out,Sign out,,auth,Currently shows English - needs translation
+auth.nameTooShort,Name must be at least 2 characters,Name must be at least 2 characters,,auth,Currently shows English - needs translation
+auth.networkTimeout,The server did not respond in time. Check your connection and try again.,The server did not respond in time. Check your connection and try again.,,auth,Currently shows English - needs translation
+auth.noAccount,Don't have an account?,Don't have an account?,,auth,Currently shows English - needs translation
+auth.password,Password,Password,,auth,Currently shows English - needs translation
+auth.passwordTooShort,Password must be at least 8 characters,Password must be at least 8 characters,,auth,Currently shows English - needs translation
+auth.phone,Phone number,Phone number,,auth,Currently shows English - needs translation
+auth.phoneAlreadyRegistered,This phone number is already registered.,This phone number is already registered.,,auth,Currently shows English - needs translation
+auth.register,Create account,Create account,,auth,Currently shows English - needs translation
+auth.registerError,Registration failed. Please try again.,Registration failed. Please try again.,,auth,Currently shows English - needs translation
+auth.signInToPost,Sign in to post a listing,Sign in to post a listing,,auth,Currently shows English - needs translation
+coins.checkedIn,Checked in today,Checked in today,,coins,Currently shows English - needs translation
+coins.checkin,Check in,Check in,,coins,Currently shows English - needs translation
+coins.free,Free,Free,,coins,Currently shows English - needs translation
+coins.nextCheckin,Next check-in: {{day}},Next check-in: {{day}},,coins,Currently shows English - needs translation
+coins.tier1,1–9 active listings,1–9 active listings,,coins,Currently shows English - needs translation
+coins.tier2,10–19 active listings,10–19 active listings,,coins,Currently shows English - needs translation
+coins.tier3,20–29 active listings,20–29 active listings,,coins,Currently shows English - needs translation
+coins.tier4,30–49 active listings,30–49 active listings,,coins,Currently shows English - needs translation
+coins.tier5,50+ active listings,50+ active listings,,coins,Currently shows English - needs translation
+coins.tierFirst,First listing,First listing,,coins,Currently shows English - needs translation
+coins.tierTable,Posting cost tiers,Posting cost tiers,,coins,Currently shows English - needs translation
+coins.typeCheckin,Daily check-in,Daily check-in,,coins,Currently shows English - needs translation
+coins.typePost,Listing posted,Listing posted,,coins,Currently shows English - needs translation
+coins.typeReactivation,Listing reactivated,Listing reactivated,,coins,Currently shows English - needs translation
+coins.typeWelcome,Welcome bonus,Welcome bonus,,coins,Currently shows English - needs translation
+common.active,Active,Active,,common,Currently shows English - needs translation
+common.apply,Apply,Apply,,common,Currently shows English - needs translation
+common.archived,Archived,Archived,,common,Currently shows English - needs translation
+common.area,m²,m²,,common,Currently shows English - needs translation
+common.back,Back,Back,,common,Currently shows English - needs translation
+common.buy,Buy,Buy,,common,Currently shows English - needs translation
+common.call,Call,Call,,common,Currently shows English - needs translation
+common.cancel,Cancel,Cancel,,common,Currently shows English - needs translation
+common.clearAll,Clear all,Clear all,,common,Currently shows English - needs translation
+common.district,District,District,,common,Currently shows English - needs translation
+common.edit,Edit,Edit,,common,Currently shows English - needs translation
+common.error,Something went wrong,Something went wrong,,common,Currently shows English - needs translation
+common.floor,Floor,Floor,,common,Currently shows English - needs translation
+common.lastActive,Last active,Last active,,common,Currently shows English - needs translation
+common.loading,Loading...,Loading...,,common,Currently shows English - needs translation
+common.memberSince,Member since,Member since,,common,Currently shows English - needs translation
+common.noLongerAvailable,No longer available,No longer available,,common,Currently shows English - needs translation
+common.rent,Rent,Rent,,common,Currently shows English - needs translation
+common.report,Report,Report,,common,Currently shows English - needs translation
+common.retry,Retry,Retry,,common,Currently shows English - needs translation
+common.rooms,rooms,rooms,,common,Currently shows English - needs translation
+common.save,Save,Save,,common,Currently shows English - needs translation
+common.submit,Submit,Submit,,common,Currently shows English - needs translation
+filters.areaRange,Area (m²),Area (m²),,filters,Currently shows English - needs translation
+filters.district,District,District,,filters,Currently shows English - needs translation
+filters.max,Max,Max,,filters,Currently shows English - needs translation
+filters.min,Min,Min,,filters,Currently shows English - needs translation
+filters.propertyType,Property type,Property type,,filters,Currently shows English - needs translation
+filters.rooms,Rooms,Rooms,,filters,Currently shows English - needs translation
+filters.title,Filters,Filters,,filters,Currently shows English - needs translation
+growth.shareWhatsApp,WhatsApp,WhatsApp,,growth,Currently shows English - needs translation
+listing.aboveAvg,{{percent}}% above area avg,{{percent}}% above area avg,,listing,Currently shows English - needs translation
+listing.addPhotos,Add photos (up to 10),Add photos (up to 10),,listing,Currently shows English - needs translation
+listing.agent,Agent,Agent,,listing,Currently shows English - needs translation
+listing.archive,Archive,Archive,,listing,Currently shows English - needs translation
+listing.archivedExpired,Expired,Expired,,listing,Currently shows English - needs translation
+listing.archivedManual,Archived,Archived,,listing,Currently shows English - needs translation
+listing.archivedRented,Rented,Rented,,listing,Currently shows English - needs translation
+listing.archivedSold,Sold,Sold,,listing,Currently shows English - needs translation
+listing.belowAvg,{{percent}}% below area avg,{{percent}}% below area avg,,listing,Currently shows English - needs translation
+listing.changePin,Change pin location,Change pin location,,listing,Currently shows English - needs translation
+listing.daysUntilDeletion,{{days}} days until deletion,{{days}} days until deletion,,listing,Currently shows English - needs translation
+listing.daysUntilExpiry,{{days}} days until expiry,{{days}} days until expiry,,listing,Currently shows English - needs translation
+listing.description,Description,Description,,listing,Currently shows English - needs translation
+listing.earnMore,"Earn more coins by checking in on Tue, Thu, Sat","Earn more coins by checking in on Tue, Thu, Sat",,listing,Currently shows English - needs translation
+listing.freePost,This listing is free,This listing is free,,listing,Currently shows English - needs translation
+listing.markRented,Mark as Rented,Mark as Rented,,listing,Currently shows English - needs translation
+listing.markSold,Mark as Sold,Mark as Sold,,listing,Currently shows English - needs translation
+listing.notEnoughCoins,Not enough coins,Not enough coins,,listing,Currently shows English - needs translation
+listing.optional,optional,optional,,listing,Currently shows English - needs translation
+listing.photos,Photos,Photos,,listing,Currently shows English - needs translation
+listing.placePin,Place pin on map,Place pin on map,,listing,Currently shows English - needs translation
+listing.postCost,Posting this listing will cost {{cost}} coins,Posting this listing will cost {{cost}} coins,,listing,Currently shows English - needs translation
+listing.postTitle,Post a listing,Post a listing,,listing,Currently shows English - needs translation
+listing.price,Price (UZS),Price (UZS),,listing,Currently shows English - needs translation
+listing.priceHistory,Price history,Price history,,listing,Currently shows English - needs translation
+listing.reactivate,Reactivate,Reactivate,,listing,Currently shows English - needs translation
+listing.reactivateCost,Reactivate ({{cost}} coins),Reactivate ({{cost}} coins),,listing,Currently shows English - needs translation
+listing.totalFloors,Total floors,Total floors,,listing,Currently shows English - needs translation
+listing.views,{{count}} views,{{count}} views,,listing,Currently shows English - needs translation
+map.city,City,City,,map,Currently shows English - needs translation
+map.filterTooltip,"Filter listings by price, rooms, and district.","Filter listings by price, rooms, and district.",,map,Currently shows English - needs translation
+map.filters,Filters,Filters,,map,Currently shows English - needs translation
+map.noListingsHere,No listings here yet. Try expanding your area or clearing filters.,No listings here yet. Try expanding your area or clearing filters.,,map,Currently shows English - needs translation
+map.noResultsArea,No listings found in this area.,No listings found in this area.,,map,Currently shows English - needs translation
+map.noResultsBoth,No listings in this area match your filters.,No listings in this area match your filters.,,map,Currently shows English - needs translation
+map.noResultsFilters,No listings match your filters.,No listings match your filters.,,map,Currently shows English - needs translation
+map.region,Region,Region,,map,Currently shows English - needs translation
+map.resetArea,Reset area search,Reset area search,,map,Currently shows English - needs translation
+map.resetFilters,Reset filters,Reset filters,,map,Currently shows English - needs translation
+map.seeAllTashkent,See all of Tashkent,See all of Tashkent,,map,Currently shows English - needs translation
+onboarding.commercial.heading,"Office, retail, or warehouse — it's all here.","Office, retail, or warehouse — it's all here.",,onboarding,Currently shows English - needs translation
+onboarding.commercial.subtitle,"Commercial spaces across Tashkent and the region, with real market prices.","Commercial spaces across Tashkent and the region, with real market prices.",,onboarding,Currently shows English - needs translation
+onboarding.residential.heading,Find your home in Tashkent.,Find your home in Tashkent.,,onboarding,Currently shows English - needs translation
+onboarding.residential.subtitle,Browse hundreds of verified apartments and houses on an interactive map.,Browse hundreds of verified apartments and houses on an interactive map.,,onboarding,Currently shows English - needs translation
+onboarding.trust.cta,Explore the map →,Explore the map →,,onboarding,Currently shows English - needs translation
+onboarding.trust.heading,Real listings. Real agents. Real prices.,Real listings. Real agents. Real prices.,,onboarding,Currently shows English - needs translation
+onboarding.trust.subtitle,"Every listing shows agent stats, price history, and neighborhood details.","Every listing shows agent stats, price history, and neighborhood details.",,onboarding,Currently shows English - needs translation
+onboarding.welcome.heading,Welcome to Reyeltor-uz!,Welcome to Reyeltor-uz!,,onboarding,Currently shows English - needs translation
+onboarding.welcome.subtitle,The easiest way to find homes and commercial property in Uzbekistan — start on the Tashkent map.,The easiest way to find homes and commercial property in Uzbekistan — start on the Tashkent map.,,onboarding,Currently shows English - needs translation
+profile.bioCharCount,{{count}} / {{max}},{{count}} / {{max}},,profile,Currently shows English - needs translation
+profile.guestSubtitle,Sign in to post listings and track your stats,Sign in to post listings and track your stats,,profile,Currently shows English - needs translation
+profile.guestTitle,Your profile,Your profile,,profile,Currently shows English - needs translation
+tabs.favorites,Favorites,Favorites,,tabs,Currently shows English - needs translation
+tabs.list,List,List,,tabs,Currently shows English - needs translation
+tabs.map,Map,Map,,tabs,Currently shows English - needs translation
+tabs.post,Post,Post,,tabs,Currently shows English - needs translation
+tabs.profile,Profile,Profile,,tabs,Currently shows English - needs translation
+tools.currencyHistory.chartTitle,USD/UZS — {{period}},USD/UZS — {{period}},,tools,Currently shows English - needs translation
+welcome.coinsLabel,free coins to get started,free coins to get started,,welcome,Currently shows English - needs translation
+welcome.exploreCta,Explore Tashkent →,Explore Tashkent →,,welcome,Currently shows English - needs translation
+welcome.greeting,"Welcome, {{name}}.","Welcome, {{name}}.",,welcome,Currently shows English - needs translation
+welcome.start,Start exploring,Start exploring,,welcome,Currently shows English - needs translation
+welcome.subtitle,You have received 15 free coins to get started.,You have received 15 free coins to get started.,,welcome,Currently shows English - needs translation
+welcome.title,Welcome to Reyeltor-uz!,Welcome to Reyeltor-uz!,,welcome,Currently shows English - needs translation

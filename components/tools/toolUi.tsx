@@ -1,3 +1,4 @@
+import React from "react";
 import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { spacing } from '@/lib/design/spacing';
@@ -9,7 +10,6 @@ import {
   toolMetricCardStyle,
   toolPillStyle,
   toolReadOnlyStyle,
-  toolSoftElevation,
 } from '@/lib/design/toolChrome';
 import { useTheme } from '@/lib/theme';
 
@@ -215,7 +215,7 @@ export function ToolReadOnlyBox({ children }: { children: React.ReactNode }) {
   return <View style={toolReadOnlyStyle(theme)}>{children}</View>;
 }
 
-function toolSoftBanner(theme: ReturnType<typeof useTheme>): ViewStyle {
+function toolSoftBanner(_theme: ReturnType<typeof useTheme>): ViewStyle {
   return {
     borderRadius: 16,
     borderWidth: 1,

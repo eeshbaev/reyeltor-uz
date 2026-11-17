@@ -1,14 +1,26 @@
 import type { StyleSpecification } from 'maplibre-gl';
-import { isMaptilerConfigured, maptilerKey } from '@/lib/supabase';
+import { getDevProxiedTileUrl, shouldUseDevTileProxy } from '@/lib/map/devTileProxy';
+import { appendCartoKey, isMaptilerConfigured, maptilerKey } from '@/lib/supabase';
 
 const CARTO_SUBDOMAINS = ['a', 'b', 'c', 'd'] as const;
 
+function appendRetryParam(url: string, retry: number): string {
+  if (retry <= 0) return url;
+  return `${url}${url.includes('?') ? '&' : '?'}retry=${retry}`;
+}
+
 function cartoVoyagerTileUrls(retina = false): string[] {
   const suffix = retina ? '@2x' : '';
-  return CARTO_SUBDOMAINS.map(
-    (subdomain) =>
-      `https://${subdomain}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}${suffix}.png`,
-  );
+  // Official CARTO endpoint (also mirrored on subdomains for CDN load balancing).
+  const templates = [
+    appendCartoKey(`https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}${suffix}.png`),
+    ...CARTO_SUBDOMAINS.map((subdomain) =>
+      appendCartoKey(
+        `https://${subdomain}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}${suffix}.png`,
+      ),
+    ),
+  ];
+  return templates;
 }
 
 /** Rich raster basemap with street names, POIs, parks, and building footprints. */
@@ -44,17 +56,51 @@ export function usesVectorWebMap(): boolean {
   return isMaptilerConfigured();
 }
 
-export function getRasterTileTemplates(retina = false): string[] {
-  if (isMaptilerConfigured()) {
-    return [`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}${retina ? '@2x' : ''}.png?key=${maptilerKey}`];
-  }
+/** 256px tiles — must match TILE_SIZE in lib/mapProjection.ts. */
+export function getCartoRasterTileTemplates(retina = false): string[] {
   return cartoVoyagerTileUrls(retina);
 }
 
-export function getRasterTileUrl(z: number, x: number, y: number, retina = false): string {
-  const templates = getRasterTileTemplates(retina);
+export function getMaptilerRasterTileTemplates(retina = false): string[] {
+  const scale = retina ? '@2x' : '';
+  return [
+    `https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}${scale}.png?key=${maptilerKey}`,
+  ];
+}
+
+export function getRasterTileTemplates(retina = false, preferCarto = false): string[] {
+  if (!preferCarto && isMaptilerConfigured()) {
+    return getMaptilerRasterTileTemplates(retina);
+  }
+  return getCartoRasterTileTemplates(retina);
+}
+
+export function getRasterTileUrl(
+  z: number,
+  x: number,
+  y: number,
+  retina = false,
+  preferCarto = false,
+  useDevProxy = false,
+  retry = 0,
+): string {
+  const preferCartoFinal = preferCarto || !isMaptilerConfigured();
+  const templates = getRasterTileTemplates(retina, preferCartoFinal);
   const template = templates[(x + y) % templates.length];
-  return template.replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y));
+  const direct = appendRetryParam(
+    template.replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y)),
+    retry,
+  );
+
+  // In dev, load tiles through Metro proxy (works reliably on Android emulators/devices).
+  if (useDevProxy && shouldUseDevTileProxy()) {
+    const proxied = getDevProxiedTileUrl(z, x, y, preferCartoFinal);
+    if (proxied) {
+      return appendRetryParam(proxied, retry);
+    }
+  }
+
+  return direct;
 }
 
 export function getMapAttribution(): string {

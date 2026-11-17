@@ -1,7 +1,6 @@
-import { Animated, Pressable, StyleSheet } from 'react-native';
+import { Animated, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native-gesture-handler';
 import { AppText } from '@/components/ui/AppText';
-import { FrostedView } from '@/components/ui/FrostedView';
-import { spacing } from '@/lib/design/spacing';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
 
@@ -22,7 +21,7 @@ export function ClusterBubble({ count, onPress, size, color, textColor }: Cluste
   const fontSize = count >= 100 ? 11 : count >= 10 ? 13 : 15;
 
   return (
-    <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onPress={handlePress} hitSlop={8}>
+    <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onPress={handlePress} hitSlop={12}>
       <Animated.View
         style={[
           styles.bubble,
@@ -59,11 +58,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2.5,
-    borderColor: '#ffffff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2,
-    elevation: 3,
+    borderColor: 'rgba(255,255,255,0.95)',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 10,
   },
 });

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Polygon } from 'react-native-svg';
+import type { MapCoverage } from '@/lib/constants';
 import { CITY_BOUNDARY_STYLE, REGION_BOUNDARY_STYLE } from '@/lib/map/boundaryConstants';
 import { getDistrictCollection } from '@/lib/map/districtBoundaries';
 import type { BoundaryTier } from '@/lib/map/districtBoundaries';
-import type { MapCoverage } from '@/lib/constants';
 
 function tierStyle(tier: BoundaryTier) {
   return tier === 'region' ? REGION_BOUNDARY_STYLE : CITY_BOUNDARY_STYLE;

@@ -67,6 +67,10 @@ export function Button({
             (disabled || loading) && styles.disabled,
           ]}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          accessibilityLabel={label}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: disabled || loading }}
+          accessibilityHint={disabledReason}
         >
           {loading ? (
             <ActivityIndicator color={variant === 'primary' ? theme.colors.onAccent : theme.colors.accent} />

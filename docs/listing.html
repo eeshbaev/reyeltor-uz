@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Reyeltor-uz</title>
+  <meta name="description" content="Reyeltor-uz — Toshkent ko'chmas mulk xaritasi" />
+  <meta property="og:title" content="Reyeltor-uz" />
+  <meta property="og:description" content="Ko'chmas mulk e'loni · Объявление о недвижимости · Property listing" />
+  <meta name="theme-color" content="#2563EB" />
+  <script src="listing-config.js"></script>
+  <style>
+    :root { --ink:#1A1A1A; --muted:#6B6B6B; --line:rgba(0,0,0,.08); --accent:#2563EB; --accent-soft:#EFF6FF; --bg:#F5F5F5; --card:#FFFFFF; }
+    @media (prefers-color-scheme: dark) { :root { --ink:#F5F5F5; --muted:#A3A3A3; --line:rgba(255,255,255,.1); --accent:#3B82F6; --accent-soft:#1E3A5F; --bg:#0A0A0A; --card:#1A1A1A; } }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background:var(--bg); color:var(--ink); }
+    .wrap { max-width: 640px; margin: 0 auto; padding-bottom: 96px; }
+    header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; }
+    .brand { font-weight:800; letter-spacing:.4px; color:var(--accent); text-decoration:none; }
+    .gallery { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:2px; background:#000; }
+    .gallery img { flex:0 0 100%; width:100%; aspect-ratio: 4/3; object-fit:cover; scroll-snap-align:start; }
+    .count { position:relative; }
+    .count span { position:absolute; right:12px; bottom:12px; background:rgba(0,0,0,.6); color:#fff; font-size:12px; padding:3px 8px; border-radius:999px; }
+    .card { background:var(--card); margin:12px 16px; border-radius:16px; padding:16px; border:1px solid var(--line); }
+    .price { font-size:28px; font-weight:700; margin:0; }
+    .usd { color:var(--muted); font-size:14px; margin-top:2px; }
+    .fresh { margin-top:10px; font-size:13px; font-weight:600; color:#16A34A; }
+    .fresh.stale { color:#D97706; }
+    .pill { display:inline-block; background:var(--accent-soft); color:var(--accent); font-weight:600; font-size:13px; padding:4px 10px; border-radius:999px; margin:10px 6px 0 0; }
+    .facts { display:grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap:10px; margin-top:14px; }
+    .fact { background:var(--bg); border-radius:12px; padding:10px; }
+    .fact b { display:block; font-size:16px; }
+    .fact small { color:var(--muted); }
+    h2 { font-size:17px; margin:0 0 8px; }
+    p.desc { white-space:pre-wrap; line-height:1.5; margin:0; color:var(--muted); }
+    .agent { display:flex; align-items:center; gap:12px; }
+    .avatar { width:44px; height:44px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; }
+    .actions { position:fixed; left:0; right:0; bottom:0; display:flex; gap:10px; padding:12px 16px calc(12px + env(safe-area-inset-bottom)); background:var(--card); border-top:1px solid var(--line); max-width:640px; margin:0 auto; }
+    .btn { flex:1; text-align:center; padding:14px; border-radius:12px; font-weight:700; text-decoration:none; border:1px solid var(--accent); color:var(--accent); background:transparent; font-size:15px; cursor:pointer; }
+    .btn.primary { background:var(--accent); color:#fff; }
+    a.map { color:var(--accent); font-weight:600; text-decoration:none; }
+    .state { text-align:center; padding:64px 24px; color:var(--muted); }
+    .note { color:var(--muted); font-size:12px; text-align:center; margin:16px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header><a class="brand" href="#" id="brand">REYELTOR-UZ</a><span id="langs"></span></header>
+    <main id="root"><div class="state" id="loading">…</div></main>
+  </div>
+  <div class="actions" id="actions" hidden></div>
+
+  <script>
+  (function () {
+    var cfg = window.REYELTOR_CONFIG || {};
+    var T = {
+      uz: { confToday:"Mavjud · bugun tasdiqlangan", confDays:"{n} kun oldin tasdiqlangan", confStale:"Mavjudligi yaqinda tasdiqlanmagan", rent:"Ijaraga", buy:"Sotiladi", lease:"Lizingga (tijorat)", rooms:"xona", area:"maydon", floor:"qavat", district:"tuman", built:"qurilgan yili", desc:"Tavsif", agent:"E'lon beruvchi", call:"Qo'ng'iroq", openApp:"Ilovada ochish", map:"Xaritada ko'rish", notFound:"E'lon topilmadi yoki endi faol emas.", error:"Yuklab bo'lmadi. Qayta urinib ko'ring.", approx:"taxminan", perMonth:"/oy", note:"Narx va mavjudlikni e'lon beruvchidan tasdiqlang.", photos:"rasm" },
+      ru: { confToday:"Доступно · подтверждено сегодня", confDays:"Подтверждено {n} дн. назад", confStale:"Наличие давно не подтверждалось", rent:"Аренда", buy:"Продажа", lease:"Лизинг (коммерция)", rooms:"комн.", area:"площадь", floor:"этаж", district:"район", built:"год постройки", desc:"Описание", agent:"Автор объявления", call:"Позвонить", openApp:"Открыть в приложении", map:"Показать на карте", notFound:"Объявление не найдено или больше не активно.", error:"Не удалось загрузить. Попробуйте ещё раз.", approx:"примерно", perMonth:"/мес", note:"Уточняйте цену и наличие у автора объявления.", photos:"фото" },
+      en: { confToday:"Available · confirmed today", confDays:"Confirmed {n} days ago", confStale:"Availability not confirmed recently", rent:"For rent", buy:"For sale", lease:"For lease (commercial)", rooms:"rooms", area:"area", floor:"floor", district:"district", built:"year built", desc:"Description", agent:"Listed by", call:"Call", openApp:"Open in app", map:"View on map", notFound:"This listing was not found or is no longer active.", error:"Could not load. Please try again.", approx:"approx.", perMonth:"/mo", note:"Confirm price and availability with the lister.", photos:"photos" },
+      zh: { confToday:"可用 · 今日已确认", confDays:"{n} 天前确认", confStale:"近期未确认是否可用", rent:"出租", buy:"出售", lease:"租赁（商业）", rooms:"室", area:"面积", floor:"楼层", district:"区", built:"建成年份", desc:"描述", agent:"发布者", call:"致电", openApp:"在应用中打开", map:"在地图上查看", notFound:"未找到该房源或已下架。", error:"加载失败，请重试。", approx:"约", perMonth:"/月", note:"请向发布者确认价格和可用性。", photos:"张照片" },
+      tr: { confToday:"Müsait · bugün onaylandı", confDays:"{n} gün önce onaylandı", confStale:"Müsaitlik yakın zamanda onaylanmadı", rent:"Kiralık", buy:"Satılık", lease:"Kiralık (ticari)", rooms:"oda", area:"alan", floor:"kat", district:"ilçe", built:"yapım yılı", desc:"Açıklama", agent:"İlan sahibi", call:"Ara", openApp:"Uygulamada aç", map:"Haritada gör", notFound:"İlan bulunamadı veya artık aktif değil.", error:"Yüklenemedi. Lütfen tekrar deneyin.", approx:"yaklaşık", perMonth:"/ay", note:"Fiyat ve uygunluğu ilan sahibiyle doğrulayın.", photos:"fotoğraf" }
+    };
+    var params = new URLSearchParams(location.search);
+    var id = (params.get('id') || '').trim();
+    var lang = (params.get('lang') || (navigator.language || 'uz')).slice(0, 2).toLowerCase();
+    if (!T[lang]) lang = 'uz';
+    var t = T[lang];
+    document.documentElement.lang = lang;
+
+    var root = document.getElementById('root');
+    var actions = document.getElementById('actions');
+    var appLink = (cfg.appScheme || 'reyeltor') + '://listing/' + encodeURIComponent(id);
+    document.getElementById('brand').href = cfg.playStoreUrl || '#';
+
+    function el(tag, attrs, children) {
+      var node = document.createElement(tag);
+      Object.keys(attrs || {}).forEach(function (k) {
+        if (k === 'text') node.textContent = attrs[k]; else node.setAttribute(k, attrs[k]);
+      });
+      (children || []).forEach(function (c) { if (c) node.appendChild(c); });
+      return node;
+    }
+    function fmt(n) { return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+    function headers() { return { apikey: cfg.supabaseAnonKey, Authorization: 'Bearer ' + cfg.supabaseAnonKey, 'Content-Type': 'application/json' }; }
+    function photoUrl(path) {
+      if (/^https?:\/\//.test(path)) return path;
+      return cfg.supabaseUrl + '/storage/v1/object/public/' + cfg.storageBucket + '/' + path.split('/').map(encodeURIComponent).join('/');
+    }
+    function viewerKey() {
+      try {
+        var k = localStorage.getItem('rey_viewer');
+        if (!k) { k = 'web-' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('rey_viewer', k); }
+        return k;
+      } catch (e) { return 'web-' + Math.random().toString(36).slice(2, 12); }
+    }
+    function record(event) {
+      if (!id) return;
+      fetch(cfg.supabaseUrl + '/rest/v1/rpc/record_listing_event', {
+        method: 'POST', headers: headers(), keepalive: true,
+        body: JSON.stringify({ p_listing_id: id, p_event: event, p_viewer_key: viewerKey() })
+      }).catch(function () {});
+    }
+    function state(text) { root.innerHTML = ''; root.appendChild(el('div', { class: 'state', text: text })); }
+
+    if (!/^[0-9a-f-]{36}$/i.test(id) || !cfg.supabaseUrl) { state(t.notFound); return; }
+
+    var select = 'id,type,category,property_type,price,rooms,area_m2,floor,total_floors,district,lat,lng,description,year_built,status,availability_confirmed_at,' +
+      'user_id,listing_photos(storage_path,order_index)';
+    Promise.all([
+      fetch(cfg.supabaseUrl + '/rest/v1/listings?id=eq.' + id + '&status=eq.active&select=' + encodeURIComponent(select), { headers: headers() }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+      fetch(cfg.supabaseUrl + '/rest/v1/fx_rates?currency=eq.USD&select=uzs_per_unit', { headers: headers() }).then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; })
+    ]).then(function (res) {
+      var listing = res[0][0];
+      var rate = (res[1][0] && Number(res[1][0].uzs_per_unit)) || 12017;
+      if (!listing) { state(t.notFound); return; }
+      // Seller details: public_profiles only exposes the phone if the seller chose to show it.
+      return fetch(cfg.supabaseUrl + '/rest/v1/public_profiles?id=eq.' + listing.user_id + '&select=full_name,phone,phone_visible', { headers: headers() })
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .catch(function () { return []; })
+        .then(function (profiles) {
+          listing.users = profiles[0] || null;
+          render(listing, rate);
+          record('web_view');
+        });
+    }).catch(function () { state(t.error); });
+
+    function freshness(confirmedAt) {
+      if (!confirmedAt) return null;
+      var days = Math.max(0, Math.floor((Date.now() - new Date(confirmedAt).getTime()) / 86400000));
+      var stale = days > 30;
+      var text = stale ? t.confStale : days === 0 ? t.confToday : t.confDays.replace('{n}', days);
+      return el('div', { class: 'fresh' + (stale ? ' stale' : ''), text: (stale ? '⚠ ' : '✓ ') + text });
+    }
+    function render(l, rate) {
+      root.innerHTML = '';
+      var typeLabel = t[l.type] || l.type;
+      document.title = typeLabel + ' · ' + l.district + ' · Reyeltor-uz';
+
+      var photos = (l.listing_photos || []).slice().sort(function (a, b) { return a.order_index - b.order_index; });
+      if (photos.length) {
+        var gallery = el('div', { class: 'gallery' });
+        photos.forEach(function (p, i) { gallery.appendChild(el('img', { src: photoUrl(p.storage_path), alt: typeLabel + ' ' + (i + 1), loading: i ? 'lazy' : 'eager' })); });
+        root.appendChild(el('div', { class: 'count' }, [gallery, el('span', { text: photos.length + ' ' + t.photos })]));
+      }
+
+      var perMonth = l.type === 'buy' ? '' : t.perMonth;
+      var facts = el('div', { class: 'facts' });
+      function fact(value, label) { facts.appendChild(el('div', { class: 'fact' }, [el('b', { text: String(value) }), el('small', { text: label })])); }
+      if (l.rooms > 0) fact(l.rooms, t.rooms);
+      fact(l.area_m2 + ' m²', t.area);
+      if (l.floor != null) fact(l.floor + (l.total_floors ? '/' + l.total_floors : ''), t.floor);
+      fact(l.district, t.district);
+      if (l.year_built) fact(l.year_built, t.built);
+
+      root.appendChild(el('section', { class: 'card' }, [
+        el('p', { class: 'price', text: fmt(l.price) + " so'm" + perMonth }),
+        el('div', { class: 'usd', text: t.approx + ' $' + fmt(l.price / rate) + perMonth }),
+        el('span', { class: 'pill', text: typeLabel }),
+        freshness(l.availability_confirmed_at),
+        facts,
+        el('p', {}, [el('a', { class: 'map', target: '_blank', rel: 'noopener', href: 'https://www.openstreetmap.org/?mlat=' + l.lat + '&mlon=' + l.lng + '#map=17/' + l.lat + '/' + l.lng, text: '📍 ' + t.map })])
+      ]));
+
+      if (l.description) {
+        root.appendChild(el('section', { class: 'card' }, [el('h2', { text: t.desc }), el('p', { class: 'desc', text: l.description })]));
+      }
+
+      var agent = l.users || {};
+      var phone = agent.phone_visible === false ? null : (agent.phone || '').trim() || null;
+      if (agent.full_name) {
+        var initials = agent.full_name.split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
+        root.appendChild(el('section', { class: 'card' }, [
+          el('h2', { text: t.agent }),
+          el('div', { class: 'agent' }, [el('div', { class: 'avatar', text: initials }), el('div', {}, [el('b', { text: agent.full_name }), phone ? el('div', { class: 'usd', text: phone }) : null])])
+        ]));
+      }
+      root.appendChild(el('p', { class: 'note', text: t.note }));
+
+      actions.innerHTML = '';
+      if (phone) {
+        var call = el('a', { class: 'btn primary', href: 'tel:' + phone.replace(/\s/g, ''), text: t.call });
+        call.addEventListener('click', function () { record('contact_call'); });
+        actions.appendChild(call);
+      }
+      var open = el('a', { class: 'btn' + (phone ? '' : ' primary'), href: appLink, text: t.openApp });
+      open.addEventListener('click', function () {
+        // If the app is not installed, fall back to the Play Store.
+        setTimeout(function () { if (!document.hidden && cfg.playStoreUrl) location.href = cfg.playStoreUrl; }, 1500);
+      });
+      actions.appendChild(open);
+      actions.hidden = false;
+    }
+  })();
+  </script>
+</body>
+</html>

@@ -20,7 +20,17 @@ export function isValidFullName(name: string): boolean {
   return name.trim().length >= 2;
 }
 
-export type RegistrationFieldKey = 'fullName' | 'phone' | 'email' | 'password' | 'confirmPassword';
+export function isValidNamePart(name: string): boolean {
+  return name.trim().length >= 2;
+}
+
+export type RegistrationFieldKey =
+  | 'firstName'
+  | 'lastName'
+  | 'phone'
+  | 'email'
+  | 'password'
+  | 'confirmPassword';
 export type RegistrationFieldErrorKey =
   | 'fieldRequired'
   | 'nameTooShort'
@@ -32,7 +42,8 @@ export type RegistrationFieldErrorKey =
 export type RegistrationFieldErrors = Partial<Record<RegistrationFieldKey, RegistrationFieldErrorKey>>;
 
 export interface RegistrationFormInput {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   email: string;
   password: string;
@@ -42,10 +53,16 @@ export interface RegistrationFormInput {
 export function validateRegistrationFields(input: RegistrationFormInput): RegistrationFieldErrors {
   const errors: RegistrationFieldErrors = {};
 
-  if (!input.fullName.trim()) {
-    errors.fullName = 'fieldRequired';
-  } else if (!isValidFullName(input.fullName)) {
-    errors.fullName = 'nameTooShort';
+  if (!input.firstName.trim()) {
+    errors.firstName = 'fieldRequired';
+  } else if (!isValidNamePart(input.firstName)) {
+    errors.firstName = 'nameTooShort';
+  }
+
+  if (!input.lastName.trim()) {
+    errors.lastName = 'fieldRequired';
+  } else if (!isValidNamePart(input.lastName)) {
+    errors.lastName = 'nameTooShort';
   }
 
   if (!input.phone.trim() || input.phone === '+998') {
@@ -84,13 +101,13 @@ export function isRegistrationInputValid(input: RegistrationFormInput): boolean 
 }
 
 export function isRegisterUserInputValid(
-  input: Pick<RegistrationFormInput, 'fullName' | 'phone' | 'email' | 'password'>,
+  input: Pick<RegistrationFormInput, 'firstName' | 'lastName' | 'phone' | 'email' | 'password'>,
 ): boolean {
   const errors = validateRegistrationFields({
     ...input,
     confirmPassword: input.password,
   });
-  return !errors.fullName && !errors.phone && !errors.email && !errors.password;
+  return !errors.firstName && !errors.lastName && !errors.phone && !errors.email && !errors.password;
 }
 
 export function formatPhoneInput(value: string): string {

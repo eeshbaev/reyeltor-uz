@@ -3,7 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { Platform, Share } from 'react-native';
-import { APP_HOME_URL, APP_NAME } from '@/lib/constants';
+import { APP_NAME, PLAY_STORE_URL } from '@/lib/constants';
 
 export interface ToolReportShellInput {
   title: string;
@@ -149,15 +149,15 @@ export async function buildToolReportHtml(input: ToolReportShellInput): Promise<
   <p class="meta">${escapeHtml(input.generatedLabel)}: ${escapeHtml(generatedAt)}</p>
   ${input.bodyHtml}
   <div class="footer">
-    <strong>${escapeHtml(APP_NAME)}</strong><br />
-    ${escapeHtml(input.footer)}<br />
-    <a href="${APP_HOME_URL}">${APP_HOME_URL}</a>
+    <strong>Hisoblash: Reyeltor</strong><br />
+    Google Play'dan yuklab oling:<br />
+    <a href="${PLAY_STORE_URL}">${PLAY_STORE_URL}</a>
   </div>
 </body>
 </html>`;
 }
 
-async function createPdfFromHtml(html: string): Promise<string> {
+export async function createPdfFromHtml(html: string): Promise<string> {
   const { uri } = await Print.printToFileAsync({ html, base64: false });
   return uri;
 }
@@ -180,9 +180,9 @@ export async function saveToolReportPdf(html: string, dialogTitle: string): Prom
 
 export async function shareToolReport(html: string, title: string, message: string): Promise<void> {
   if (Platform.OS === 'web') {
-    const body = `${message}\n\n${APP_HOME_URL}`;
+    const body = `${message}\n\n${PLAY_STORE_URL}`;
     if (typeof navigator !== 'undefined' && navigator.share) {
-      await navigator.share({ title, text: body, url: APP_HOME_URL });
+      await navigator.share({ title, text: body, url: PLAY_STORE_URL });
       return;
     }
     await Share.share({ title, message: body });
@@ -190,7 +190,7 @@ export async function shareToolReport(html: string, title: string, message: stri
   }
 
   const uri = await createPdfFromHtml(html);
-  const body = `${message}\n\n${APP_HOME_URL}`;
+  const body = `${message}\n\n${PLAY_STORE_URL}`;
 
   if (await Sharing.isAvailableAsync()) {
     await Sharing.shareAsync(uri, {

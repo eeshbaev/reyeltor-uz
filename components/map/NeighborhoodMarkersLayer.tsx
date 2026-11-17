@@ -1,21 +1,30 @@
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
-import type { NearbyPoi } from '@/lib/neighborhood/amenities';
 import {
   POI_CATEGORY_COLOR,
   POI_CATEGORY_ICON,
+  POI_CONTEXT_MARKER_SIZE,
   POI_MARKER_SIZE,
 } from '@/components/map/neighborhoodMarkerStyles';
+import type { NeighborhoodPoi, NearbyPoi } from '@/lib/neighborhood/amenities';
 
 interface NeighborhoodMarkersLayerProps {
-  pois: NearbyPoi[];
+  pois: Array<NeighborhoodPoi | NearbyPoi>;
   getScreenPosition: (lng: number, lat: number) => { x: number; y: number } | null;
+  /** Subtle dots under listing bubbles — no labels, smaller size. */
+  variant?: 'context' | 'default';
 }
 
-export function NeighborhoodMarkersLayer({ pois, getScreenPosition }: NeighborhoodMarkersLayerProps) {
+export function NeighborhoodMarkersLayer({
+  pois,
+  getScreenPosition,
+  variant = 'default',
+}: NeighborhoodMarkersLayerProps) {
   if (pois.length === 0) return null;
 
-  const half = POI_MARKER_SIZE / 2;
+  const isContext = variant === 'context';
+  const size = isContext ? POI_CONTEXT_MARKER_SIZE : POI_MARKER_SIZE;
+  const half = size / 2;
 
   return (
     <>
@@ -24,20 +33,34 @@ export function NeighborhoodMarkersLayer({ pois, getScreenPosition }: Neighborho
         if (!screen) return null;
         const color = POI_CATEGORY_COLOR[poi.category];
         const icon = POI_CATEGORY_ICON[poi.category] as keyof typeof Ionicons.glyphMap;
+
         return (
           <View
             key={`${poi.id}-${index}`}
             style={[
-              styles.marker,
-              {
-                left: screen.x - half,
-                top: screen.y - half,
-                backgroundColor: color,
-              },
+              styles.anchor,
+              isContext ? styles.anchorContext : styles.anchorDefault,
+              { left: screen.x, top: screen.y },
             ]}
             pointerEvents="none"
           >
-            <Ionicons name={icon} size={13} color="#ffffff" />
+            <View
+              style={[
+                styles.marker,
+                {
+                  width: size,
+                  height: size,
+                  borderRadius: size / 2,
+                  backgroundColor: color,
+                  marginLeft: -half,
+                  marginTop: -half,
+                  opacity: isContext ? 0.82 : 1,
+                  borderWidth: isContext ? 1.5 : 2,
+                },
+              ]}
+            >
+              <Ionicons name={icon} size={isContext ? 10 : 14} color="#ffffff" />
+            </View>
           </View>
         );
       })}
@@ -46,20 +69,24 @@ export function NeighborhoodMarkersLayer({ pois, getScreenPosition }: Neighborho
 }
 
 const styles = StyleSheet.create({
-  marker: {
+  anchor: {
     position: 'absolute',
-    width: POI_MARKER_SIZE,
-    height: POI_MARKER_SIZE,
-    borderRadius: POI_MARKER_SIZE / 2,
-    borderWidth: 2,
+    alignItems: 'center',
+  },
+  anchorContext: {
+    zIndex: 1,
+  },
+  anchorDefault: {
+    zIndex: 4,
+  },
+  marker: {
     borderColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 3,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 3,
+    shadowOpacity: 0.15,
+    shadowRadius: 1,
+    elevation: 1,
   },
 });

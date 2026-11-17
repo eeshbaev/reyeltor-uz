@@ -1,13 +1,13 @@
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Svg, { Polygon, Polyline } from 'react-native-svg';
+import type { MapViewRef } from './types';
 import {
   isClosedPath,
   simplifyPath,
   type MapAreaPolygon,
 } from '@/lib/map/polygon';
-import type { MapViewRef } from './types';
 
 interface PenDrawOverlayProps {
   mapRef: React.RefObject<MapViewRef | null>;
@@ -15,7 +15,7 @@ interface PenDrawOverlayProps {
   onCancel: () => void;
 }
 
-export function PenDrawOverlay({ mapRef, onComplete, onCancel }: PenDrawOverlayProps) {
+export function PenDrawOverlay({ mapRef, onComplete, onCancel: _onCancel }: PenDrawOverlayProps) {
   const points = useRef<{ lat: number; lng: number }[]>([]);
   const screenPoints = useRef<{ x: number; y: number }[]>([]);
   const [svgPoints, setSvgPoints] = useState<{ x: number; y: number }[]>([]);
@@ -39,7 +39,6 @@ export function PenDrawOverlay({ mapRef, onComplete, onCancel }: PenDrawOverlayP
     .onEnd(() => {
       if (points.current.length < 10) {
         setSvgPoints([]);
-        onCancel();
         return;
       }
       if (isClosedPath(points.current)) {
@@ -48,7 +47,6 @@ export function PenDrawOverlay({ mapRef, onComplete, onCancel }: PenDrawOverlayP
         onComplete({ points: simplified });
       } else {
         setSvgPoints([]);
-        onCancel();
       }
     })
     .runOnJS(true);

@@ -7,7 +7,8 @@ export class AuthRequestTimeoutError extends Error {
   }
 }
 
-export async function withAuthTimeout<T>(promise: Promise<T>): Promise<T> {
+/** Accepts any thenable (Supabase query builders are PromiseLike, not Promise). */
+export async function withAuthTimeout<T>(promise: PromiseLike<T>): Promise<T> {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([

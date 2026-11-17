@@ -1,11 +1,10 @@
-import { Image } from 'expo-image';
 import { useCallback, useEffect, useRef } from 'react';
+import { Image } from 'expo-image';
 import { Animated, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
-import { JumpingEmblem } from '@/components/brand/JumpingEmblem';
+import { BrandWordmark } from '@/components/brand/BrandWordmark';
 import { AppText } from '@/components/ui/AppText';
-import { APP_NAME } from '@/lib/constants';
 import { spacing } from '@/lib/design/spacing';
 import type { OnboardingSlideData } from '@/lib/onboarding/slides';
 
@@ -59,7 +58,7 @@ export function OnboardingSlide({ slide, active, onComplete }: OnboardingSlidePr
   return (
     <View style={[styles.slide, { width, height }]}>
       <Image
-        source={{ uri: slide.imageUri }}
+        source={slide.image}
         style={StyleSheet.absoluteFill}
         contentFit="cover"
         transition={200}
@@ -77,31 +76,22 @@ export function OnboardingSlide({ slide, active, onComplete }: OnboardingSlidePr
         <Rect width={width} height={height} fill={`url(#grad-${slide.id})`} />
       </Svg>
 
-      {slide.id === 'welcome' ? (
-        <Animated.View
-          style={[
-            styles.hero,
-            {
-              top: insets.top + 88,
-              opacity: contentOpacity,
-              transform: [{ translateY: contentTranslateY }],
-            },
-          ]}
-          pointerEvents="none"
-        >
-          <JumpingEmblem
-            variant="hero"
-            size={64}
-            jumpHeight={14}
-            pauseMs={1200}
-            entrance
-            paused={!active}
-          />
-          <AppText variant="h2" style={styles.brandName}>
-            {APP_NAME}
-          </AppText>
-        </Animated.View>
-      ) : null}
+      <Animated.View
+        style={[
+          styles.hero,
+          {
+            top: insets.top + spacing.lg,
+            opacity: contentOpacity,
+            transform: [{ translateY: contentTranslateY }],
+          },
+        ]}
+        pointerEvents="none"
+      >
+        <BrandWordmark
+          variant={slide.id === 'welcome' ? 'hero' : 'compact'}
+          animate={slide.id === 'welcome' && active}
+        />
+      </Animated.View>
 
       <Animated.View
         style={[
@@ -144,11 +134,6 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     zIndex: 2,
     overflow: 'visible',
-  },
-  brandName: {
-    color: '#FFFFFF',
-    letterSpacing: -0.3,
-    textAlign: 'center',
   },
   content: {
     flex: 1,

@@ -1,97 +1,82 @@
-import { useCallback, useEffect, useState } from 'react';
-import { applyClientFilters } from '@/lib/filters';
+import { attachListingPhotos } from '@/lib/attachListingPhotos';
 import {
   getDemoAgentListings,
   getDemoAreaMedianPrice,
   getDemoListingById,
-  getDemoListings,
   getDemoPriceHistory,
   isDemoId,
 } from '@/lib/demo';
+import { fetchPublicProfile } from '@/lib/profile/publicProfiles';
 import { shouldUseDemoData, supabase } from '@/lib/supabase';
-import type { Listing, ListingFilters, ListingWithPhotos, MapListingPoint } from '@/types';
-
-export function useListings(filters: ListingFilters) {
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchListings = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    if (shouldUseDemoData()) {
-      const filtered = applyClientFilters(getDemoListings(), filters);
-      setListings(filtered);
-      setLoading(false);
-      return;
-    }
-
-    let query = supabase.from('listings').select('*').eq('status', 'active');
-
-    if (filters.districts.length > 0) query = query.in('district', filters.districts);
-
-    const { data, error: fetchError } = await query;
-    if (fetchError) {
-      setError(fetchError.message);
-      setListings([]);
-    } else {
-      const filtered = applyClientFilters((data ?? []) as Listing[], filters);
-      setListings(filtered);
-    }
-    setLoading(false);
-  }, [filters]);
-
-  useEffect(() => {
-    fetchListings();
-  }, [fetchListings]);
-
-  const mapPoints: MapListingPoint[] = listings.map((l) => ({
-    id: l.id,
-    lat: l.lat,
-    lng: l.lng,
-    price: l.price,
-    type: l.type,
-    rooms: l.rooms,
-  }));
-
-  return { listings, mapPoints, loading, error, refetch: fetchListings };
-}
+import type { ListingWithPhotos, PriceHistoryEntry } from '@/types';
 
 export async function fetchListingById(id: string): Promise<ListingWithPhotos | null> {
   if (isDemoId(id)) return getDemoListingById(id);
 
-  const { data, error } = await supabase
-    .from('listings')
-    .select('*, listing_photos(*), users(id, full_name, phone, telegram_username, created_at, last_active_at, close_rate, total_posted, total_rented, total_sold, total_expired, avg_days_on_market)')
-    .eq('id', id)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*, listing_photos(*)')
+      .eq('id', id)
+      .single();
 
-  if (error || !data) return getDemoListingById(id);
-  return data as ListingWithPhotos;
+    if (error || !data) return getDemoListingById(id);
+    const listing = attachListingPhotos([data as ListingWithPhotos])[0];
+    if (!listing) return getDemoListingById(id);
+    // Seller details come from public_profiles (phone only if the seller shows it).
+    const seller = await fetchPublicProfile(listing.user_id);
+    return seller ? { ...listing, users: seller } : listing;
+  } catch (err) {
+    console.error('Unexpected error fetching listing:', err);
+    return getDemoListingById(id);
+  }
 }
 
-export async function fetchAgentListings(userId: string, status: 'active' | 'archived' = 'active') {
+export async function fetchAgentListings(
+  userId: string,
+  status: 'active' | 'archived' = 'active',
+): Promise<ListingWithPhotos[]> {
   if (isDemoId(userId)) return getDemoAgentListings(userId, status);
 
-  const { data } = await supabase
-    .from('listings')
-    .select('*, listing_photos(*)')
-    .eq('user_id', userId)
-    .eq('status', status)
-    .order('posted_at', { ascending: false });
-  return (data ?? []) as ListingWithPhotos[];
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*, listing_photos(*)')
+      .eq('user_id', userId)
+      .eq('status', status)
+      .order('posted_at', { ascending: false });
+
+    if (error) {
+      console.error('Failed to fetch agent listings:', error.message);
+      return getDemoAgentListings(userId, status);
+    }
+
+    return attachListingPhotos((data ?? []) as ListingWithPhotos[]);
+  } catch (err) {
+    console.error('Unexpected error fetching agent listings:', err);
+    return getDemoAgentListings(userId, status);
+  }
 }
 
 export async function fetchActiveListingCount(userId: string): Promise<number> {
   if (isDemoId(userId)) return getDemoAgentListings(userId, 'active').length;
 
-  const { count } = await supabase
-    .from('listings')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', userId)
-    .eq('status', 'active');
-  return count ?? 0;
+  try {
+    const { count, error } = await supabase
+      .from('listings')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .eq('status', 'active');
+
+    if (error) {
+      console.error('Failed to fetch active listing count:', error.message);
+      return 0;
+    }
+    return count ?? 0;
+  } catch (err) {
+    console.error('Unexpected error fetching active listing count:', err);
+    return 0;
+  }
 }
 
 export async function fetchAreaMedianPrice(
@@ -101,27 +86,42 @@ export async function fetchAreaMedianPrice(
 ): Promise<number | null> {
   if (shouldUseDemoData()) return getDemoAreaMedianPrice(district, rooms, type);
 
-  const { data } = await supabase
-    .from('listings')
-    .select('price')
-    .eq('district', district)
-    .eq('rooms', rooms)
-    .eq('type', type)
-    .eq('status', 'active');
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('price')
+      .eq('district', district)
+      .eq('rooms', rooms)
+      .eq('type', type)
+      .eq('status', 'active');
 
-  if (!data || data.length === 0) return getDemoAreaMedianPrice(district, rooms, type);
-  const prices = data.map((r) => r.price).sort((a, b) => a - b);
-  const mid = Math.floor(prices.length / 2);
-  return prices.length % 2 === 0 ? (prices[mid - 1] + prices[mid]) / 2 : prices[mid];
+    if (error || !data || data.length === 0) {
+      return getDemoAreaMedianPrice(district, rooms, type);
+    }
+
+    const prices = data.map((row) => row.price).sort((a, b) => a - b);
+    const mid = Math.floor(prices.length / 2);
+    return prices.length % 2 === 0 ? (prices[mid - 1] + prices[mid]) / 2 : prices[mid];
+  } catch (err) {
+    console.error('Unexpected error fetching area median price:', err);
+    return getDemoAreaMedianPrice(district, rooms, type);
+  }
 }
 
-export async function fetchPriceHistory(listingId: string) {
+export async function fetchPriceHistory(listingId: string): Promise<PriceHistoryEntry[]> {
   if (isDemoId(listingId)) return getDemoPriceHistory(listingId);
 
-  const { data } = await supabase
-    .from('price_history')
-    .select('*')
-    .eq('listing_id', listingId)
-    .order('changed_at', { ascending: false });
-  return data ?? getDemoPriceHistory(listingId);
+  try {
+    const { data, error } = await supabase
+      .from('price_history')
+      .select('*')
+      .eq('listing_id', listingId)
+      .order('changed_at', { ascending: false });
+
+    if (error || !data?.length) return getDemoPriceHistory(listingId);
+    return data as PriceHistoryEntry[];
+  } catch (err) {
+    console.error('Unexpected error fetching price history:', err);
+    return getDemoPriceHistory(listingId);
+  }
 }

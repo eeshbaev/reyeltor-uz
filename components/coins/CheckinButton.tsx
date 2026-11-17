@@ -1,11 +1,11 @@
-import { hapticMedium } from '@/lib/haptics';
-import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet } from 'react-native';
 import { Animated } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { CHECKIN_DAYS } from '@/lib/constants';
 import { spacing } from '@/lib/design/spacing';
+import { hapticMedium } from '@/lib/haptics';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
 
@@ -67,7 +67,7 @@ export function CheckinButton({ canCheckIn, onCheckIn, checkedInToday }: Checkin
   );
 }
 
-function createStyles(theme: ReturnType<typeof useTheme>) {
+function createStyles(_theme: ReturnType<typeof useTheme>) {
   return StyleSheet.create({
     button: {
       padding: spacing.md,

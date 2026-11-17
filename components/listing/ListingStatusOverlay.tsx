@@ -2,19 +2,27 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
-import { getListingStatusBadge } from '@/lib/listing';
 import { getCategoryColors } from '@/lib/design/categoryColors';
-import type { ListingCategory } from '@/types';
 import { spacing } from '@/lib/design/spacing';
+import { getListingStatusBadge } from '@/lib/listing';
 import { useTheme } from '@/lib/theme';
+import type { ListingCategory } from '@/types';
 import type { Listing } from '@/types';
 
 interface ListingStatusOverlayProps {
   listing: Pick<Listing, 'type' | 'status' | 'archived_reason'>;
   position?: 'left' | 'right';
+  size?: 'default' | 'compact';
+  /** Flow layout for detail screens (not absolutely positioned over media). */
+  inline?: boolean;
 }
 
-export function ListingStatusOverlay({ listing, position = 'right' }: ListingStatusOverlayProps) {
+export function ListingStatusOverlay({
+  listing,
+  position = 'right',
+  size = 'default',
+  inline = false,
+}: ListingStatusOverlayProps) {
   const { t } = useTranslation();
   const theme = useTheme();
   const { labelKey, variant } = getListingStatusBadge(listing);
@@ -23,10 +31,29 @@ export function ListingStatusOverlay({ listing, position = 'right' }: ListingSta
   const colors = useMemo(() => createVariantColors(theme, categoryColors), [theme, categoryColors]);
   const palette = colors[variant] ?? colors.default;
 
+  const compact = size === 'compact';
+
   return (
-    <View style={[styles.wrap, position === 'left' ? styles.left : styles.right]} pointerEvents="none">
-      <View style={[styles.pill, { backgroundColor: palette.bg, borderColor: palette.border }]}>
-        <AppText variant="caption" style={[styles.label, { color: palette.text }]}>
+    <View
+      style={[
+        styles.wrap,
+        inline ? styles.wrapInline : null,
+        compact && !inline ? styles.wrapCompact : null,
+        !inline && (position === 'left' ? styles.left : styles.right),
+      ]}
+      pointerEvents="none"
+    >
+      <View
+        style={[
+          styles.pill,
+          compact ? styles.pillCompact : null,
+          { backgroundColor: palette.bg, borderColor: palette.border },
+        ]}
+      >
+        <AppText
+          variant={compact ? 'micro' : 'caption'}
+          style={[styles.label, compact ? styles.labelCompact : null, { color: palette.text }]}
+        >
           {t(labelKey)}
         </AppText>
       </View>
@@ -55,17 +82,34 @@ const styles = StyleSheet.create({
     top: spacing.sm,
     zIndex: 3,
   },
+  wrapCompact: {
+    top: spacing.xs,
+  },
+  wrapInline: {
+    position: 'relative',
+    top: 0,
+    alignSelf: 'flex-start',
+  },
   left: { left: spacing.sm },
   right: { right: spacing.sm },
   pill: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs + 2,
-    borderRadius: 8,
+    borderRadius: 999,
     borderWidth: 1,
     ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.22, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } },
+      ios: { shadowColor: '#0F172A', shadowOpacity: 0.14, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
       android: { elevation: 4 },
     }),
   },
-  label: { fontWeight: '700', letterSpacing: 0.2 },
+  pillCompact: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    ...Platform.select({
+      ios: { shadowOpacity: 0.1, shadowRadius: 4, shadowOffset: { width: 0, height: 2 } },
+      android: { elevation: 2 },
+    }),
+  },
+  label: { fontWeight: '700', letterSpacing: 0.15 },
+  labelCompact: { fontSize: 10, letterSpacing: 0.1 },
 });

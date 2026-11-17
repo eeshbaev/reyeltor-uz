@@ -1,9 +1,9 @@
 import { StyleSheet, TextInput, View, type TextInputProps, type ViewStyle } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { spacing } from '@/lib/design/spacing';
-import { formatDecimalInput, formatIntegerInput, parseNumericInput } from '@/lib/tools/parseNumeric';
 import { toolInputStyle } from '@/lib/design/toolChrome';
 import { useTheme } from '@/lib/theme';
+import { formatDecimalInput, formatIntegerInput, parseNumericInput } from '@/lib/tools/parseNumeric';
 
 interface MoneyInputProps extends Omit<TextInputProps, 'value' | 'onChangeText' | 'keyboardType'> {
   value: number;

@@ -1,5 +1,5 @@
-import { useRouter } from 'expo-router';
 import { useCallback } from 'react';
+import { useRouter } from 'expo-router';
 import { useMapFocus } from '@/lib/context/MapFocusContext';
 
 export function useOpenListingOnMap() {

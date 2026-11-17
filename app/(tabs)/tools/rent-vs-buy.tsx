@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppText } from '@/components/ui/AppText';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
 import { CurrencyPills } from '@/components/tools/CurrencyPills';
 import { MoneyInput } from '@/components/tools/MoneyInput';
@@ -18,21 +18,24 @@ import {
   ToolSummaryBox,
   toolScreenStyles,
 } from '@/components/tools/toolUi';
+import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { useListingsCache } from '@/lib/context/ListingsContext';
-import { toolScreenBackground } from '@/lib/design/toolChrome';
 import { spacing } from '@/lib/design/spacing';
+import { toolScreenBackground } from '@/lib/design/toolChrome';
 import { usdToUzs, uzsToUsd } from '@/lib/exchange/cbuRate';
 import { formatListingPrice } from '@/lib/format';
+import { buildToolShareSummary } from '@/lib/growth/shareMessage';
+import { useMarketDataVersion } from '@/lib/hooks/useMarketData';
+import { useTheme } from '@/lib/theme';
 import { buildRentVsBuyReportHtml } from '@/lib/tools/instrumentReports';
+import { parseNumericInput } from '@/lib/tools/parseNumeric';
+import { formatDecimalInput } from '@/lib/tools/parseNumeric';
 import {
   calculateRentVsBuy,
   getTashkentAnnualAppreciation,
   getUzbekistanAnnualRentIncrease,
 } from '@/lib/tools/rentVsBuy';
-import { useMarketDataVersion } from '@/lib/hooks/useMarketData';
-import { formatDecimalInput } from '@/lib/tools/parseNumeric';
-import { useTheme } from '@/lib/theme';
 import type { PriceCurrency } from '@/types';
 
 const TERM_PRESETS = [5, 10, 15, 20, 25, 30];
@@ -47,10 +50,13 @@ export default function RentVsBuyScreen() {
   const annualAppreciation = getTashkentAnnualAppreciation();
   const annualRentIncrease = getUzbekistanAnnualRentIncrease();
 
-  const [monthlyRent, setMonthlyRent] = useState(0);
+  // Optional prefill from a listing ("Rent vs buy" link on a property, prices in UZS).
+  const { price: routePrice, rent: routeRent } = useLocalSearchParams<{ price?: string; rent?: string }>();
+  const initialPrice = routePrice ? parseNumericInput(routePrice) : 0;
+  const [monthlyRent, setMonthlyRent] = useState(routeRent ? parseNumericInput(routeRent) : 0);
   const [rentCurrency, setRentCurrency] = useState<PriceCurrency>('UZS');
-  const [propertyPrice, setPropertyPrice] = useState(0);
-  const [downPayment, setDownPayment] = useState(0);
+  const [propertyPrice, setPropertyPrice] = useState(initialPrice);
+  const [downPayment, setDownPayment] = useState(initialPrice > 0 ? Math.round(initialPrice * 0.2) : 0);
   const [annualLoanRate, setAnnualLoanRate] = useState(24);
   const [termYears, setTermYears] = useState(20);
   const [yearsToStay, setYearsToStay] = useState(7);
@@ -119,6 +125,20 @@ export default function RentVsBuyScreen() {
     }
     return formatUzs(monthlyRent);
   }, [monthlyRent, rentCurrency, formatUzs]);
+
+  const buildShareSummary = useCallback(() => {
+    const savings = Math.abs(result.totalRentCost - result.netBuyCost);
+    return buildToolShareSummary(
+      t('tools.rentVsBuy.title'),
+      [
+        bannerText,
+        `${t('tools.rentVsBuy.totalRentCost')}: ${formatUzs(result.totalRentCost)}`,
+        `${t('tools.rentVsBuy.netBuyCost')}: ${formatUzs(result.netBuyCost)}`,
+        `${t('tools.rentVsBuy.difference')}: ${formatUzs(savings)}`,
+      ],
+      t,
+    );
+  }, [bannerText, formatUzs, result.netBuyCost, result.totalRentCost, t]);
 
   const buildReportHtml = useCallback(
     () =>
@@ -296,6 +316,7 @@ export default function RentVsBuyScreen() {
             visible
             title={t('tools.rentVsBuy.title')}
             buildHtml={buildReportHtml}
+            buildShareSummary={buildShareSummary}
           />
         </>
       ) : null}

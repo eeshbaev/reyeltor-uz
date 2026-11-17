@@ -1,5 +1,5 @@
-import { Text, type TextProps, type TextStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Text, type TextProps, type TextStyle } from 'react-native';
 import { getLineHeight, typography, type TypographyVariant } from '@/lib/design/typography';
 import { useTheme } from '@/lib/theme';
 

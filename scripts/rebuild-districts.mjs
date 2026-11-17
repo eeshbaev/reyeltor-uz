@@ -6,7 +6,7 @@
 
 import { readFileSync, writeFileSync } from 'fs';
 
-const UA = 'ReyeltorApp/1.0 (reyeltor.uz)';
+const UA = 'ReyeltorApp/1.0 (Reyeltor-uz)';
 const CITY_BBOX = [69.08, 41.16, 69.5, 41.42]; // [west, south, east, north]
 const REGION_BBOX = [68.5, 40.6, 70.4, 41.85];
 

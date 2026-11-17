@@ -31,5 +31,3 @@ export function zoomForCircleRadius(lat: number, radiusM: number, viewportWidth 
 export function isInsideCircle(circle: MapAreaCircle, lat: number, lng: number): boolean {
   return haversineMeters(circle.lat, circle.lng, lat, lng) <= circle.radiusM;
 }
-
-export { polygonBounds, polygonCenter } from '@/lib/map/polygon';

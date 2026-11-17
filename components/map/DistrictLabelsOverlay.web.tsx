@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type { MapCoverage } from '@/lib/constants';
 import {
   BOUNDARY_LABEL_FRAME,
   getBoundaryLabelOpacity,
@@ -8,7 +9,6 @@ import {
   getBoundaryLabelContent,
 } from '@/lib/map/boundaryLabelContent';
 import { getDistrictLabelPoints } from '@/lib/map/districtBoundaries';
-import type { MapCoverage } from '@/lib/constants';
 
 interface DistrictLabelsOverlayProps {
   coverage: MapCoverage;
@@ -37,7 +37,7 @@ export function DistrictLabelsOverlay({
         position: 'absolute',
         inset: 0,
         pointerEvents: 'none',
-        zIndex: 2,
+        zIndex: 10,
         overflow: 'hidden',
       }}
     >

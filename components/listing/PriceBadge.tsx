@@ -1,6 +1,9 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize, spacing } from '@/lib/theme';
+import { StyleSheet, View } from 'react-native';
+import { AppText } from '@/components/ui/AppText';
+import { spacing } from '@/lib/design/spacing';
+import { useTheme } from '@/lib/theme';
 
 interface PriceBadgeProps {
   price: number;
@@ -9,6 +12,8 @@ interface PriceBadgeProps {
 
 export function PriceBadge({ price, medianPrice }: PriceBadgeProps) {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   if (!medianPrice || medianPrice === 0) return null;
 
@@ -21,24 +26,25 @@ export function PriceBadge({ price, medianPrice }: PriceBadgeProps) {
 
   return (
     <View style={[styles.badge, isBelow ? styles.below : styles.above]}>
-      <Text style={[styles.text, isBelow ? styles.belowText : styles.aboveText]}>
+      <AppText variant="caption" style={[styles.text, isBelow ? styles.belowText : styles.aboveText]}>
         {isBelow ? t('listing.belowAvg', { percent }) : t('listing.aboveAvg', { percent })}
-      </Text>
+      </AppText>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  badge: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: 8,
-    marginTop: spacing.xs,
-  },
-  below: { backgroundColor: '#dcfce7' },
-  above: { backgroundColor: '#fef3c7' },
-  text: { fontSize: fontSize.sm, fontWeight: '600' },
-  belowText: { color: colors.success },
-  aboveText: { color: colors.warning },
-});
+function createStyles(theme: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    badge: {
+      alignSelf: 'flex-start',
+      paddingHorizontal: spacing.sm + 2,
+      paddingVertical: spacing.xs + 2,
+      borderRadius: 999,
+    },
+    below: { backgroundColor: theme.colors.successSurface },
+    above: { backgroundColor: theme.colors.warningSurface },
+    text: { fontWeight: '600' },
+    belowText: { color: theme.colors.success },
+    aboveText: { color: theme.colors.warning },
+  });
+}

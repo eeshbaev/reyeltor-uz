@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import type { ImageSource } from 'expo-image';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
-import { AppText } from '@/components/ui/AppText';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
+import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { spacing } from '@/lib/design/spacing';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
-import { TOOL_CARDS } from '@/lib/tools/toolCards';
 import { useTheme } from '@/lib/theme';
+import { TOOL_CARDS } from '@/lib/tools/toolCards';
 
 export default function ToolsHomeScreen() {
   const { t } = useTranslation();
@@ -38,7 +39,7 @@ export default function ToolsHomeScreen() {
             key={tool.key}
             cardKey={tool.key}
             icon={tool.icon}
-            imageUri={tool.imageUri}
+            image={tool.image}
             title={t(tool.titleKey)}
             description={t(tool.descKey)}
             onPress={() => router.push(tool.route)}
@@ -52,14 +53,14 @@ export default function ToolsHomeScreen() {
 function ToolCard({
   cardKey,
   icon,
-  imageUri,
+  image,
   title,
   description,
   onPress,
 }: {
   cardKey: string;
   icon: keyof typeof Ionicons.glyphMap;
-  imageUri: string;
+  image: ImageSource;
   title: string;
   description: string;
   onPress: () => void;
@@ -77,7 +78,7 @@ function ToolCard({
           setLayout({ width, height });
         }}
       >
-        <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+        <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
         {layout.width > 0 && layout.height > 0 ? (
           <Svg width={layout.width} height={layout.height} style={StyleSheet.absoluteFill} pointerEvents="none">
             <Defs>

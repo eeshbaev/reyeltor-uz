@@ -37,11 +37,54 @@ export function mapRegisterErrorMessage(rawMessage: string): MappedRegisterError
     return { code: 'emailAlreadyRegistered', message: rawMessage };
   }
 
-  if (normalized.includes('users_phone_key') || normalized.includes('duplicate key') && normalized.includes('phone')) {
+  if (
+    normalized.includes('users_phone_key') ||
+    (normalized.includes('duplicate key') && normalized.includes('phone')) ||
+    // Supabase's message when the profile trigger hits the unique phone constraint.
+    normalized.includes('database error saving new user')
+  ) {
     return { code: 'phoneAlreadyRegistered', message: rawMessage };
   }
 
   return { code: 'registerError', message: rawMessage };
+}
+
+export type AuthFlowErrorCode =
+  | 'loginError'
+  | 'emailNotConfirmed'
+  | 'networkTimeout'
+  | 'serverUnreachable'
+  | 'resetPasswordError';
+
+export function mapAuthFlowError(
+  error: AuthError | null | undefined,
+  timedOut = false,
+  fallback: AuthFlowErrorCode = 'loginError',
+): AuthFlowErrorCode {
+  if (timedOut) return 'networkTimeout';
+
+  const message = formatAuthErrorMessage(error).toLowerCase();
+  if (!message) return 'loginError';
+
+  if (
+    message.includes('fetch failed') ||
+    message.includes('network request failed') ||
+    message.includes('failed to fetch') ||
+    message.includes('enotfound') ||
+    message.includes('getaddrinfo')
+  ) {
+    return 'serverUnreachable';
+  }
+
+  if (message.includes('email not confirmed')) {
+    return 'emailNotConfirmed';
+  }
+
+  if (message.includes('invalid login credentials') || message.includes('invalid credentials')) {
+    return 'loginError';
+  }
+
+  return fallback;
 }
 
 export function toDisplayError(value: unknown): string {

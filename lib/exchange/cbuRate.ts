@@ -1,30 +1,66 @@
-const CBU_USD_URL = 'https://cbu.uz/ru/arkhiv-kursov-valyut/json/USD/';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { fetchCbuJson, rowToPoint } from '@/lib/exchange/cbuFetch';
+
 const FALLBACK_USD_RATE = 12_017;
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+const SPOT_STORAGE_KEY = '@reyeltor/cbu-spot-v1';
 
-interface CbuRateRow {
-  Rate: string;
-  Date: string;
+interface PersistedSpot {
+  rate: number;
+  date: string;
+  fetchedAt: number;
 }
 
-let cachedRate: { rate: number; fetchedAt: number } | null = null;
+let memorySpot: PersistedSpot | null = null;
+
+async function readPersistedSpot(): Promise<PersistedSpot | null> {
+  if (memorySpot) return memorySpot;
+  try {
+    const raw = await AsyncStorage.getItem(SPOT_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as PersistedSpot;
+    if (!Number.isFinite(parsed.rate) || parsed.rate <= 0) return null;
+    memorySpot = parsed;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+async function writePersistedSpot(rate: number, date: string): Promise<void> {
+  memorySpot = { rate, date, fetchedAt: Date.now() };
+  await AsyncStorage.setItem(SPOT_STORAGE_KEY, JSON.stringify(memorySpot));
+}
 
 export async function fetchCbuUsdRate(): Promise<number> {
-  if (cachedRate && Date.now() - cachedRate.fetchedAt < CACHE_TTL_MS) {
-    return cachedRate.rate;
+  if (memorySpot && Date.now() - memorySpot.fetchedAt < CACHE_TTL_MS) {
+    return memorySpot.rate;
+  }
+
+  const persisted = await readPersistedSpot();
+  if (persisted && Date.now() - persisted.fetchedAt < CACHE_TTL_MS) {
+    memorySpot = persisted;
+    return persisted.rate;
   }
 
   try {
-    const response = await fetch(CBU_USD_URL);
-    if (!response.ok) throw new Error('CBU rate fetch failed');
-    const rows = (await response.json()) as CbuRateRow[];
-    const rate = Number(rows[0]?.Rate);
-    if (!Number.isFinite(rate) || rate <= 0) throw new Error('Invalid CBU rate');
-    cachedRate = { rate, fetchedAt: Date.now() };
-    return rate;
+    const rows = await fetchCbuJson('/');
+    const point = rowToPoint(rows[0]);
+    if (!point) throw new Error('Invalid CBU rate');
+    await writePersistedSpot(point.rate, point.date);
+    return point.rate;
   } catch {
-    return cachedRate?.rate ?? FALLBACK_USD_RATE;
+    if (persisted) return persisted.rate;
+    return FALLBACK_USD_RATE;
   }
+}
+
+export async function persistCbuSpot(point: { rate: number; date: string }): Promise<void> {
+  await writePersistedSpot(point.rate, point.date);
+}
+
+export async function loadPersistedSpotRate(): Promise<PersistedSpot | null> {
+  return readPersistedSpot();
 }
 
 export function uzsToUsd(amountUzs: number, usdRate: number): number {
@@ -44,3 +80,5 @@ export function filterPriceToUzs(
   if (!Number.isFinite(num) || num <= 0) return null;
   return currency === 'USD' ? usdToUzs(num, usdRate) : num;
 }
+
+export { FALLBACK_USD_RATE };

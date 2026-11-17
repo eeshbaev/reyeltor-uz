@@ -1,5 +1,5 @@
-import { getCategoryColors } from '@/lib/design/categoryColors';
 import { useListingsCache } from '@/lib/context/ListingsContext';
+import { getCategoryColors } from '@/lib/design/categoryColors';
 import { useTheme } from '@/lib/theme';
 import type { ListingCategory } from '@/types';
 

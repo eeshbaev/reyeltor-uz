@@ -1,38 +1,43 @@
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetScrollView,
-  useBottomSheetSpringConfigs,
-} from '@gorhom/bottom-sheet';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, type ComponentRef } from 'react';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Dimensions, Linking, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Linking, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ShareSheet, type ShareSheetRef } from '@/components/growth/ShareSheet';
 import { AgentCard } from '@/components/listing/AgentCard';
+import { DemoListingNotice } from '@/components/listing/DemoListingNotice';
+import { FreshnessLabel } from '@/components/listing/FreshnessLabel';
 import { ListingCarousel } from '@/components/listing/ListingCarousel';
+import { ListingFavoriteButton } from '@/components/listing/ListingFavoriteButton';
 import { ListingStatusOverlay } from '@/components/listing/ListingStatusOverlay';
-import { ListingLocationPreview } from '@/components/listing/ListingLocationPreview';
-import { NeighborhoodSheet, type NeighborhoodSheetRef } from '@/components/listing/NeighborhoodSheet';
+import { ListingToolLinks } from '@/components/listing/ListingToolLinks';
 import { PriceBadge } from '@/components/listing/PriceBadge';
 import { PropertyInfoSection } from '@/components/listing/PropertyInfoSection';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
-import { mapCarouselStackHeight } from '@/components/map/MapListingCarousel';
-import { SHEET_BEHIND_TAB_Z_INDEX_DETAIL, sheetBottomInset } from '@/lib/sheetChrome';
-import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
-import { openTelegramChat } from '@/lib/contact';
+import { requestCacheMedium } from '@/lib/cache/requestCache';
 import { useListingsCache } from '@/lib/context/ListingsContext';
+import { isDemoId } from '@/lib/demo';
 import { spacing } from '@/lib/design/spacing';
 import { formatDate } from '@/lib/format';
+import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
+import { fetchListingEngagement } from '@/lib/growth/listingEngagement';
+import { quickShare } from '@/lib/growth/quickShare';
 import { hapticLight } from '@/lib/haptics';
-import { useOpenListingOnMap } from '@/lib/hooks/useOpenListingOnMap';
-import { useListingFavorite } from '@/lib/hooks/useListingFavorite';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
 import { fetchAreaMedianPrice, fetchActiveListingCount, fetchListingById, fetchPriceHistory } from '@/lib/hooks/useListings';
-import { shareListing } from '@/lib/shareListing';
+import { recordListingEvent } from '@/lib/listingEvents';
+import { TAB_BAR_CLEARANCE } from '@/lib/navigation/tabBarMetrics';
+import { getPublicPhone } from '@/lib/profile/publicContact';
+import { buildListingSharePayload } from '@/lib/shareListing';
+import { SHEET_BEHIND_TAB_Z_INDEX_DETAIL } from '@/lib/sheetChrome';
 import { useTheme } from '@/lib/theme';
 import type { ListingWithPhotos, PriceHistoryEntry } from '@/types';
+
+const PHOTO_HEIGHT = 200;
 
 export interface ListingDetailSheetRef {
   open: (listingId: string) => void;
@@ -41,55 +46,50 @@ export interface ListingDetailSheetRef {
 
 interface ListingDetailSheetProps {
   onIndexChange?: (index: number) => void;
+  onDismiss?: () => void;
   onNeighborhoodIndexChange?: (index: number) => void;
+  onExploreNeighborhood?: (lat: number, lng: number, listingId: string) => void;
   peekMode?: 'map' | 'list';
+  /** Pre-selected listing when the sheet is mounted open on the map. */
+  initialListingId?: string | null;
+  initialIndex?: number;
+  /** When true, scroll content clears the floating map tab bar. */
+  reserveTabBar?: boolean;
 }
 
-const sheetWidth = Dimensions.get('window').width - spacing.md * 2;
-const screenHeight = Dimensions.get('window').height;
-
-export const ListingDetailSheet = forwardRef<ListingDetailSheetRef, ListingDetailSheetProps>(function ListingDetailSheet(
-  { onIndexChange, onNeighborhoodIndexChange, peekMode = 'map' },
+export const ListingDetailSheet = forwardRef<ListingDetailSheetRef, ListingDetailSheetProps>((
+  { onIndexChange, onDismiss, onExploreNeighborhood, initialListingId = null, initialIndex = -1, reserveTabBar = false },
   ref,
-) {
+) => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
-  const router = useRouter();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { width: windowWidth } = useWindowDimensions();
   const { formatPrice } = useFormatPrice();
-  const openListingOnMap = useOpenListingOnMap();
   const { usdRate, allListings } = useListingsCache();
   const sheetRef = useRef<BottomSheet>(null);
-  const scrollRef = useRef<ComponentRef<typeof BottomSheetScrollView>>(null);
-  const neighborhoodRef = useRef<NeighborhoodSheetRef>(null);
+  const shareSheetRef = useRef<ShareSheetRef>(null);
   const [listingId, setListingId] = useState<string | null>(null);
   const [listing, setListing] = useState<ListingWithPhotos | null>(null);
   const [priceHistory, setPriceHistory] = useState<PriceHistoryEntry[]>([]);
+  const [saveCount, setSaveCount] = useState<number | null>(null);
   const [medianPrice, setMedianPrice] = useState<number | null>(null);
   const [descExpanded, setDescExpanded] = useState(false);
   const [historyExpanded, setHistoryExpanded] = useState(false);
   const [activeCount, setActiveCount] = useState(0);
-  const [sheetIndex, setSheetIndex] = useState(-1);
-  const { isFavorite, toggleFavorite } = useListingFavorite(listingId);
+  const [sheetIndex, setSheetIndex] = useState(initialIndex);
 
-  const tabBarClearance = sheetBottomInset(insets.bottom);
-  const peekHeight =
-    peekMode === 'map'
-      ? mapCarouselStackHeight(insets.bottom)
-      : Math.round(screenHeight * 0.46);
-  const midHeight = Math.round(screenHeight * 0.58);
-  const fullHeight = Math.round(screenHeight * 0.92);
-  const maxSheetIndex = 2;
+  const snapPoints = useMemo(() => (reserveTabBar ? ['80%'] : ['80%']), [reserveTabBar]);
+  const scrollBottomPadding = reserveTabBar
+    ? Math.max(insets.bottom, spacing.sm) + TAB_BAR_CLEARANCE + spacing.lg
+    : Math.max(insets.bottom, spacing.sm) + spacing.lg;
 
-  const snapPoints = useMemo(() => [peekHeight, midHeight, fullHeight], [peekHeight, midHeight, fullHeight]);
-  const animationConfigs = useBottomSheetSpringConfigs({
-    damping: 72,
-    stiffness: 320,
-    mass: 0.75,
-  });
-
-  const scrollBottomPadding = spacing.lg + tabBarClearance;
-  const contentPanningEnabled = sheetIndex >= maxSheetIndex;
+  useEffect(() => {
+    if (!initialListingId) return;
+    setListingId(initialListingId);
+    setListing(allListings.find((item) => item.id === initialListingId) ?? null);
+  }, [allListings, initialListingId]);
 
   useImperativeHandle(ref, () => ({
     open: (id) => {
@@ -98,25 +98,52 @@ export const ListingDetailSheet = forwardRef<ListingDetailSheetRef, ListingDetai
       setHistoryExpanded(false);
       setListing(allListings.find((item) => item.id === id) ?? null);
       sheetRef.current?.snapToIndex(0);
-      requestAnimationFrame(() => {
-        scrollRef.current?.scrollTo({ y: 0, animated: false });
-      });
     },
-    close: () => sheetRef.current?.close(),
+    close: () => {
+      sheetRef.current?.close();
+    },
   }));
 
   useEffect(() => {
     if (!listingId) return;
     (async () => {
-      const data = await fetchListingById(listingId);
+      // Cache listing data for 5 minutes
+      const data = await requestCacheMedium.get(
+        `listing_${listingId}`,
+        () => fetchListingById(listingId),
+      );
       setListing(data);
       if (data) {
-        const median = await fetchAreaMedianPrice(data.district, data.rooms, data.type);
+        // The map sheet is where most listings are viewed; count it (server dedups per viewer).
+        void recordListingEvent(data.id, 'view');
+
+        // Cache median price by district, rooms, type
+        const medianKey = `median_${data.district}_${data.rooms}_${data.type}`;
+        const median = await requestCacheMedium.get(medianKey, () =>
+          fetchAreaMedianPrice(data.district, data.rooms, data.type),
+        );
         setMedianPrice(median);
-        const history = await fetchPriceHistory(listingId);
+
+        // Cache price history for 5 minutes
+        const history = await requestCacheMedium.get(
+          `history_${listingId}`,
+          () => fetchPriceHistory(listingId),
+        );
         setPriceHistory(history as PriceHistoryEntry[]);
+
+        const engagement = await requestCacheMedium.get(
+          `engagement_${listingId}`,
+          () => fetchListingEngagement(listingId),
+        );
+        setSaveCount(engagement?.saveCount ?? null);
+
+        // Cache active listing count for agent
         if (data.users?.id) {
-          const count = await fetchActiveListingCount(data.users.id);
+          const userId = data.users.id;
+          const count = await requestCacheMedium.get(
+            `active_listings_${userId}`,
+            () => fetchActiveListingCount(userId),
+          );
           setActiveCount(count);
         }
       }
@@ -124,287 +151,279 @@ export const ListingDetailSheet = forwardRef<ListingDetailSheetRef, ListingDetai
   }, [listingId]);
 
   const renderBackdrop = useCallback(
-    (props: React.ComponentProps<typeof BottomSheetBackdrop>) =>
-      peekMode === 'map' ? null : (
-        <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.2} pressBehavior="none" />
-      ),
-    [peekMode],
+    (props: React.ComponentProps<typeof BottomSheetBackdrop>) => (
+      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.4} />
+    ),
+    [],
   );
-
-  const handleShare = useCallback(async () => {
-    if (!listing) return;
-    hapticLight();
-    await shareListing(
-      t('listing.shareMessage', {
-        price: formatPrice(listing.price),
-        district: listing.district,
-      }),
-      listing.id,
-      t('listing.shareTitle'),
-    );
-  }, [formatPrice, listing, t]);
-
-  const handleTelegram = useCallback(async () => {
-    if (!listing?.users) return;
-    hapticLight();
-    await openTelegramChat(listing.users.telegram_username, t('listing.noTelegram'), t('common.telegram'));
-  }, [listing?.users, t]);
-
-  const agent = listing?.users;
-  const floorText =
-    listing?.floor != null
-      ? `${listing.floor}${listing.total_floors ? `/${listing.total_floors}` : ''}`
-      : '—';
-
-  const visibleHistory = historyExpanded ? priceHistory : priceHistory.slice(0, 3);
-  const showReadMore = (listing?.description?.length ?? 0) > 120;
-
-  const handleShowOnMap = useCallback(() => {
-    if (!listing) return;
-    hapticLight();
-    sheetRef.current?.close();
-    openListingOnMap(listing.id, listing.lat, listing.lng);
-  }, [listing, openListingOnMap]);
 
   const handleSheetChange = useCallback(
     (index: number) => {
       setSheetIndex(index);
       onIndexChange?.(index);
-      if (index === 0) {
-        requestAnimationFrame(() => {
-          scrollRef.current?.scrollTo({ y: 0, animated: false });
-        });
+      if (index < 0) {
+        setListingId(null);
+        setListing(null);
+        onDismiss?.();
       }
     },
-    [onIndexChange],
+    [onDismiss, onIndexChange],
   );
 
-  const renderContactActions = listing ? (
-    <View style={[styles.contactBar, { borderBottomColor: theme.colors.border }]}>
-      {agent?.phone ? (
-        <Button
-          label={t('common.call')}
-          onPress={() => {
-            hapticLight();
-            Linking.openURL(`tel:${agent.phone}`);
-          }}
-          style={styles.actionBtn}
-        />
-      ) : null}
-      <Button
-        label={t('common.telegram')}
-        variant="secondary"
-        onPress={handleTelegram}
-        style={styles.actionBtn}
-      />
-      {listing.type === 'buy' ? (
-        <Button
-          label={t('tools.mortgage.calculate')}
-          variant="secondary"
-          onPress={() => {
-            hapticLight();
-            sheetRef.current?.close();
-            router.push({
-              pathname: '/(tabs)/tools/mortgage',
-              params: { price: String(listing.price) },
-            });
-          }}
-          style={styles.actionBtn}
-        />
-      ) : null}
-    </View>
-  ) : null;
+  const handleShare = useCallback(() => {
+    if (!listing) return;
+    const payload = buildListingSharePayload(listing, formatPrice, t, {
+      priceHistory,
+      saveCount,
+    });
+    void recordListingEvent(listing.id, 'share');
+    void quickShare(payload, shareSheetRef);
+  }, [formatPrice, listing, priceHistory, saveCount, t]);
+
+  const handleSharePicker = useCallback(() => {
+    if (!listing) return;
+    const payload = buildListingSharePayload(listing, formatPrice, t, {
+      priceHistory,
+      saveCount,
+    });
+    void quickShare(payload, shareSheetRef, { forcePicker: true });
+  }, [formatPrice, listing, priceHistory, saveCount, t]);
+
+  const agent = listing?.users;
+  const visibleHistory = historyExpanded ? priceHistory : priceHistory.slice(0, 3);
+  const showReadMore = (listing?.description?.length ?? 0) > 120;
 
   return (
     <>
-      <BottomSheet
-        ref={sheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-        animationConfigs={animationConfigs}
-        enablePanDownToClose
-        {...BOTTOM_SHEET_GESTURE_PROPS}
-        enableContentPanningGesture={contentPanningEnabled}
-        backdropComponent={renderBackdrop}
-        onChange={handleSheetChange}
-        bottomInset={0}
-        containerStyle={sheetIndex < 0 ? styles.passThrough : undefined}
-        style={styles.sheet}
-        backgroundStyle={{ backgroundColor: theme.colors.surfaceElevated }}
-        handleIndicatorStyle={{ backgroundColor: theme.colors.borderStrong }}
-      >
-        {!listing ? (
-          <View style={styles.loading}>
-            <ActivityIndicator size="large" color={theme.colors.accent} />
+    <BottomSheet
+      ref={sheetRef}
+      index={initialIndex}
+      snapPoints={snapPoints}
+      enablePanDownToClose
+      enableDynamicSizing={false}
+      backdropComponent={renderBackdrop}
+      onChange={handleSheetChange}
+      bottomInset={reserveTabBar ? 0 : undefined}
+      {...BOTTOM_SHEET_GESTURE_PROPS}
+      enableContentPanningGesture={false}
+      enableHandlePanningGesture={sheetIndex >= 0}
+      activeOffsetX={[-999, 999]}
+      activeOffsetY={[-5, 5]}
+      style={styles.sheet}
+      backgroundStyle={{ backgroundColor: theme.colors.surfaceElevated }}
+      handleIndicatorStyle={{ backgroundColor: theme.colors.borderStrong }}
+    >
+      {!listing ? (
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color={theme.colors.accent} />
+        </View>
+      ) : (
+        <BottomSheetScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
+        >
+          <View style={[styles.photos, { width: windowWidth, height: PHOTO_HEIGHT }]}>
+            <ListingCarousel
+              photos={listing.listing_photos ?? []}
+              width={windowWidth}
+              height={PHOTO_HEIGHT}
+              pagination="overlay"
+              prioritizeHorizontalSwipe
+            />
+            <ListingFavoriteButton listingId={listing.id} variant="overlay" gestureHandler />
           </View>
-        ) : (
           <View style={styles.body}>
-            <View style={styles.header}>
-              <View style={styles.carouselWrap}>
-                <ListingCarousel photos={listing.listing_photos ?? []} width={sheetWidth} height={220} />
-                <ListingStatusOverlay listing={listing} />
-              </View>
-
-              {renderContactActions}
-
-              <View style={styles.titleRow}>
-                <View style={styles.titleInfo}>
-                  <AppText variant="h2">{formatPrice(listing.price)}</AppText>
-                  <PriceBadge price={listing.price} medianPrice={medianPrice} />
-                  <AppText variant="caption" color="secondary">
-                    {listing.rooms > 0 ? `${listing.rooms} ${t('common.rooms')} · ` : ''}
-                    {listing.area_m2} {t('common.area')} · {floorText} · {listing.district}
-                  </AppText>
-                </View>
-                <View style={styles.iconActions}>
-                  <Pressable
-                    accessibilityLabel={t('listing.share')}
-                    onPress={handleShare}
-                    style={[styles.iconBtn, { backgroundColor: theme.colors.surface }]}
-                  >
-                    <Ionicons name="share-outline" size={22} color={theme.colors.text} />
-                  </Pressable>
-                  <Pressable
-                    accessibilityLabel={t('favorites.add')}
+              <View style={styles.actionRow}>
+                {getPublicPhone(agent) ? (
+                  <TouchableOpacity
+                    style={[styles.actionPrimary, { backgroundColor: theme.colors.accent }]}
                     onPress={() => {
                       hapticLight();
-                      toggleFavorite();
+                      const publicPhone = getPublicPhone(agent);
+                      if (publicPhone) {
+                        void recordListingEvent(listing.id, 'contact_call');
+                        Linking.openURL(`tel:${publicPhone}`);
+                      }
                     }}
-                    style={[styles.iconBtn, { backgroundColor: theme.colors.surface }]}
+                    activeOpacity={0.85}
                   >
-                    <Ionicons
-                      name={isFavorite ? 'heart' : 'heart-outline'}
-                      size={22}
-                      color={isFavorite ? theme.colors.error : theme.colors.text}
-                    />
-                  </Pressable>
-                </View>
+                    <Ionicons name="call" size={18} color={theme.colors.onAccent} />
+                    <AppText variant="label" color="onAccent">
+                      {t('common.call')}
+                    </AppText>
+                  </TouchableOpacity>
+                ) : null}
+                {isDemoId(listing.id) ? null : (
+                <TouchableOpacity
+                  style={[styles.actionSecondary, { borderColor: theme.colors.border }]}
+                  onPress={handleShare}
+                  onLongPress={handleSharePicker}
+                  delayLongPress={280}
+                  activeOpacity={0.85}
+                  accessibilityLabel={t('listing.share')}
+                >
+                  <Ionicons name="share-outline" size={18} color={theme.colors.text} />
+                  <AppText variant="label">{t('listing.share')}</AppText>
+                </TouchableOpacity>
+                )}
+                <ListingFavoriteButton listingId={listing.id} variant="action" />
               </View>
-            </View>
 
-            <BottomSheetScrollView
-              ref={scrollRef}
-              style={styles.scroll}
-              contentContainerStyle={[styles.content, { paddingBottom: scrollBottomPadding }]}
-              keyboardShouldPersistTaps="handled"
-              nestedScrollEnabled
-              showsVerticalScrollIndicator={false}
-            >
-            {listing.description ? (
-              <>
-                <AppText variant="h3" style={styles.section}>
-                  {t('listing.description')}
-                </AppText>
-                <AppText variant="body" numberOfLines={descExpanded ? undefined : 3}>
-                  {listing.description}
-                </AppText>
-                {showReadMore ? (
-                  <Pressable onPress={() => setDescExpanded(!descExpanded)}>
-                    <AppText variant="label" color="accent">
-                      {descExpanded ? t('common.showLess') : t('common.readMore')}
-                    </AppText>
-                  </Pressable>
-                ) : null}
-              </>
-            ) : null}
+              {isDemoId(listing.id) ? <DemoListingNotice /> : null}
 
-            <PropertyInfoSection listing={listing} locale={i18n.language} usdRate={usdRate} />
+              <View style={styles.priceRow}>
+                <ListingStatusOverlay listing={listing} inline />
+                <PriceBadge price={listing.price} medianPrice={medianPrice} />
+              </View>
+              <FreshnessLabel listing={listing} />
 
-            <ListingLocationPreview
-              lat={listing.lat}
-              lng={listing.lng}
-              title={t('listing.location')}
-              subtitle={t('listing.openMap')}
-              onPress={handleShowOnMap}
-            />
-
-            <Pressable
-              onPress={() => {
-                hapticLight();
-                neighborhoodRef.current?.open(listing.lat, listing.lng, listing.id);
-              }}
-              style={styles.neighborhoodLink}
-            >
-              <AppText variant="label" color="accent">
-                {t('listing.neighborhoodExplore')}
-              </AppText>
-            </Pressable>
-
-            {priceHistory.length > 0 ? (
-              <>
-                <AppText variant="h3" style={styles.section}>
-                  {t('listing.priceHistory')}
-                </AppText>
-                {visibleHistory.map((entry, index) => (
-                  <AppText key={`${entry.id}-${index}`} variant="caption" color="secondary">
-                    {formatPrice(entry.old_price)} → {formatPrice(entry.new_price)} ·{' '}
-                    {formatDate(entry.changed_at, i18n.language)}
+              {listing.description ? (
+                <View style={[styles.sectionCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+                  <AppText variant="h3">{t('listing.description')}</AppText>
+                  <AppText variant="body" color="secondary" numberOfLines={descExpanded ? undefined : 4}>
+                    {listing.description}
                   </AppText>
-                ))}
-                {priceHistory.length > 3 ? (
-                  <Pressable onPress={() => setHistoryExpanded(!historyExpanded)}>
-                    <AppText variant="label" color="accent">
-                      {historyExpanded ? t('common.showLess') : t('common.showMore')}
-                    </AppText>
-                  </Pressable>
-                ) : null}
-              </>
-            ) : null}
+                  {showReadMore ? (
+                    <Pressable onPress={() => setDescExpanded(!descExpanded)}>
+                      <AppText variant="label" color="accent">
+                        {descExpanded ? t('common.showLess') : t('common.readMore')}
+                      </AppText>
+                    </Pressable>
+                  ) : null}
+                </View>
+              ) : null}
 
-            {agent ? (
-              <>
-                <AppText variant="h3" style={styles.section}>
-                  {t('listing.agent')}
-                </AppText>
-                <AgentCard agent={agent} activeCount={activeCount} />
-                <Button
-                  label={t('agent.viewProfile')}
-                  variant="secondary"
+              <PropertyInfoSection listing={listing} locale={i18n.language} usdRate={usdRate} />
+              <ListingToolLinks listing={listing} onNavigate={() => sheetRef.current?.close()} />
+
+              {onExploreNeighborhood ? (
+                <Pressable
                   onPress={() => {
-                    sheetRef.current?.close();
-                    router.push(`/agent/${agent.id}`);
+                    hapticLight();
+                    onExploreNeighborhood(listing.lat, listing.lng, listing.id);
                   }}
-                />
-              </>
-            ) : null}
-            </BottomSheetScrollView>
+                  style={[styles.neighborhoodLink, { borderColor: theme.colors.border }]}
+                >
+                  <Ionicons name="map-outline" size={18} color={theme.colors.accent} />
+                  <AppText variant="label" color="accent">
+                    {t('listing.neighborhoodExplore')}
+                  </AppText>
+                </Pressable>
+              ) : null}
+
+              {priceHistory.length > 0 ? (
+                <View style={[styles.sectionCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+                  <AppText variant="h3">{t('listing.priceHistory')}</AppText>
+                  {visibleHistory.map((entry, index) => (
+                    <View key={`${entry.id}-${index}`} style={styles.historyRow}>
+                      <AppText variant="caption" color="secondary">
+                        {formatPrice(entry.old_price)} → {formatPrice(entry.new_price)}
+                      </AppText>
+                      <AppText variant="micro" color="tertiary">
+                        {formatDate(entry.changed_at, i18n.language)}
+                      </AppText>
+                    </View>
+                  ))}
+                  {priceHistory.length > 3 ? (
+                    <Pressable onPress={() => setHistoryExpanded(!historyExpanded)}>
+                      <AppText variant="label" color="accent">
+                        {historyExpanded ? t('common.showLess') : t('common.showMore')}
+                      </AppText>
+                    </Pressable>
+                  ) : null}
+                </View>
+              ) : null}
+
+              {agent ? (
+                <View style={[styles.sectionCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+                  <AppText variant="h3">{t('listing.agent')}</AppText>
+                  <AgentCard agent={agent} activeCount={activeCount} />
+                  <Button
+                    label={t('agent.viewProfile')}
+                    variant="secondary"
+                    onPress={() => {
+                      sheetRef.current?.close();
+                      router.push(`/agent/${agent.id}`);
+                    }}
+                  />
+                </View>
+              ) : null}
           </View>
-        )}
-      </BottomSheet>
-      <NeighborhoodSheet ref={neighborhoodRef} onIndexChange={onNeighborhoodIndexChange} />
+        </BottomSheetScrollView>
+      )}
+    </BottomSheet>
+    <ShareSheet ref={shareSheetRef} />
     </>
   );
 });
 
 const styles = StyleSheet.create({
   sheet: { zIndex: SHEET_BEHIND_TAB_Z_INDEX_DETAIL },
-  passThrough: { pointerEvents: 'none' },
-  body: { flex: 1 },
-  header: { paddingHorizontal: spacing.md, paddingTop: spacing.xs },
-  scroll: { flex: 1 },
-  carouselWrap: { marginBottom: spacing.sm, position: 'relative' },
-  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 220 },
-  content: { paddingHorizontal: spacing.md },
-  titleRow: { flexDirection: 'row', gap: spacing.md, marginTop: spacing.sm, marginBottom: spacing.xs },
-  titleInfo: { flex: 1, gap: spacing.xs },
-  iconActions: { gap: spacing.sm },
-  iconBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  loading: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: 220,
   },
-  contactBar: {
+  photos: {
+    backgroundColor: '#0b0f1a',
+    overflow: 'hidden',
+  },
+  body: {
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    gap: spacing.md,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  actionPrimary: {
+    flex: 1,
+    minHeight: 46,
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
+    paddingHorizontal: spacing.md,
+  },
+  actionSecondary: {
+    flex: 1,
+    minHeight: 46,
+    borderRadius: 14,
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+  priceRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    alignItems: 'center',
     gap: spacing.sm,
-    paddingBottom: spacing.sm,
     marginBottom: spacing.xs,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  actions: { flexDirection: 'row', gap: spacing.sm },
-  actionBtn: { flex: 1 },
-  section: { marginTop: spacing.lg, marginBottom: spacing.sm },
-  neighborhoodLink: { marginTop: spacing.sm, paddingVertical: spacing.xs },
+  sectionCard: {
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  historyRow: {
+    gap: 2,
+    paddingVertical: spacing.sm,
+  },
+  neighborhoodLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
 });

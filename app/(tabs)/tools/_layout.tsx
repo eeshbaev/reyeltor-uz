@@ -10,7 +10,7 @@ export default function ToolsLayout() {
   return (
     <Stack
       screenOptions={({ route }) => ({
-        headerShown: route.name !== 'index',
+        headerShown: false,
         animation: 'slide_from_right',
         headerStyle: {
           backgroundColor: theme.colors.background,
@@ -28,13 +28,13 @@ export default function ToolsLayout() {
       })}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="mortgage" options={{ title: t('tools.mortgage.title') }} />
-      <Stack.Screen name="rent-vs-buy" options={{ title: t('tools.rentVsBuy.title') }} />
-      <Stack.Screen name="affordability" options={{ title: t('tools.affordability.title') }} />
-      <Stack.Screen name="moving-costs" options={{ title: t('tools.movingCosts.title') }} />
-      <Stack.Screen name="renovation" options={{ title: t('tools.renovation.title') }} />
-      <Stack.Screen name="district-comparison" options={{ title: t('tools.districtComparison.title') }} />
-      <Stack.Screen name="currency-history" options={{ title: t('tools.currencyHistory.title') }} />
+      <Stack.Screen name="mortgage" options={{ title: t('tools.mortgage.title'), headerShown: true }} />
+      <Stack.Screen name="rent-vs-buy" options={{ title: t('tools.rentVsBuy.title'), headerShown: true }} />
+      <Stack.Screen name="affordability" options={{ title: t('tools.affordability.title'), headerShown: true }} />
+      <Stack.Screen name="moving-costs" options={{ title: t('tools.movingCosts.title'), headerShown: true }} />
+      <Stack.Screen name="renovation" options={{ title: t('tools.renovation.title'), headerShown: true }} />
+      <Stack.Screen name="district-comparison" options={{ title: t('tools.districtComparison.title'), headerShown: true }} />
+      <Stack.Screen name="currency-history" options={{ title: t('tools.currencyHistory.title'), headerShown: true }} />
     </Stack>
   );
 }

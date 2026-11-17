@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { DISPLAY_CURRENCY_KEY } from '@/lib/constants';
+import { StorageCache } from '@/lib/storage/storageCache';
 import type { PriceCurrency } from '@/types';
 
 interface DisplayCurrencyContextValue {
@@ -14,16 +14,29 @@ export function DisplayCurrencyProvider({ children }: { children: ReactNode }) {
   const [displayCurrency, setDisplayCurrencyState] = useState<PriceCurrency>('UZS');
 
   useEffect(() => {
-    AsyncStorage.getItem(DISPLAY_CURRENCY_KEY).then((stored) => {
-      if (stored === 'UZS' || stored === 'USD') {
-        setDisplayCurrencyState(stored);
-      }
-    });
+    let isMounted = true;
+
+    StorageCache.get<PriceCurrency>(DISPLAY_CURRENCY_KEY)
+      .then((stored) => {
+        if (!isMounted) return;
+        if (stored === 'UZS' || stored === 'USD') {
+          setDisplayCurrencyState(stored);
+        }
+      })
+      .catch((error) => {
+        if (!isMounted) return;
+        console.error('Failed to load display currency from storage:', error);
+        // Keep default UZS
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const setDisplayCurrency = useCallback((currency: PriceCurrency) => {
     setDisplayCurrencyState(currency);
-    AsyncStorage.setItem(DISPLAY_CURRENCY_KEY, currency);
+    StorageCache.set(DISPLAY_CURRENCY_KEY, currency);
   }, []);
 
   const value = useMemo(

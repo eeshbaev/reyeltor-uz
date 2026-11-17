@@ -10,11 +10,14 @@
     },
     "preview": {
       "distribution": "internal",
+      "developmentClient": false,
       "android": {
         "buildType": "apk"
       }
     },
     "production": {
+      "environment": "production",
+      "developmentClient": false,
       "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"

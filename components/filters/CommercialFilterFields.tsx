@@ -1,10 +1,15 @@
 import { useTranslation } from 'react-i18next';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 import { CollapsibleFilterSection } from '@/components/filters/CollapsibleFilterSection';
 import { DualCurrencyRange } from '@/components/filters/DualCurrencyRange';
-import { translateListedSince, translatePropertyType } from '@/lib/i18n/filterLabels';
+import { FilterChip } from '@/components/filters/FilterChip';
+import { FilterRangeInput } from '@/components/filters/FilterRangeInput';
+import { FilterSection } from '@/components/filters/FilterSection';
+import { FilterSegmentedControl } from '@/components/filters/FilterSegmentedControl';
 import { useFilterFieldStyles } from '@/components/filters/useFilterFieldStyles';
 import { COMMERCIAL_PROPERTY_TYPES, LISTED_SINCE_OPTIONS } from '@/lib/constants/filterOptions';
+import { translateListedSince, translatePropertyType } from '@/lib/i18n/filterLabels';
+import { useTheme } from '@/lib/theme';
 import type { ListingFilters } from '@/types';
 
 interface CommercialFilterFieldsProps {
@@ -15,6 +20,7 @@ interface CommercialFilterFieldsProps {
 
 export function CommercialFilterFields({ filters, onChange, usdRate }: CommercialFilterFieldsProps) {
   const { t } = useTranslation();
+  const theme = useTheme();
   const styles = useFilterFieldStyles();
 
   const propertyTypeSummary = filters.propertyType
@@ -27,117 +33,86 @@ export function CommercialFilterFields({ filters, onChange, usdRate }: Commercia
 
   return (
     <>
-      <Text style={styles.label}>{t('filters.transaction')}</Text>
-      <View style={styles.row}>
-        {(['sale', 'lease'] as const).map((tx) => (
-          <Pressable
-            key={tx}
-            style={[styles.pill, filters.commercialTransaction === tx && styles.pillActive]}
-            onPress={() =>
-              onChange({
-                ...filters,
-                commercialTransaction: filters.commercialTransaction === tx ? null : tx,
-              })
-            }
-          >
-            <Text style={[styles.pillText, filters.commercialTransaction === tx && styles.pillTextActive]}>
-              {t(`filters.${tx}`)}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
+      <FilterSection title={t('filters.transaction')} first>
+        <FilterSegmentedControl
+          options={[
+            { value: 'sale' as const, label: t('filters.sale') },
+            { value: 'lease' as const, label: t('filters.lease') },
+          ]}
+          value={filters.commercialTransaction}
+          onChange={(commercialTransaction) => onChange({ ...filters, commercialTransaction })}
+        />
+      </FilterSection>
 
-      <Text style={styles.label}>{t('filters.costRange')}</Text>
-      <DualCurrencyRange
-        currency={filters.priceCurrency}
-        onCurrencyChange={(priceCurrency) => onChange({ ...filters, priceCurrency })}
-        priceMin={filters.priceMin}
-        priceMax={filters.priceMax}
-        onPriceMinChange={(priceMin) => onChange({ ...filters, priceMin })}
-        onPriceMaxChange={(priceMax) => onChange({ ...filters, priceMax })}
-        usdRate={usdRate}
-      />
+      <FilterSection title={t('filters.costRange')}>
+        <DualCurrencyRange
+          currency={filters.priceCurrency}
+          onCurrencyChange={(priceCurrency) => onChange({ ...filters, priceCurrency })}
+          priceMin={filters.priceMin}
+          priceMax={filters.priceMax}
+          onPriceMinChange={(priceMin) => onChange({ ...filters, priceMin })}
+          onPriceMaxChange={(priceMax) => onChange({ ...filters, priceMax })}
+          usdRate={usdRate}
+        />
+      </FilterSection>
 
       <CollapsibleFilterSection title={t('filters.propertyType')} summary={propertyTypeSummary}>
         <View style={styles.row}>
           {COMMERCIAL_PROPERTY_TYPES.map((type) => (
-            <Pressable
+            <FilterChip
               key={`commercial-type-${type}`}
-              style={[styles.pill, (type === 'any' ? !filters.propertyType : filters.propertyType === type) && styles.pillActive]}
+              label={translatePropertyType(t, 'commercial', type === 'any' ? null : type)}
+              active={type === 'any' ? !filters.propertyType : filters.propertyType === type}
               onPress={() => onChange({ ...filters, propertyType: type === 'any' ? null : type })}
-            >
-              <Text
-                style={[
-                  styles.pillText,
-                  (type === 'any' ? !filters.propertyType : filters.propertyType === type) && styles.pillTextActive,
-                ]}
-              >
-                {translatePropertyType(t, 'commercial', type === 'any' ? null : type)}
-              </Text>
-            </Pressable>
+            />
           ))}
         </View>
       </CollapsibleFilterSection>
 
-      <Text style={styles.label}>{t('filters.areaRange')}</Text>
-      <View style={styles.row}>
-        <TextInput
-          style={styles.input}
-          placeholder={t('filters.min')}
-          keyboardType="numeric"
-          value={filters.areaMin}
-          onChangeText={(areaMin) => onChange({ ...filters, areaMin })}
+      <FilterSection title={t('filters.areaRange')}>
+        <FilterRangeInput
+          minValue={filters.areaMin}
+          maxValue={filters.areaMax}
+          onMinChange={(areaMin) => onChange({ ...filters, areaMin })}
+          onMaxChange={(areaMax) => onChange({ ...filters, areaMax })}
+          minPlaceholder={t('filters.min')}
+          maxPlaceholder={t('filters.max')}
         />
-        <TextInput
-          style={styles.input}
-          placeholder={t('filters.max')}
-          keyboardType="numeric"
-          value={filters.areaMax}
-          onChangeText={(areaMax) => onChange({ ...filters, areaMax })}
-        />
-      </View>
+      </FilterSection>
 
-      <Text style={styles.label}>{t('filters.yearBuilt')}</Text>
-      <View style={styles.row}>
-        <TextInput
-          style={styles.input}
-          placeholder={t('filters.min')}
-          keyboardType="numeric"
-          value={filters.yearBuiltMin}
-          onChangeText={(yearBuiltMin) => onChange({ ...filters, yearBuiltMin })}
+      <FilterSection title={t('filters.yearBuilt')}>
+        <FilterRangeInput
+          minValue={filters.yearBuiltMin}
+          maxValue={filters.yearBuiltMax}
+          onMinChange={(yearBuiltMin) => onChange({ ...filters, yearBuiltMin })}
+          onMaxChange={(yearBuiltMax) => onChange({ ...filters, yearBuiltMax })}
+          minPlaceholder={t('filters.min')}
+          maxPlaceholder={t('filters.max')}
         />
-        <TextInput
-          style={styles.input}
-          placeholder={t('filters.max')}
-          keyboardType="numeric"
-          value={filters.yearBuiltMax}
-          onChangeText={(yearBuiltMax) => onChange({ ...filters, yearBuiltMax })}
-        />
-      </View>
+      </FilterSection>
 
       <CollapsibleFilterSection title={t('filters.listedSince')} summary={listedSinceSummary}>
         <View style={styles.row}>
           {LISTED_SINCE_OPTIONS.map((opt) => (
-            <Pressable
+            <FilterChip
               key={`listed-${opt.key}`}
-              style={[styles.pill, filters.listedSinceDays === opt.days && styles.pillActive]}
+              label={translateListedSince(t, opt.key)}
+              active={filters.listedSinceDays === opt.days}
               onPress={() => onChange({ ...filters, listedSinceDays: opt.days })}
-            >
-              <Text style={[styles.pillText, filters.listedSinceDays === opt.days && styles.pillTextActive]}>
-                {translateListedSince(t, opt.key)}
-              </Text>
-            </Pressable>
+            />
           ))}
         </View>
       </CollapsibleFilterSection>
 
-      <Text style={styles.label}>{t('filters.keywords')}</Text>
-      <TextInput
-        style={styles.textArea}
-        placeholder={t('filters.keywordsPlaceholder')}
-        value={filters.keywords}
-        onChangeText={(keywords) => onChange({ ...filters, keywords })}
-      />
+      <FilterSection title={t('filters.keywords')}>
+        <TextInput
+          style={styles.textArea}
+          placeholder={t('filters.keywordsPlaceholder')}
+          placeholderTextColor={theme.colors.tertiary}
+          value={filters.keywords}
+          onChangeText={(keywords) => onChange({ ...filters, keywords })}
+        />
+      </FilterSection>
     </>
   );
 }

@@ -1,8 +1,8 @@
-import { hapticLight } from '@/lib/haptics';
 import { useRef } from 'react';
 import { Animated } from 'react-native';
-import { motion } from '@/lib/design/motion';
 import { useReduceMotion } from './useReduceMotion';
+import { motion } from '@/lib/design/motion';
+import { hapticLight } from '@/lib/haptics';
 
 export function useAnimatedPress(onPress?: () => void) {
   const scale = useRef(new Animated.Value(1)).current;

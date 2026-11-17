@@ -1,9 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppText } from '@/components/ui/AppText';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
 import { CurrencyRateChart } from '@/components/tools/CurrencyRateChart';
 import { MoneyInput } from '@/components/tools/MoneyInput';
@@ -15,32 +13,36 @@ import {
   ToolPill,
   toolScreenStyles,
 } from '@/components/tools/toolUi';
+import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { useListingsCache } from '@/lib/context/ListingsContext';
-import { computeRateStats, filterPointsByMonths, formatRateDateFull, CURRENCY_HISTORY_PERIODS, type CurrencyHistoryMonths } from '@/lib/exchange/cbuRateHistory';
-import { toolScreenBackground } from '@/lib/design/toolChrome';
 import { spacing } from '@/lib/design/spacing';
+import { toolScreenBackground } from '@/lib/design/toolChrome';
+import {
+  computeRateStats,
+  filterPointsByMonths,
+  formatRateDateFull,
+  resolveDateLocale,
+  CURRENCY_HISTORY_PERIODS,
+  type CurrencyHistoryMonths,
+} from '@/lib/exchange/cbuRateHistory';
 import { formatListingPrice } from '@/lib/format';
 import { useCbuRateHistory } from '@/lib/hooks/useCbuRateHistory';
-import { buildCurrencyHistoryReportHtml } from '@/lib/tools/instrumentReports';
-import { getPropertyPriceInPastRates } from '@/lib/tools/currencyHistory';
 import { useTheme } from '@/lib/theme';
+import { getPropertyPriceInPastRates } from '@/lib/tools/currencyHistory';
+import { buildCurrencyHistoryReportHtml } from '@/lib/tools/instrumentReports';
 
 export default function CurrencyHistoryScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const { usdRate } = useListingsCache();
-  const { points, loading, refreshing, updatedAt, fromCache, refresh } = useCbuRateHistory();
+  const { points, refreshing, updatedAt, source, refresh } = useCbuRateHistory();
 
   const [priceUsd, setPriceUsd] = useState(50_000);
   const [analysisMonths, setAnalysisMonths] = useState<CurrencyHistoryMonths>(12);
 
-  useFocusEffect(
-    useCallback(() => {
-      refresh(false);
-    }, [refresh]),
-  );
+  const dateLocale = resolveDateLocale(i18n.language);
 
   const periodPoints = useMemo(
     () => filterPointsByMonths(points, analysisMonths),
@@ -48,10 +50,12 @@ export default function CurrencyHistoryScreen() {
   );
 
   const periodLabel = t(`tools.currencyHistory.periodLabels.${analysisMonths}`);
-
   const stats = useMemo(() => computeRateStats(periodPoints), [periodPoints]);
   const displayRate = stats?.current ?? usdRate;
+  const displayRateDate = stats?.currentDate ?? periodPoints[periodPoints.length - 1]?.date;
   const history = useMemo(() => getPropertyPriceInPastRates(priceUsd, periodPoints), [priceUsd, periodPoints]);
+  const showOfflineNote = source === 'bundled' && !refreshing;
+  const showSyncingNote = refreshing && !updatedAt && source !== 'network';
 
   const formatUzs = useCallback(
     (value: number) => formatListingPrice(value, 'UZS', usdRate),
@@ -83,16 +87,8 @@ export default function CurrencyHistoryScreen() {
         history,
         formatUzs,
       }),
-    [t, displayRate, priceUsd, history, formatUzs, periodLabel],
+    [t, displayRate, priceUsd, history, formatUzs],
   );
-
-  const updatedLabel = updatedAt
-    ? t('tools.currencyHistory.lastUpdated', {
-        date: new Date(updatedAt).toLocaleString(),
-      })
-    : fromCache
-      ? t('tools.currencyHistory.offlineCached')
-      : null;
 
   return (
     <ScrollView
@@ -107,14 +103,24 @@ export default function CurrencyHistoryScreen() {
         <AppText variant="h1" color="accent" style={styles.rateValue}>
           {formatRate(displayRate)}
         </AppText>
-        {stats ? (
+        {displayRateDate ? (
           <AppText variant="caption" color="secondary">
-            CBU · {formatRateDateFull(stats.currentDate)}
+            CBU · {formatRateDateFull(displayRateDate, dateLocale)}
           </AppText>
         ) : null}
-        {updatedLabel ? (
+        {showSyncingNote ? (
           <AppText variant="micro" color="tertiary" style={styles.updated}>
-            {updatedLabel}
+            {t('tools.currencyHistory.syncing')}
+          </AppText>
+        ) : updatedAt ? (
+          <AppText variant="micro" color="tertiary" style={styles.updated}>
+            {t('tools.currencyHistory.lastUpdated', {
+              date: new Date(updatedAt).toLocaleString(dateLocale),
+            })}
+          </AppText>
+        ) : showOfflineNote ? (
+          <AppText variant="micro" color="tertiary" style={styles.updated}>
+            {t('tools.currencyHistory.offlineCached')}
           </AppText>
         ) : null}
       </ToolHighlightCard>
@@ -155,9 +161,9 @@ export default function CurrencyHistoryScreen() {
       <ToolCard>
         <View style={toolScreenStyles.chartHeader}>
           <AppText variant="h3">{t('tools.currencyHistory.chartTitle', { period: periodLabel })}</AppText>
-          {refreshing ? <ActivityIndicator size="small" color={theme.colors.accent} /> : null}
+          {refreshing && !updatedAt ? <ActivityIndicator size="small" color={theme.colors.accent} /> : null}
         </View>
-        {loading && points.length < 2 ? (
+        {refreshing && periodPoints.length < 2 ? (
           <View style={toolScreenStyles.loading}>
             <ActivityIndicator color={theme.colors.accent} />
             <AppText variant="caption" color="secondary">
@@ -170,6 +176,7 @@ export default function CurrencyHistoryScreen() {
             accentColor={theme.colors.accent}
             gridColor={theme.colors.border}
             labelColor={theme.colors.textSecondary}
+            dateLocale={dateLocale}
           />
         )}
         <Pressable onPress={() => refresh(true)} style={toolScreenStyles.refreshBtn}>
@@ -184,7 +191,7 @@ export default function CurrencyHistoryScreen() {
           {t('tools.currencyHistory.propertyPriceUsd')}
         </AppText>
         <MoneyInput value={priceUsd} onChangeValue={setPriceUsd} suffix="USD" placeholder="50 000" />
-        {priceUsd > 0 && history.length ? (
+        {priceUsd > 0 && history.length > 0 ? (
           <View style={toolScreenStyles.propertySummary}>
             <SummaryLine
               label={t('tools.currencyHistory.priceNow')}

@@ -7,12 +7,20 @@ export function useExchangeRate() {
 
   useEffect(() => {
     let active = true;
-    fetchCbuUsdRate().then((rate) => {
-      if (active) {
-        setUsdRate(rate);
-        setLoading(false);
-      }
-    });
+    fetchCbuUsdRate()
+      .then((rate) => {
+        if (active) {
+          setUsdRate(rate);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to fetch USD rate:', error);
+        if (active) {
+          setLoading(false);
+          // Keep default rate
+        }
+      });
     return () => {
       active = false;
     };

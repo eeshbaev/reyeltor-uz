@@ -1,9 +1,9 @@
-import { getMovingRenovationCostPerM2, type MovingRenovationLevel } from '@/lib/tools/renovationRates';
 import {
   getMovingFurniturePerRoomUzs,
   getMovingServiceUzs,
   getTechnicalInspectionUzs,
 } from '@/lib/market/marketDataStore';
+import { getMovingRenovationCostPerM2, type MovingRenovationLevel } from '@/lib/tools/renovationRates';
 
 export interface MovingCostParams {
   transactionType: 'rent' | 'buy';

@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   FlatList,
   type ViewToken,
@@ -9,15 +10,16 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { OnboardingDotIndicator } from './OnboardingDotIndicator';
 import { OnboardingSlide } from './OnboardingSlide';
+import { spacing } from '@/lib/design/spacing';
 import { useOnboardingSlides } from '@/lib/hooks/useOnboardingSlides';
 import type { OnboardingSlideData } from '@/lib/onboarding/slides';
-import { spacing } from '@/lib/design/spacing';
 
 interface OnboardingPagerProps {
   onComplete: () => void;
 }
 
 export function OnboardingPager({ onComplete }: OnboardingPagerProps) {
+  const { i18n } = useTranslation();
   const slides = useOnboardingSlides();
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -42,9 +44,11 @@ export function OnboardingPager({ onComplete }: OnboardingPagerProps) {
   return (
     <View style={styles.container}>
       <FlatList
+        key={i18n.language}
         ref={listRef}
         data={slides}
         keyExtractor={(item) => item.id}
+        extraData={i18n.language}
         horizontal
         pagingEnabled
         bounces={false}

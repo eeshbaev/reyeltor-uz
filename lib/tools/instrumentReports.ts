@@ -1,8 +1,8 @@
 import type { AffordabilityResult } from '@/lib/tools/affordability';
 import type { LoanSummary, MonthlyRow } from '@/lib/tools/mortgage';
-import type { RentVsBuyResult } from '@/lib/tools/rentVsBuy';
 import type { MovingCostResult } from '@/lib/tools/movingCosts';
 import type { RenovationResult } from '@/lib/tools/renovation';
+import type { RentVsBuyResult } from '@/lib/tools/rentVsBuy';
 import {
   bannerHtml,
   buildToolReportHtml,

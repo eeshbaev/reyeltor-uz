@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import type { MapCoverage } from '@/lib/constants';
 import {
   BOUNDARY_LABEL_FRAME,
   getBoundaryLabelOpacity,
@@ -10,7 +11,6 @@ import {
   getBoundaryLabelContent,
 } from '@/lib/map/boundaryLabelContent';
 import { getDistrictLabelPoints } from '@/lib/map/districtBoundaries';
-import type { MapCoverage } from '@/lib/constants';
 
 interface DistrictLabelsOverlayProps {
   coverage: MapCoverage;
@@ -86,30 +86,32 @@ export function DistrictLabelsOverlay({
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 2,
+    zIndex: 10,
   },
   badge: {
     position: 'absolute',
     width: BOUNDARY_LABEL_BADGE_WIDTH,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    borderWidth: 1.5,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    borderWidth: 1,
     alignItems: 'center',
-    shadowColor: '#0f172a',
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.14,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowRadius: 14,
+    elevation: 12,
   },
   title: {
     fontWeight: '700',
     textAlign: 'center',
+    letterSpacing: -0.2,
   },
   subtitle: {
-    marginTop: 4,
-    fontWeight: '600',
+    marginTop: 5,
+    fontWeight: '500',
     textAlign: 'center',
     lineHeight: 16,
-    fontSize: 12,
+    fontSize: 11,
+    letterSpacing: 0.1,
   },
 });

@@ -1,11 +1,12 @@
+import { useCallback, useMemo, useState } from 'react';
 import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppText } from '@/components/ui/AppText';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
+import { MoneyInput } from '@/components/tools/MoneyInput';
+import { PercentInput } from '@/components/tools/PercentInput';
 import { ToolReportExport } from '@/components/tools/ToolReportExport';
 import {
   ToolCard,
@@ -15,20 +16,20 @@ import {
   ToolReadOnlyBox,
   toolScreenStyles,
 } from '@/components/tools/toolUi';
+import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
-import { toolScreenBackground } from '@/lib/design/toolChrome';
 import { spacing } from '@/lib/design/spacing';
+import { toolScreenBackground } from '@/lib/design/toolChrome';
+import { buildToolShareSummary } from '@/lib/growth/shareMessage';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
+import { useTheme } from '@/lib/theme';
 import {
   calculateEarlyRepayment,
   calculateLoan,
   type LoanParams,
 } from '@/lib/tools/mortgage';
 import { buildMortgageReportHtml } from '@/lib/tools/mortgageReport';
-import { MoneyInput } from '@/components/tools/MoneyInput';
-import { PercentInput } from '@/components/tools/PercentInput';
 import { formatDecimalInput, parseNumericInput } from '@/lib/tools/parseNumeric';
-import { useTheme } from '@/lib/theme';
 
 const TERM_PRESETS = [5, 10, 15, 20, 25, 30];
 
@@ -93,6 +94,20 @@ export default function MortgageCalculatorScreen() {
       footer: t('tools.export.reportFooter'),
     }),
     [t],
+  );
+
+  const buildShareSummary = useCallback(
+    () =>
+      buildToolShareSummary(
+        t('tools.mortgage.title'),
+        [
+          `${t('tools.mortgage.monthlyPayment')}: ${formatPrice(displayResult.monthlyPayment)}`,
+          `${t('tools.mortgage.loanAmount')}: ${formatPrice(displayResult.loanAmount)}`,
+          `${t('tools.mortgage.totalPaid')}: ${formatPrice(displayResult.totalPaid)}`,
+        ],
+        t,
+      ),
+    [displayResult.loanAmount, displayResult.monthlyPayment, displayResult.totalPaid, formatPrice, t],
   );
 
   const buildReportHtml = useCallback(
@@ -260,6 +275,7 @@ export default function MortgageCalculatorScreen() {
         visible={result.loanAmount > 0}
         title={t('tools.mortgage.title')}
         buildHtml={buildReportHtml}
+        buildShareSummary={buildShareSummary}
       />
     </ScrollView>
   );

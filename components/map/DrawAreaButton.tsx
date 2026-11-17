@@ -1,14 +1,16 @@
+import { Animated, Pressable, StyleSheet } from 'react-native';
 import { PenDrawIcon } from '@/components/icons/PenDrawIcon';
+import { FrostedView } from '@/components/ui/FrostedView';
+import { mapChromeBorder } from '@/lib/design/mapChrome';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
-import { Animated, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 interface DrawAreaButtonProps {
   active: boolean;
   onPress: () => void;
 }
 
-const PEN_RED_ACTIVE = '#B91C1C';
+const PEN_RED_ACTIVE = '#DC2626';
 
 export function DrawAreaButton({ active, onPress }: DrawAreaButtonProps) {
   const theme = useTheme();
@@ -19,47 +21,35 @@ export function DrawAreaButton({ active, onPress }: DrawAreaButtonProps) {
       accessibilityRole="button"
       accessibilityLabel="Draw search area"
       accessibilityState={{ selected: active }}
+      style={styles.pressable}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       onPress={handlePress}
     >
       <Animated.View style={{ transform: [{ scale }] }}>
-        <View
+        <FrostedView
           style={[
             styles.button,
-            {
-              backgroundColor: theme.colors.surfaceElevated,
-              borderColor: active ? '#DC2626' : 'transparent',
-              borderWidth: 2,
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#000000',
-                  shadowOpacity: theme.isDark ? 0.35 : 0.14,
-                  shadowRadius: 10,
-                  shadowOffset: { width: 0, height: 3 },
-                },
-                android: { elevation: 5 },
-                default: {
-                  boxShadow: theme.isDark
-                    ? '0 3px 12px rgba(0,0,0,0.35)'
-                    : '0 3px 12px rgba(0,0,0,0.14)',
-                },
-              }),
-            },
+            mapChromeBorder(theme),
+            active && { borderColor: 'rgba(220, 38, 38, 0.45)', borderWidth: 1.5 },
           ]}
+          intensity={72}
         >
-          <PenDrawIcon color={active ? PEN_RED_ACTIVE : theme.colors.secondary} size={22} />
-        </View>
+          <PenDrawIcon color={active ? PEN_RED_ACTIVE : theme.colors.secondary} size={21} />
+        </FrostedView>
       </Animated.View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  pressable: {
+    alignSelf: 'flex-start',
+  },
   button: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
   },

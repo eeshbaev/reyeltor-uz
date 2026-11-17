@@ -15,6 +15,11 @@ export interface Database {
           full_name: string;
           phone: string;
           email: string;
+          phone_visible?: boolean;
+          email_visible?: boolean;
+          telegram_username?: string | null;
+          avatar_url?: string | null;
+          bio?: string | null;
           total_posted: number;
           total_rented: number;
           total_sold: number;
@@ -30,6 +35,11 @@ export interface Database {
           full_name: string;
           phone: string;
           email: string;
+          phone_visible?: boolean;
+          email_visible?: boolean;
+          telegram_username?: string | null;
+          avatar_url?: string | null;
+          bio?: string | null;
           total_posted?: number;
           total_rented?: number;
           total_sold?: number;
@@ -188,6 +198,82 @@ export interface Database {
           checked_in_on: string;
         };
         Update: Partial<Database['public']['Tables']['checkin_log']['Insert']>;
+      };
+      push_tokens: {
+        Row: {
+          id: string;
+          user_id: string;
+          expo_push_token: string;
+          platform: 'ios' | 'android';
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          expo_push_token: string;
+          platform: 'ios' | 'android';
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['push_tokens']['Insert']>;
+      };
+      notification_preferences: {
+        Row: {
+          user_id: string;
+          listings_enabled: boolean;
+          favorites_enabled: boolean;
+          engagement_enabled: boolean;
+          checkin_enabled: boolean;
+          locale: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          listings_enabled?: boolean;
+          favorites_enabled?: boolean;
+          engagement_enabled?: boolean;
+          checkin_enabled?: boolean;
+          locale?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['notification_preferences']['Insert']>;
+      };
+      notification_log: {
+        Row: {
+          id: string;
+          user_id: string;
+          category: string;
+          title: string;
+          body: string;
+          data: Json;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          category: string;
+          title: string;
+          body: string;
+          data?: Json;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['notification_log']['Insert']>;
+      };
+      notification_dedup: {
+        Row: {
+          id: string;
+          user_id: string;
+          dedup_key: string;
+          sent_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          dedup_key: string;
+          sent_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['notification_dedup']['Insert']>;
       };
     };
   };

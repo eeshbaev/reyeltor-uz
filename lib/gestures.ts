@@ -11,9 +11,10 @@ export function createHorizontalSwipeGesture(onSwipe: (translationX: number) => 
     .runOnJS(true);
 }
 
-/** Map pan — allow free movement; carousel handles its own horizontal scroll in its zone. */
+/** Map pan — allow taps on markers; activate pan after a small drag threshold. */
 export const MAP_PAN_GESTURE = {
   minDistance: 0,
+  activeOffset: 10,
 };
 
 /** Shared bottom-sheet gesture tuning for smoother drag + scroll handoff. */

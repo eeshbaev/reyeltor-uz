@@ -1,19 +1,25 @@
+import { useEffect, useRef, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WelcomeCoin } from './WelcomeCoin';
+import { BrandWordmark } from '@/components/brand/BrandWordmark';
 import { AppText } from '@/components/ui/AppText';
 import { WELCOME_COINS } from '@/lib/constants';
+import { motion } from '@/lib/design/motion';
 import { spacing } from '@/lib/design/spacing';
 import { markWelcomeShown } from '@/lib/onboarding/storage';
 
 interface PostRegistrationWelcomeProps {
   fullName: string;
+  returnTo?: string;
 }
 
-export function PostRegistrationWelcome({ fullName }: PostRegistrationWelcomeProps) {
+export function PostRegistrationWelcome({ fullName, returnTo }: PostRegistrationWelcomeProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [count, setCount] = useState(0);
@@ -51,28 +57,34 @@ export function PostRegistrationWelcome({ fullName }: PostRegistrationWelcomePro
   }, []);
 
   const explore = () => {
-    router.replace('/(tabs)/map');
+    router.replace(returnTo === 'favorites' ? '/(tabs)/favorites' : '/(tabs)/map');
   };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom + spacing.lg }]}>
       <View style={styles.center}>
-        <Text style={styles.wordmark}>reyeltor.uz</Text>
+        <Animated.View entering={FadeIn.duration(motion.gentle)}>
+          <BrandWordmark variant="hero" animate style={styles.wordmark} />
+        </Animated.View>
 
-        <View style={styles.coinBlock}>
+        <Animated.View entering={FadeInDown.delay(160).duration(motion.gentle)} style={styles.coinBlock}>
           <WelcomeCoin />
           <Text style={styles.count}>{count}</Text>
           <AppText variant="body" style={styles.coinsLabel}>
-            free coins to get started
+            {t('welcome.coinsLabel')}
           </AppText>
-        </View>
+        </Animated.View>
 
-        <Text style={styles.welcomeName}>Welcome, {fullName}.</Text>
+        <Animated.View entering={FadeInDown.delay(320).duration(motion.gentle)}>
+          <Text style={styles.welcomeName}>{t('welcome.greeting', { name: fullName })}</Text>
+        </Animated.View>
       </View>
 
-      <Pressable style={styles.cta} onPress={explore} accessibilityRole="button">
-        <Text style={styles.ctaLabel}>Explore Tashkent →</Text>
-      </Pressable>
+      <Animated.View entering={FadeInDown.delay(480).duration(motion.gentle)}>
+        <Pressable style={styles.cta} onPress={explore} accessibilityRole="button">
+          <Text style={styles.ctaLabel}>{t('welcome.exploreCta')}</Text>
+        </Pressable>
+      </Animated.View>
     </View>
   );
 }
@@ -91,10 +103,7 @@ const styles = StyleSheet.create({
     gap: spacing.xl,
   },
   wordmark: {
-    color: '#FFFFFF',
-    fontSize: 48,
-    fontWeight: '500',
-    letterSpacing: -0.5,
+    marginBottom: spacing.xs,
   },
   coinBlock: {
     alignItems: 'center',

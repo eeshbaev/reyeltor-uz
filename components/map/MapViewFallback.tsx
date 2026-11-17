@@ -17,14 +17,15 @@ export interface MapViewRef {
   flyToCoverage: (center: { latitude: number; longitude: number; zoom: number }) => void;
 }
 
+const BOUNDS: [number, number, number, number] = [69.0, 41.1, 69.5, 41.5];
+
 /** MapLibre-free map — works on web, Expo Go, and simulators without a dev build. */
-export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewFallback(
+export const MapView = forwardRef<MapViewRef, MapViewProps>((
   { listings, onListingPress, initialCenter },
   ref,
-) {
+) => {
   const center = initialCenter ?? TASHKENT_CENTER;
   const [zoom, setZoom] = useState(center.zoom);
-  const bounds: [number, number, number, number] = [69.0, 41.1, 69.5, 41.5];
 
   useImperativeHandle(ref, () => ({
     flyToCoverage: (c) => setZoom(c.zoom),
@@ -45,7 +46,7 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewFall
     return cluster;
   }, [listings]);
 
-  const clusters = useMemo(() => index.getClusters(bounds, Math.floor(zoom)), [index, bounds, zoom]);
+  const clusters = useMemo(() => index.getClusters(BOUNDS, Math.floor(zoom)), [index, zoom]);
 
   const tileUrl = getMapBackgroundTileUrl(center.latitude, center.longitude, zoom);
 
@@ -83,7 +84,7 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewFall
                   <ClusterBubble
                     count={1}
                     size={getClusterSize(1)}
-                    onPress={() => onListingPress(props.listingId!)}
+                    onPress={() => props.listingId && onListingPress(props.listingId)}
                   />
                 </View>
               );
@@ -94,7 +95,7 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewFall
                 <ListingBubble
                   price={props.price ?? 0}
                   featured={props.featured}
-                  onPress={() => onListingPress(props.listingId!)}
+                  onPress={() => props.listingId && onListingPress(props.listingId)}
                 />
               </View>
             );

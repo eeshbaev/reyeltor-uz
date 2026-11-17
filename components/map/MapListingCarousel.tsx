@@ -1,75 +1,90 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useMemo, useState } from 'react';
-import { Platform, StyleSheet, View, Dimensions } from 'react-native';
+import { useMemo } from 'react';
+import { Platform, StyleSheet, View } from 'react-native';
 import { FlatList as GestureFlatList } from 'react-native-gesture-handler';
 import { ListingCard } from '@/components/listing/ListingCard';
-import { CategoryToggle } from '@/components/map/CategoryToggle';
-import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
-import { LIST_SWIPE_HINT_KEY } from '@/lib/constants';
+import { MapNearbyPlacesButton } from '@/components/map/MapNearbyPlacesButton';
+import { isDemoId } from '@/lib/demo';
 import { spacing } from '@/lib/design/spacing';
+import { MAP_LISTING_PHOTO_HEIGHT } from '@/lib/listingPhotos';
 import type { ListingWithPhotos } from '@/types';
 
-export const MAP_LISTING_CATEGORY_BAR_HEIGHT = 40;
-export const MAP_LISTING_CARD_WIDTH = 300;
-export const MAP_LISTING_CAROUSEL_HEIGHT = 248 + MAP_LISTING_CATEGORY_BAR_HEIGHT;
+export const MAP_LISTING_CATEGORY_BAR_HEIGHT = 36;
+export const MAP_LISTING_CARD_WIDTH = 328;
+export const MAP_LISTING_CAROUSEL_HEIGHT = MAP_LISTING_PHOTO_HEIGHT + MAP_LISTING_CATEGORY_BAR_HEIGHT + spacing.xs;
 
-/** Total height from screen bottom: tab clearance + category bar + cards. */
-export function mapCarouselStackHeight(safeBottom: number): number {
-  return mapListingCarouselBottomOffset(safeBottom) + MAP_LISTING_CAROUSEL_HEIGHT;
-}
-
-/** First detail-sheet snap — lines up with the map listing carousel. */
-export function mapDetailPeekSnapPercent(safeBottom: number): string {
-  const screenHeight = Dimensions.get('window').height;
-  const stackHeight = mapCarouselStackHeight(safeBottom);
-  const percent = Math.min(88, Math.max(38, Math.ceil((stackHeight / screenHeight) * 100)));
-  return `${percent}%`;
+export function mapListingCarouselBottomOffset(safeAreaBottom: number): number {
+  return safeAreaBottom + 80;
 }
 
 interface MapListingCarouselProps {
   listings: ListingWithPhotos[];
   onListingPress: (id: string) => void;
-  bottomOffset: number;
   hidden?: boolean;
   dimmed?: boolean;
+  bottomOffset?: number;
+  focusedListingId?: string | null;
+  onExploreNeighborhood?: (listingId: string) => void;
 }
 
-export function mapListingCarouselBottomOffset(safeBottom: number) {
-  return Math.max(safeBottom, spacing.sm) + TAB_BAR_CLEARANCE - spacing.xs;
-}
-
-export function MapListingCarousel({ listings, onListingPress, bottomOffset, hidden, dimmed }: MapListingCarouselProps) {
-  const [showSwipeHint, setShowSwipeHint] = useState(false);
-
+export function MapListingCarousel({
+  listings,
+  onListingPress,
+  hidden,
+  dimmed = false,
+  bottomOffset = 80,
+  focusedListingId = null,
+  onExploreNeighborhood,
+}: MapListingCarouselProps) {
+  // OPTIMIZATION #2: Parse dates once before sort to avoid Date object creation during comparisons
   const sorted = useMemo(
-    () =>
-      [...listings].sort((a, b) => {
+    () => {
+      // Pre-parse timestamps to avoid Date object creation in comparator (O(n) instead of O(n log n))
+      const timestamps = new Map<string, number>();
+      listings.forEach((listing) => {
+        timestamps.set(listing.id, new Date(listing.posted_at).getTime());
+      });
+
+      return [...listings].sort((a, b) => {
+        // Real listings always before illustrative demo listings.
+        const aDemo = isDemoId(a.id);
+        const bDemo = isDemoId(b.id);
+        if (aDemo !== bDemo) return aDemo ? 1 : -1;
         if (a.is_featured !== b.is_featured) return a.is_featured ? -1 : 1;
-        return new Date(b.posted_at).getTime() - new Date(a.posted_at).getTime();
-      }),
+        return (timestamps.get(b.id) ?? 0) - (timestamps.get(a.id) ?? 0);
+      });
+    },
     [listings],
   );
 
-  useEffect(() => {
-    AsyncStorage.getItem(LIST_SWIPE_HINT_KEY).then((v) => {
-      if (!v) setShowSwipeHint(true);
-    });
-  }, []);
+  if (hidden) return null;
 
-  if (hidden || sorted.length === 0) return null;
+  if (sorted.length === 0) return null;
 
   return (
     <View
-      style={[styles.wrap, { bottom: bottomOffset }, dimmed && styles.dimmed]}
-      pointerEvents={dimmed ? 'none' : 'box-none'}
+      style={[
+        {
+          position: 'absolute',
+          bottom: bottomOffset,
+          left: 0,
+          right: 0,
+          zIndex: 15,
+          opacity: dimmed ? 0.5 : 1,
+        },
+      ]}
+      pointerEvents="box-none"
     >
-      <CategoryToggle />
+      {focusedListingId && onExploreNeighborhood ? (
+        <View style={styles.nearbyPlacesRow} pointerEvents="box-none">
+          <MapNearbyPlacesButton onPress={() => onExploreNeighborhood(focusedListingId)} />
+        </View>
+      ) : null}
       <GestureFlatList
         style={styles.list}
         horizontal
         nestedScrollEnabled
         directionalLockEnabled
-        scrollEventThrottle={16}
+        scrollEventThrottle={32}
         data={sorted}
         keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}
@@ -81,18 +96,14 @@ export function MapListingCarousel({ listings, onListingPress, bottomOffset, hid
         overScrollMode="never"
         contentContainerStyle={styles.content}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <ListingCard
             listing={item}
             variant="compact"
             width={MAP_LISTING_CARD_WIDTH}
             enableSwipe={false}
-            showSwipeHint={showSwipeHint && index === 0}
-            onSwipeHintDismiss={() => {
-              setShowSwipeHint(false);
-              AsyncStorage.setItem(LIST_SWIPE_HINT_KEY, '1');
-            }}
             onPress={() => onListingPress(item.id)}
+            onOpenDetail={() => onListingPress(item.id)}
           />
         )}
       />
@@ -101,21 +112,19 @@ export function MapListingCarousel({ listings, onListingPress, bottomOffset, hid
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    zIndex: 15,
-  },
-  dimmed: {
-    opacity: 0.55,
+  nearbyPlacesRow: {
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
   list: {
     height: MAP_LISTING_CAROUSEL_HEIGHT - MAP_LISTING_CATEGORY_BAR_HEIGHT,
+    backgroundColor: 'transparent',
   },
   content: {
     paddingHorizontal: spacing.md,
-    paddingBottom: Platform.OS === 'ios' ? spacing.xs : 0,
+    paddingBottom: Platform.OS === 'ios' ? spacing.sm : spacing.xs,
+    backgroundColor: 'transparent',
   },
   separator: { width: spacing.sm },
 });

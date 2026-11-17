@@ -3,10 +3,12 @@ export const MIN_ZOOM = 7;
 export const MAX_ZOOM = 19;
 
 export function clampZoom(zoom: number): number {
+  'worklet';
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom));
 }
 
 export function lngLatToPixel(lng: number, lat: number, zoom: number): { x: number; y: number } {
+  'worklet';
   const scale = TILE_SIZE * 2 ** zoom;
   const x = ((lng + 180) / 360) * scale;
   const latRad = (lat * Math.PI) / 180;
@@ -15,6 +17,7 @@ export function lngLatToPixel(lng: number, lat: number, zoom: number): { x: numb
 }
 
 export function pixelToLngLat(x: number, y: number, zoom: number): { lng: number; lat: number } {
+  'worklet';
   const scale = TILE_SIZE * 2 ** zoom;
   const lng = (x / scale) * 360 - 180;
   const latRad = Math.atan(Math.sinh(Math.PI * (1 - (2 * y) / scale)));
@@ -64,7 +67,7 @@ export function getVisibleTiles(
   zoom: number,
   mapWidth: number,
   mapHeight: number,
-  padding = 2,
+  padding = 3,
 ): { tiles: MapTileCoord[]; tileZoom: number; scale: number } {
   const tileZoom = Math.floor(zoom);
   const scale = 2 ** (zoom - tileZoom);

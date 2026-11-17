@@ -1,0 +1,23 @@
+Key,English Text,Domain,Priority
+auth.firstName,First name,auth,HIGH
+auth.lastName,Last name,auth,HIGH
+coins.typeReferralBonus,Referral bonus,coins,HIGH
+coins.typeReferralFirstFavorite,Friend's first favorite,coins,HIGH
+coins.typeReferralFirstPost,Friend's first listing,coins,HIGH
+coins.typeReferralRegister,Referral signup bonus,coins,HIGH
+favorites.remove,Remove,favorites,HIGH
+profile.addPhoto,Add photo,profile,HIGH
+profile.changePhotoAction,Change photo,profile,HIGH
+profile.continue,Continue,profile,HIGH
+profile.identity,Profile information,profile,HIGH
+profile.identityHint,Your name and phone are saved to your account. You can update them anytime.,profile,HIGH
+profile.identitySaved,Profile information saved,profile,HIGH
+profile.invalidFirstName,Enter a valid first name (at least 2 characters),profile,HIGH
+profile.invalidLastName,Enter a valid last name (at least 2 characters),profile,HIGH
+profile.photoRemoved,Profile photo removed,profile,HIGH
+profile.removePhotoConfirm,Your photo will be deleted from your profile. You can add a new one anytime.,profile,HIGH
+profile.removePhotoTitle,Remove profile photo?,profile,HIGH
+profile.setupSubtitle,Add your name and phone number to continue.,profile,HIGH
+profile.setupTitle,Complete your profile,profile,HIGH
+profile.showPhonePublicly,Show phone to buyers,profile,HIGH
+profile.showPhonePubliclyHint,"When off, your phone stays on your account but is hidden on listings and your public profile.",profile,HIGH

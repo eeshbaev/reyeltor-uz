@@ -1,40 +1,45 @@
-import type { ListingWithPhotos } from '@/types';
 import { DEMO_AGENTS } from './agents';
 import { demoPhoto } from './photos';
+import type { ListingWithPhotos } from '@/types';
 
 const daysAgo = (days: number) => new Date(Date.now() - days * 86_400_000).toISOString();
 const daysFromNow = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString();
 
-const P = {
-  penthouse: 'https://images.unsplash.com/photo-1502672260266-1c1ef2e93688?w=800&q=80',
-  balcony: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80',
-  kitchen: 'https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=800&q=80',
-  newApt: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80',
-  living: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80',
-  loft: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&q=80',
-  campus: 'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=800&q=80',
-  office: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
-  cowork: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&q=80',
-  retail: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80',
-  cafe: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=80',
-  warehouse: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80',
-  loading: 'https://images.unsplash.com/photo-1587293852729-70cdb56c2866?w=800&q=80',
-  bedroom: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80',
-  house: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-  townhouse: 'https://images.unsplash.com/photo-1605276374104-dee2afb0f330?w=800&q=80',
-  shopFront: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80',
-  restaurant: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
-  showroom: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80',
-  industrial: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&q=80',
-  boutique: 'https://images.unsplash.com/photo-1555529669-2269763671c8?w=800&q=80',
-};
+/** Bundled photo keys — each maps to a distinct asset in assets/listings/. */
+const K = {
+  living: 'living',
+  bedroom: 'bedroom',
+  apartment: 'apartment',
+  balcony: 'balcony',
+  loft: 'loft',
+  campus: 'campus',
+  kitchen: 'kitchen',
+  office: 'office',
+  retail: 'retail',
+  cafe: 'cafe',
+  warehouse: 'warehouse',
+  penthouse: 'living',
+  newApt: 'apartment',
+  cowork: 'office',
+  loading: 'warehouse',
+  house: 'apartment',
+  townhouse: 'balcony',
+  shopFront: 'retail',
+  restaurant: 'cafe',
+  showroom: 'living',
+  industrial: 'warehouse',
+  boutique: 'retail',
+} as const;
 
 function agentSummary(id: string) {
-  const a = DEMO_AGENTS.find((x) => x.id === id)!;
+  const a = DEMO_AGENTS.find((x) => x.id === id);
+  if (!a) throw new Error(`Agent ${id} not found in demo data`);
   return {
     id: a.id,
     full_name: a.full_name,
     phone: a.phone,
+    phone_visible: a.phone_visible ?? true,
+    email: a.email,
     telegram_username: a.telegram_username ?? null,
     avatar_url: a.avatar_url,
     created_at: a.created_at,
@@ -82,9 +87,9 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-001-1', 'l0000001-0000-4000-8000-000000000001', P.penthouse, 0),
-      demoPhoto('p-001-2', 'l0000001-0000-4000-8000-000000000001', P.balcony, 1),
-      demoPhoto('p-001-3', 'l0000001-0000-4000-8000-000000000001', P.kitchen, 2),
+      demoPhoto('p-001-1', 'l0000001-0000-4000-8000-000000000001', K.penthouse, 0),
+      demoPhoto('p-001-2', 'l0000001-0000-4000-8000-000000000001', K.balcony, 1),
+      demoPhoto('p-001-3', 'l0000001-0000-4000-8000-000000000001', K.kitchen, 2),
     ],
     users: agentSummary('a0000001-0000-4000-8000-000000000001'),
   },
@@ -118,8 +123,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-002-1', 'l0000002-0000-4000-8000-000000000002', P.newApt, 0),
-      demoPhoto('p-002-2', 'l0000002-0000-4000-8000-000000000002', P.living, 1),
+      demoPhoto('p-002-1', 'l0000002-0000-4000-8000-000000000002', K.newApt, 0),
+      demoPhoto('p-002-2', 'l0000002-0000-4000-8000-000000000002', K.living, 1),
     ],
     users: agentSummary('a0000002-0000-4000-8000-000000000002'),
   },
@@ -153,8 +158,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-003-1', 'l0000003-0000-4000-8000-000000000003', P.loft, 0),
-      demoPhoto('p-003-2', 'l0000003-0000-4000-8000-000000000003', P.campus, 1),
+      demoPhoto('p-003-1', 'l0000003-0000-4000-8000-000000000003', K.loft, 0),
+      demoPhoto('p-003-2', 'l0000003-0000-4000-8000-000000000003', K.campus, 1),
     ],
     users: agentSummary('a0000003-0000-4000-8000-000000000003'),
   },
@@ -188,8 +193,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-004-1', 'l0000004-0000-4000-8000-000000000004', P.office, 0),
-      demoPhoto('p-004-2', 'l0000004-0000-4000-8000-000000000004', P.cowork, 1),
+      demoPhoto('p-004-1', 'l0000004-0000-4000-8000-000000000004', K.office, 0),
+      demoPhoto('p-004-2', 'l0000004-0000-4000-8000-000000000004', K.cowork, 1),
     ],
     users: agentSummary('a0000004-0000-4000-8000-000000000004'),
   },
@@ -223,8 +228,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-005-1', 'l0000005-0000-4000-8000-000000000005', P.cafe, 0),
-      demoPhoto('p-005-2', 'l0000005-0000-4000-8000-000000000005', P.retail, 1),
+      demoPhoto('p-005-1', 'l0000005-0000-4000-8000-000000000005', K.cafe, 0),
+      demoPhoto('p-005-2', 'l0000005-0000-4000-8000-000000000005', K.retail, 1),
     ],
     users: agentSummary('a0000005-0000-4000-8000-000000000005'),
   },
@@ -258,8 +263,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-006-1', 'l0000006-0000-4000-8000-000000000006', P.warehouse, 0),
-      demoPhoto('p-006-2', 'l0000006-0000-4000-8000-000000000006', P.loading, 1),
+      demoPhoto('p-006-1', 'l0000006-0000-4000-8000-000000000006', K.warehouse, 0),
+      demoPhoto('p-006-2', 'l0000006-0000-4000-8000-000000000006', K.loading, 1),
     ],
     users: agentSummary('a0000006-0000-4000-8000-000000000006'),
   },
@@ -293,9 +298,9 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-007-1', 'l0000007-0000-4000-8000-000000000007', P.living, 0),
-      demoPhoto('p-007-2', 'l0000007-0000-4000-8000-000000000007', P.bedroom, 1),
-      demoPhoto('p-007-3', 'l0000007-0000-4000-8000-000000000007', P.kitchen, 2),
+      demoPhoto('p-007-1', 'l0000007-0000-4000-8000-000000000007', K.living, 0),
+      demoPhoto('p-007-2', 'l0000007-0000-4000-8000-000000000007', K.bedroom, 1),
+      demoPhoto('p-007-3', 'l0000007-0000-4000-8000-000000000007', K.kitchen, 2),
     ],
     users: agentSummary('a0000001-0000-4000-8000-000000000001'),
   },
@@ -329,8 +334,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-008-1', 'l0000008-0000-4000-8000-000000000008', P.newApt, 0),
-      demoPhoto('p-008-2', 'l0000008-0000-4000-8000-000000000008', P.balcony, 1),
+      demoPhoto('p-008-1', 'l0000008-0000-4000-8000-000000000008', K.newApt, 0),
+      demoPhoto('p-008-2', 'l0000008-0000-4000-8000-000000000008', K.balcony, 1),
     ],
     users: agentSummary('a0000002-0000-4000-8000-000000000002'),
   },
@@ -364,8 +369,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-009-1', 'l0000009-0000-4000-8000-000000000009', P.townhouse, 0),
-      demoPhoto('p-009-2', 'l0000009-0000-4000-8000-000000000009', P.loft, 1),
+      demoPhoto('p-009-1', 'l0000009-0000-4000-8000-000000000009', K.townhouse, 0),
+      demoPhoto('p-009-2', 'l0000009-0000-4000-8000-000000000009', K.loft, 1),
     ],
     users: agentSummary('a0000003-0000-4000-8000-000000000003'),
   },
@@ -399,8 +404,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-010-1', 'l0000010-0000-4000-8000-000000000010', P.shopFront, 0),
-      demoPhoto('p-010-2', 'l0000010-0000-4000-8000-000000000010', P.boutique, 1),
+      demoPhoto('p-010-1', 'l0000010-0000-4000-8000-000000000010', K.shopFront, 0),
+      demoPhoto('p-010-2', 'l0000010-0000-4000-8000-000000000010', K.boutique, 1),
     ],
     users: agentSummary('a0000004-0000-4000-8000-000000000004'),
   },
@@ -434,8 +439,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-011-1', 'l0000011-0000-4000-8000-000000000011', P.showroom, 0),
-      demoPhoto('p-011-2', 'l0000011-0000-4000-8000-000000000011', P.office, 1),
+      demoPhoto('p-011-1', 'l0000011-0000-4000-8000-000000000011', K.showroom, 0),
+      demoPhoto('p-011-2', 'l0000011-0000-4000-8000-000000000011', K.office, 1),
     ],
     users: agentSummary('a0000005-0000-4000-8000-000000000005'),
   },
@@ -469,8 +474,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-012-1', 'l0000012-0000-4000-8000-000000000012', P.industrial, 0),
-      demoPhoto('p-012-2', 'l0000012-0000-4000-8000-000000000012', P.warehouse, 1),
+      demoPhoto('p-012-1', 'l0000012-0000-4000-8000-000000000012', K.industrial, 0),
+      demoPhoto('p-012-2', 'l0000012-0000-4000-8000-000000000012', K.warehouse, 1),
     ],
     users: agentSummary('a0000006-0000-4000-8000-000000000006'),
   },
@@ -504,8 +509,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-013-1', 'l0000013-0000-4000-8000-000000000013', P.retail, 0),
-      demoPhoto('p-013-2', 'l0000013-0000-4000-8000-000000000013', P.shopFront, 1),
+      demoPhoto('p-013-1', 'l0000013-0000-4000-8000-000000000013', K.retail, 0),
+      demoPhoto('p-013-2', 'l0000013-0000-4000-8000-000000000013', K.shopFront, 1),
     ],
     users: agentSummary('a0000001-0000-4000-8000-000000000001'),
   },
@@ -539,8 +544,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-014-1', 'l0000014-0000-4000-8000-000000000014', P.cowork, 0),
-      demoPhoto('p-014-2', 'l0000014-0000-4000-8000-000000000014', P.office, 1),
+      demoPhoto('p-014-1', 'l0000014-0000-4000-8000-000000000014', K.cowork, 0),
+      demoPhoto('p-014-2', 'l0000014-0000-4000-8000-000000000014', K.office, 1),
     ],
     users: agentSummary('a0000002-0000-4000-8000-000000000002'),
   },
@@ -574,8 +579,8 @@ export const DEMO_LISTINGS: DemoListing[] = [
     archived_at: null,
     deletes_at: null,
     listing_photos: [
-      demoPhoto('p-015-1', 'l0000015-0000-4000-8000-000000000015', P.restaurant, 0),
-      demoPhoto('p-015-2', 'l0000015-0000-4000-8000-000000000015', P.cafe, 1),
+      demoPhoto('p-015-1', 'l0000015-0000-4000-8000-000000000015', K.restaurant, 0),
+      demoPhoto('p-015-2', 'l0000015-0000-4000-8000-000000000015', K.cafe, 1),
     ],
     users: agentSummary('a0000003-0000-4000-8000-000000000003'),
   },

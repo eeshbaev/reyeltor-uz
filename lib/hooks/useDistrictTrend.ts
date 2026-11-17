@@ -10,7 +10,7 @@ export function useDistrictTwelveMonthTrend(
   const [data, setData] = useState<DistrictTrendPoint[]>([]);
 
   useEffect(() => {
-    let cancelled = false;
+    const cancelled = false;
 
     const load = async () => {
       const snapshot = getMarketDataSnapshot();

@@ -17,8 +17,9 @@ export interface MonthlyRow {
 export interface LoanSummary {
   loanAmount: number;
   monthlyPayment: number;
+  /** Down payment + all loan installments. */
   totalPaid: number;
-  /** Interest paid to the bank on top of the loan principal. */
+  /** Extra paid beyond the property price (totalPaid − price). */
   bankOverpayment: number;
   /** @deprecated Use bankOverpayment — kept for reports. */
   totalInterest: number;
@@ -26,18 +27,22 @@ export interface LoanSummary {
 }
 
 function finalizeLoanSummary(
+  price: number,
+  downPayment: number,
   loanAmount: number,
   monthlyPayment: number,
   schedule: MonthlyRow[],
 ): LoanSummary {
-  const totalPaid = schedule.reduce((sum, row) => sum + row.payment, 0);
-  const bankOverpayment = schedule.reduce((sum, row) => sum + row.interest, 0);
+  const loanPaymentsTotal = schedule.reduce((sum, row) => sum + row.payment, 0);
+  const totalPaid = downPayment + loanPaymentsTotal;
+  const bankOverpayment = Math.max(0, totalPaid - price);
+  const totalInterest = schedule.reduce((sum, row) => sum + row.interest, 0);
   return {
     loanAmount,
     monthlyPayment,
     totalPaid,
     bankOverpayment,
-    totalInterest: bankOverpayment,
+    totalInterest,
     schedule,
   };
 }
@@ -52,7 +57,7 @@ export function calculateLoan(params: LoanParams): LoanSummary {
     return {
       loanAmount: 0,
       monthlyPayment: 0,
-      totalPaid: price,
+      totalPaid: Math.max(downPayment, price),
       bankOverpayment: 0,
       totalInterest: 0,
       schedule: [],
@@ -78,7 +83,7 @@ export function calculateLoan(params: LoanParams): LoanSummary {
         balance: Math.round(balance),
       });
     }
-    return finalizeLoanSummary(loanAmount, Math.round(monthlyPayment), schedule);
+    return finalizeLoanSummary(price, downPayment, loanAmount, Math.round(monthlyPayment), schedule);
   }
 
   const principalPerMonth = loanAmount / months;
@@ -95,7 +100,7 @@ export function calculateLoan(params: LoanParams): LoanSummary {
       balance: Math.round(balance),
     });
   }
-  return finalizeLoanSummary(loanAmount, Math.round(schedule[0]?.payment ?? 0), schedule);
+  return finalizeLoanSummary(price, downPayment, loanAmount, Math.round(schedule[0]?.payment ?? 0), schedule);
 }
 
 export function calculateWithRateIncrease(params: LoanParams, increasePercent: number): LoanSummary {
@@ -140,7 +145,13 @@ export function calculateLoanWithExtraPayment(
       });
     }
 
-    return finalizeLoanSummary(loanAmount, Math.round(annuityPayment + extraMonthlyPayment), schedule);
+    return finalizeLoanSummary(
+      params.price,
+      params.downPayment,
+      loanAmount,
+      Math.round(annuityPayment + extraMonthlyPayment),
+      schedule,
+    );
   }
 
   const principalPerMonth = loanAmount / months;
@@ -160,7 +171,7 @@ export function calculateLoanWithExtraPayment(
     });
   }
 
-  return finalizeLoanSummary(loanAmount, schedule[0]?.payment ?? 0, schedule);
+  return finalizeLoanSummary(params.price, params.downPayment, loanAmount, schedule[0]?.payment ?? 0, schedule);
 }
 
 export interface EarlyRepaymentResult {

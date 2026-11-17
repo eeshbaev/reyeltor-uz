@@ -1,3 +1,4 @@
+import type { Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,8 +10,8 @@ import { changeLanguage } from '@/lib/i18n';
 
 interface LanguageTopBarProps {
   showBack?: boolean;
-  backHref?: string;
-  backFallbackHref?: string;
+  backHref?: Href;
+  backFallbackHref?: Href;
 }
 
 export function LanguageTopBar({

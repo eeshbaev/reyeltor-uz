@@ -5,7 +5,7 @@ export const TOOL_CARDS = [
     titleKey: 'tools.mortgage.title',
     descKey: 'tools.mortgage.description',
     route: '/(tabs)/tools/mortgage' as const,
-    imageUri: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=85',
+    image: require('../../assets/tools/mortgage.jpg'),
   },
   {
     key: 'rentVsBuy',
@@ -13,7 +13,7 @@ export const TOOL_CARDS = [
     titleKey: 'tools.rentVsBuy.title',
     descKey: 'tools.rentVsBuy.description',
     route: '/(tabs)/tools/rent-vs-buy' as const,
-    imageUri: 'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&q=85',
+    image: require('../../assets/tools/rent-vs-buy.jpg'),
   },
   {
     key: 'affordability',
@@ -21,7 +21,7 @@ export const TOOL_CARDS = [
     titleKey: 'tools.affordability.title',
     descKey: 'tools.affordability.description',
     route: '/(tabs)/tools/affordability' as const,
-    imageUri: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=85',
+    image: require('../../assets/tools/affordability.jpg'),
   },
   {
     key: 'movingCosts',
@@ -29,7 +29,7 @@ export const TOOL_CARDS = [
     titleKey: 'tools.movingCosts.title',
     descKey: 'tools.movingCosts.description',
     route: '/(tabs)/tools/moving-costs' as const,
-    imageUri: 'https://images.unsplash.com/photo-1600518464441-9154a4dea21b?w=800&q=85',
+    image: require('../../assets/tools/moving-costs.jpg'),
   },
   {
     key: 'renovation',
@@ -37,7 +37,7 @@ export const TOOL_CARDS = [
     titleKey: 'tools.renovation.title',
     descKey: 'tools.renovation.description',
     route: '/(tabs)/tools/renovation' as const,
-    imageUri: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=85',
+    image: require('../../assets/tools/renovation.jpg'),
   },
   {
     key: 'districtComparison',
@@ -45,7 +45,7 @@ export const TOOL_CARDS = [
     titleKey: 'tools.districtComparison.title',
     descKey: 'tools.districtComparison.description',
     route: '/(tabs)/tools/district-comparison' as const,
-    imageUri: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&q=85',
+    image: require('../../assets/tools/district-comparison.jpg'),
   },
   {
     key: 'currencyHistory',
@@ -53,6 +53,6 @@ export const TOOL_CARDS = [
     titleKey: 'tools.currencyHistory.title',
     descKey: 'tools.currencyHistory.description',
     route: '/(tabs)/tools/currency-history' as const,
-    imageUri: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&q=85',
+    image: require('../../assets/tools/currency-history.jpg'),
   },
 ] as const;

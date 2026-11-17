@@ -14,8 +14,10 @@ import Animated, {
 import { FrostedView } from '@/components/ui/FrostedView';
 import { useReduceMotion } from '@/lib/hooks/useReduceMotion';
 
-const EMBLEM_SOURCE = require('../../assets/reyeltor-emblem-source.png');
-const INLINE_EMBLEM_SOURCE = require('../../assets/android-icon-foreground.png');
+const INLINE_EMBLEM_SOURCE = require('../../assets/reyeltor-emblem-inline.png');
+const EMBLEM_SOURCE = require('../../assets/reyeltor-emblem-transparent.png');
+/** Original flat pin asset (798×990 cropped). */
+const INLINE_ASPECT = 798 / 990;
 
 const LAND_SPRING = { damping: 9, stiffness: 320, mass: 0.55 };
 const ENTRANCE_SPRING = { damping: 14, stiffness: 140, mass: 0.85 };
@@ -46,6 +48,9 @@ export function JumpingEmblem({
   const entranceScale = useSharedValue(entrance && !reduceMotion ? 0 : 1);
 
   const iconSize = size;
+  const inlineEmblemWidth =
+    variant === 'inline' ? Math.round(iconSize * INLINE_ASPECT) : iconSize;
+  const inlineEmblemHeight = variant === 'inline' ? iconSize : iconSize;
   const discSize = variant === 'hero' ? size + 24 : variant === 'badge' ? size + 12 : size;
   const platePadding = variant === 'hero' ? 16 : 8;
   const plateDiameter = discSize + platePadding * 2;
@@ -74,7 +79,7 @@ export function JumpingEmblem({
     );
   }, [jump, pauseMs, paused, reduceMotion]);
 
-  const shadowWidth = iconSize * 0.42;
+  const shadowWidth = (variant === 'inline' ? inlineEmblemWidth : iconSize) * 0.42;
   const shadowHeight = iconSize * 0.1;
 
   const emblemStyle = useAnimatedStyle(() => {
@@ -99,21 +104,33 @@ export function JumpingEmblem({
     ],
   }));
 
-  const emblemIcon = (
-    <Image
-      source={variant === 'inline' ? INLINE_EMBLEM_SOURCE : EMBLEM_SOURCE}
-      style={[
-        {
-          width: iconSize,
-          height: iconSize,
-          opacity: 1,
-          backgroundColor: 'transparent',
-        } as ImageStyle,
-        variant === 'inline' ? styles.inlineImage : null,
-      ]}
-      resizeMode="contain"
-    />
-  );
+  const emblemIcon =
+    variant === 'inline' ? (
+      <Image
+        source={INLINE_EMBLEM_SOURCE}
+        style={
+          {
+            width: inlineEmblemWidth,
+            height: inlineEmblemHeight,
+            backgroundColor: 'transparent',
+          } as ImageStyle
+        }
+        resizeMode="contain"
+      />
+    ) : (
+      <Image
+        source={EMBLEM_SOURCE}
+        style={
+          {
+            width: iconSize,
+            height: iconSize,
+            opacity: 1,
+            backgroundColor: 'transparent',
+          } as ImageStyle
+        }
+        resizeMode="contain"
+      />
+    );
 
   const whiteDisc =
     variant === 'inline' ? (
@@ -202,8 +219,20 @@ export function JumpingEmblem({
   }
 
   return (
-    <View style={[styles.inlineStack, { width: iconSize, height: iconSize + jumpHeight }, style]} pointerEvents="none">
-      <View style={[styles.inlineJumpLane, { height: iconSize + jumpHeight, paddingTop: jumpHeight }]}>
+    <View
+      style={[
+        styles.inlineStack,
+        { width: inlineEmblemWidth, height: inlineEmblemHeight + jumpHeight },
+        style,
+      ]}
+      pointerEvents="none"
+    >
+      <View
+        style={[
+          styles.inlineJumpLane,
+          { height: inlineEmblemHeight + jumpHeight, paddingTop: jumpHeight },
+        ]}
+      >
         {pinBody}
       </View>
       <View style={styles.inlineShadowSlot}>{groundShadow}</View>
@@ -262,9 +291,6 @@ const styles = StyleSheet.create({
   inlineShadowSlot: {
     alignItems: 'center',
     marginTop: 2,
-  },
-  inlineImage: {
-    backgroundColor: 'transparent',
   },
   groundShadow: {
     backgroundColor: 'rgba(37, 99, 235, 0.5)',

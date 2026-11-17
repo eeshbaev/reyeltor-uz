@@ -1,23 +1,27 @@
-import maplibregl, { type Map as MapLibreMap } from 'maplibre-gl';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import maplibregl, { type Map as MapLibreMap } from 'maplibre-gl';
+import type { AmbientSelection } from './AmbientMapMarkersLayer';
+import { AmbientMapMarkersLayer } from './AmbientMapMarkersLayer.web';
 import { DistrictLabelsOverlay } from './DistrictLabelsOverlay.web';
-import { buildClusterIndex, MapMarkersLayer } from './MapMarkersLayer.web';
 import { ListingBubble } from './ListingBubble';
+import { buildClusterIndex, MapMarkersLayer } from './MapMarkersLayer.web';
 import { NeighborhoodMarkersLayer } from './NeighborhoodMarkersLayer.web';
 import type { MapViewProps, MapViewRef } from './types';
 import { TASHKENT_CENTER, TASHKENT_MAP_MAX_BOUNDS } from '@/lib/constants';
 import { getCategoryColors } from '@/lib/design/categoryColors';
-import { useTheme } from '@/lib/theme';
-import { getNearbyAmenities } from '@/lib/neighborhood/amenities';
-import { polygonBounds } from '@/lib/map/polygon';
+import { getVisibleMapLandmarks } from '@/lib/map/ambientMapLayers';
 import { syncDistrictLayers } from '@/lib/map/districtLayers.web';
+import { polygonBounds } from '@/lib/map/polygon';
 import { syncSearchAreaLayer } from '@/lib/map/searchAreaLayer.web';
 import { clampZoom, MAX_ZOOM, MIN_ZOOM } from '@/lib/mapProjection';
 import { getMapAttribution, getWebMapStyle, prefersRetinaMapTiles } from '@/lib/mapTiles';
+import { getMapContextPois } from '@/lib/neighborhood/amenities';
+import { AMBIENT_MAP_MIN_ZOOM, POI_AMBIENT_TAP_MIN_ZOOM, POI_MAP_MIN_ZOOM } from '@/lib/neighborhood/poiMapConstants';
+import { useTheme } from '@/lib/theme';
 import type { MapAreaPolygon } from '@/types';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewWeb(
+export const MapView = forwardRef<MapViewRef, MapViewProps>((
   {
     listings,
     listingCategory,
@@ -31,12 +35,14 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewWeb(
     districtDetail,
   },
   ref,
-) {
+) => {
   const theme = useTheme();
   const categoryColors = getCategoryColors(theme.scheme, listingCategory);
   const start = initialCenter ?? TASHKENT_CENTER;
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const coverageRef = useRef(coverage);
+  coverageRef.current = coverage;
   const [mapReady, setMapReady] = useState(false);
   const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
   const [viewport, setViewport] = useState({
@@ -46,6 +52,7 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewWeb(
     bounds: [-180, -90, 180, 90] as [number, number, number, number],
   });
   const [, setTick] = useState(0);
+  const [selectedAmbient, setSelectedAmbient] = useState<AmbientSelection>(null);
 
   useEffect(() => {
     const node = containerRef.current;
@@ -93,6 +100,11 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewWeb(
         height: mapSize.height,
       };
     },
+    zoomBy: (delta: number) => {
+      const map = mapRef.current;
+      if (!map) return;
+      map.zoomTo(clampZoom(map.getZoom() + delta), { duration: 250 });
+    },
     project: (lng: number, lat: number) => {
       const map = mapRef.current;
       if (!map || !mapReady) return null;
@@ -105,7 +117,7 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewWeb(
       const lnglat = map.unproject([x, y]);
       return { lat: lnglat.lat, lng: lnglat.lng };
     },
-  }), [mapReady, mapSize, viewport.centerLat, viewport.centerLng, viewport.zoom]);
+  }), [mapReady, mapSize]);
 
   const index = useMemo(() => buildClusterIndex(listings), [listings]);
 
@@ -114,10 +126,25 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewWeb(
     [index, viewport],
   );
 
-  const nearbyPois = useMemo(
-    () => (focusedListing ? getNearbyAmenities(focusedListing.lat, focusedListing.lng, 500) : []),
-    [focusedListing],
-  );
+  const contextPois = useMemo(() => {
+    if (drawMode || !focusedListing || viewport.zoom < POI_MAP_MIN_ZOOM) return [];
+    return getMapContextPois(focusedListing.lat, focusedListing.lng);
+  }, [drawMode, focusedListing, viewport.zoom]);
+
+  const visibleLandmarks = useMemo(() => {
+    if (drawMode || viewport.zoom < AMBIENT_MAP_MIN_ZOOM) return [];
+    return getVisibleMapLandmarks(viewport.bounds, viewport.zoom);
+  }, [drawMode, viewport.bounds, viewport.zoom]);
+
+  useEffect(() => {
+    if (viewport.zoom < POI_AMBIENT_TAP_MIN_ZOOM) {
+      setSelectedAmbient(null);
+    }
+  }, [viewport.zoom]);
+
+  const selectAmbientLandmark = useCallback((id: string) => {
+    setSelectedAmbient((current) => (current?.id === id ? null : { id }));
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -154,12 +181,15 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewWeb(
     };
 
     map.on('load', () => {
-      syncDistrictLayers(map, coverage);
+      syncDistrictLayers(map, coverageRef.current);
       setMapReady(true);
       syncViewport();
     });
     map.on('move', syncViewport);
     map.on('zoom', syncViewport);
+    map.on('dragstart', () => {
+      setSelectedAmbient(null);
+    });
 
     mapRef.current = map;
 
@@ -239,14 +269,37 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewWeb(
       <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
       {mapReady ? (
         <>
-          <DistrictLabelsOverlay
-            coverage={coverage}
-            zoom={viewport.zoom}
-            districtDetail={districtDetail}
-            project={project}
-          />
+          {visibleLandmarks.length > 0 ? (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                pointerEvents: viewport.zoom >= POI_AMBIENT_TAP_MIN_ZOOM ? 'auto' : 'none',
+                overflow: 'hidden',
+                zIndex: viewport.zoom >= POI_AMBIENT_TAP_MIN_ZOOM ? 11 : 1,
+              }}
+            >
+              <AmbientMapMarkersLayer
+                landmarks={visibleLandmarks}
+                zoom={viewport.zoom}
+                selected={selectedAmbient}
+                onSelect={selectAmbientLandmark}
+                getScreenPosition={getScreenPosition}
+                interactive={viewport.zoom >= POI_AMBIENT_TAP_MIN_ZOOM}
+              />
+            </div>
+          ) : null}
+          {contextPois.length > 0 ? (
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 2 }}>
+              <NeighborhoodMarkersLayer
+                pois={contextPois}
+                getScreenPosition={getScreenPosition}
+                variant="context"
+              />
+            </div>
+          ) : null}
           {markersVisible ? (
-            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 4 }}>
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 6 }}>
               <MapMarkersLayer
                 clusters={clusters}
                 zoom={viewport.zoom}
@@ -257,9 +310,14 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewWeb(
               />
             </div>
           ) : null}
+          <DistrictLabelsOverlay
+            coverage={coverage}
+            zoom={viewport.zoom}
+            districtDetail={districtDetail}
+            project={project}
+          />
           {focusVisible ? (
-            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 5 }}>
-              <NeighborhoodMarkersLayer pois={nearbyPois} getScreenPosition={getScreenPosition} />
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 12 }}>
               {focusedScreen ? (
                 <div
                   style={{
@@ -268,7 +326,7 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(function MapViewWeb(
                     top: focusedScreen.y,
                     transform: 'translate(-50%, -50%)',
                     pointerEvents: 'auto',
-                    zIndex: 6,
+                    zIndex: 12,
                   }}
                 >
                   <ListingBubble

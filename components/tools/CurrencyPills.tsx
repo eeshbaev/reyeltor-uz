@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
-import { toolPillStyle } from '@/lib/design/toolChrome';
 import { spacing } from '@/lib/design/spacing';
+import { toolPillStyle } from '@/lib/design/toolChrome';
 import { useTheme } from '@/lib/theme';
 import type { PriceCurrency } from '@/types';
 

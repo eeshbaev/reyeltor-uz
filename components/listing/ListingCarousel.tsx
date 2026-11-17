@@ -1,18 +1,28 @@
-import { Image } from 'expo-image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Dimensions, Platform, StyleSheet, View, type ViewStyle } from 'react-native';
-import { FlatList, type FlatList as FlatListType } from 'react-native-gesture-handler';
+import { Image } from 'expo-image';
+import {
+  Platform,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+  type ViewStyle,
+} from 'react-native';
+import { FlatList, Gesture, GestureDetector, type FlatList as FlatListType } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
   runOnJS,
-  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
   type SharedValue,
 } from 'react-native-reanimated';
 import { AppText } from '@/components/ui/AppText';
 import { spacing } from '@/lib/design/spacing';
-import { LISTING_PHOTO_PLACEHOLDER } from '@/lib/listingPhotos';
+import { hapticLight } from '@/lib/haptics';
+import { LISTING_PHOTO_PLACEHOLDER_SOURCE, resolveListingPhotoSource } from '@/lib/listingPhotos';
+import { preloadCarouselImages } from '@/lib/network/imagePreloader';
 import { getPhotoUrl } from '@/lib/supabase';
 import { useTheme } from '@/lib/theme';
 import type { ListingPhoto } from '@/types';
@@ -22,10 +32,11 @@ interface ListingCarouselProps {
   width?: number;
   height?: number;
   pagination?: 'below' | 'overlay' | 'none';
+  /** Prioritize horizontal photo swipes inside bottom sheets. */
+  prioritizeHorizontalSwipe?: boolean;
+  /** When false, taps pass through to a parent press handler (map cards). */
+  scrollEnabled?: boolean;
 }
-
-const screenWidth = Dimensions.get('window').width;
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<ListingPhoto>);
 
 const WEB_SNAP_STYLE: ViewStyle | undefined =
   Platform.OS === 'web'
@@ -34,6 +45,23 @@ const WEB_SNAP_STYLE: ViewStyle | undefined =
 
 const WEB_SLIDE_STYLE: ViewStyle | undefined =
   Platform.OS === 'web' ? ({ scrollSnapAlign: 'start' } as ViewStyle) : undefined;
+
+const PAGER_SPRING = { damping: 22, stiffness: 220, mass: 0.8 };
+
+function CarouselPhoto({ photo, slideKey }: { photo: ListingPhoto; slideKey: string }) {
+  return (
+    <Image
+      source={resolveListingPhotoSource(photo.storage_path, getPhotoUrl(photo.storage_path))}
+      style={StyleSheet.absoluteFillObject}
+      contentFit="cover"
+      contentPosition="center"
+      recyclingKey={slideKey}
+      placeholder={LISTING_PHOTO_PLACEHOLDER_SOURCE}
+      transition={0}
+      cachePolicy="memory-disk"
+    />
+  );
+}
 
 function PaginationDot({
   dotIndex,
@@ -74,16 +102,176 @@ function PaginationDot({
   return <Animated.View style={[styles.dot, style]} />;
 }
 
+function CarouselFooter({
+  sorted,
+  index,
+  overlay,
+  pagination,
+  scrollX,
+  slideWidth,
+  theme,
+}: {
+  sorted: ListingPhoto[];
+  index: number;
+  overlay: boolean;
+  pagination: ListingCarouselProps['pagination'];
+  scrollX: SharedValue<number>;
+  slideWidth: number;
+  theme: ReturnType<typeof useTheme>;
+}) {
+  const showDots = sorted.length > 1 && pagination !== 'none';
+  if (!showDots) return null;
+
+  return (
+    <View style={overlay ? styles.overlayFooter : styles.footer} pointerEvents="none">
+      <View style={styles.dots}>
+        {sorted.map((photo, i) => (
+          <PaginationDot
+            key={`${photo.id}-${i}`}
+            dotIndex={i}
+            scrollX={scrollX}
+            slideWidth={slideWidth}
+            inactiveColor={overlay ? 'rgba(255,255,255,0.55)' : theme.colors.border}
+            activeColor={overlay ? '#ffffff' : theme.colors.primary}
+            overlay={overlay}
+          />
+        ))}
+      </View>
+      {pagination === 'below' ? (
+        <AppText variant="micro" style={styles.counter}>
+          {index + 1}/{sorted.length}
+        </AppText>
+      ) : overlay ? (
+        <AppText variant="micro" style={styles.overlayCounter}>
+          {index + 1}/{sorted.length}
+        </AppText>
+      ) : null}
+    </View>
+  );
+}
+
+/** Bottom-sheet friendly pager: finger-tracking strip, no FlatList vs vertical scroll fights. */
+function SheetPhotoPager({
+  photos,
+  width,
+  height,
+  pagination,
+}: {
+  photos: ListingPhoto[];
+  width: number;
+  height: number;
+  pagination: ListingCarouselProps['pagination'];
+}) {
+  const theme = useTheme();
+  const indexRef = useRef(0);
+  const [index, setIndex] = useState(0);
+  const translateX = useSharedValue(0);
+  const dragStartX = useSharedValue(0);
+  const scrollX = useSharedValue(0);
+  const overlay = pagination === 'overlay';
+
+  const sorted = useMemo(
+    () => [...photos].sort((a, b) => a.order_index - b.order_index),
+    [photos],
+  );
+
+  const commitIndex = useCallback((nextIndex: number) => {
+    if (nextIndex === indexRef.current) return;
+    indexRef.current = nextIndex;
+    setIndex(nextIndex);
+    hapticLight();
+  }, []);
+
+  useEffect(() => {
+    indexRef.current = 0;
+    setIndex(0);
+    translateX.value = 0;
+    scrollX.value = 0;
+  }, [sorted, scrollX, translateX, width]);
+
+  useEffect(() => {
+    const photoUrls = sorted.map((photo) => getPhotoUrl(photo.storage_path));
+    preloadCarouselImages(photoUrls, index);
+  }, [index, sorted]);
+
+  const panGesture = useMemo(() => {
+    if (sorted.length <= 1) return Gesture.Pan().enabled(false);
+
+    const minOffset = -(sorted.length - 1) * width;
+
+    return Gesture.Pan()
+      .activeOffsetX([-14, 14])
+      .failOffsetY([-10, 10])
+      .onStart(() => {
+        dragStartX.value = translateX.value;
+      })
+      .onUpdate((event) => {
+        const next = dragStartX.value + event.translationX;
+        translateX.value = Math.max(minOffset, Math.min(0, next));
+        scrollX.value = -translateX.value;
+      })
+      .onEnd((event) => {
+        const projected = translateX.value + event.velocityX * 0.18;
+        const rawIndex = -projected / width;
+        const nextIndex = Math.max(0, Math.min(sorted.length - 1, Math.round(rawIndex)));
+        const targetX = -nextIndex * width;
+
+        translateX.value = withSpring(targetX, PAGER_SPRING);
+        scrollX.value = withSpring(nextIndex * width, PAGER_SPRING);
+        runOnJS(commitIndex)(nextIndex);
+      });
+  }, [commitIndex, dragStartX, scrollX, sorted.length, translateX, width]);
+
+  const stripStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  return (
+    <View style={[styles.wrap, { width, height }]}>
+      <GestureDetector gesture={panGesture}>
+        <Animated.View
+          style={[
+            styles.pagerStrip,
+            { width: width * sorted.length, height },
+            stripStyle,
+          ]}
+        >
+          {sorted.map((photo, photoIndex) => (
+            <View
+              key={`${photo.id}-${photoIndex}`}
+              style={[styles.slide, { width, height }]}
+            >
+              <CarouselPhoto photo={photo} slideKey={`${photo.storage_path}-${photoIndex}`} />
+            </View>
+          ))}
+        </Animated.View>
+      </GestureDetector>
+      <CarouselFooter
+        sorted={sorted}
+        index={index}
+        overlay={overlay}
+        pagination={pagination}
+        scrollX={scrollX}
+        slideWidth={width}
+        theme={theme}
+      />
+    </View>
+  );
+}
+
 export function ListingCarousel({
   photos,
   width,
   height = 240,
   pagination = 'below',
+  prioritizeHorizontalSwipe = false,
+  scrollEnabled = true,
 }: ListingCarouselProps) {
   const theme = useTheme();
+  const { width: windowWidth } = useWindowDimensions();
   const listRef = useRef<FlatListType<ListingPhoto>>(null);
   const [index, setIndex] = useState(0);
-  const slideWidth = Math.round(width ?? screenWidth);
+  const slideWidth = Math.round(width ?? windowWidth);
   const scrollX = useSharedValue(0);
 
   const sorted = useMemo(
@@ -108,17 +296,24 @@ export function ListingCarousel({
     listRef.current?.scrollToOffset({ offset: 0, animated: false });
   }, [sorted, slideWidth, scrollX]);
 
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      scrollX.value = event.contentOffset.x;
+  useEffect(() => {
+    const photoUrls = sorted.map((photo) => getPhotoUrl(photo.storage_path));
+    preloadCarouselImages(photoUrls, index);
+  }, [index, sorted]);
+
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      scrollX.value = event.nativeEvent.contentOffset.x;
     },
-    onEndDrag: (event) => {
-      runOnJS(setIndexFromOffset)(event.contentOffset.x);
+    [scrollX],
+  );
+
+  const handleScrollEnd = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      setIndexFromOffset(event.nativeEvent.contentOffset.x);
     },
-    onMomentumEnd: (event) => {
-      runOnJS(setIndexFromOffset)(event.contentOffset.x);
-    },
-  });
+    [setIndexFromOffset],
+  );
 
   const getItemLayout = useCallback(
     (_: ArrayLike<ListingPhoto> | null | undefined, itemIndex: number) => ({
@@ -133,16 +328,9 @@ export function ListingCarousel({
   const wrapHeight = pagination === 'below' && showDots ? undefined : imageHeight;
 
   const renderItem = useCallback(
-    ({ item }: { item: ListingPhoto }) => (
-      <View style={[{ width: slideWidth, height: imageHeight }, WEB_SLIDE_STYLE]}>
-        <Image
-          source={{ uri: getPhotoUrl(item.storage_path) }}
-          style={{ width: slideWidth, height: imageHeight }}
-          contentFit="cover"
-          recyclingKey={item.id}
-          placeholder={{ uri: LISTING_PHOTO_PLACEHOLDER }}
-          transition={200}
-        />
+    ({ item, index: itemIndex }: { item: ListingPhoto; index: number }) => (
+      <View style={[styles.slide, { width: slideWidth, height: imageHeight }, WEB_SLIDE_STYLE]}>
+        <CarouselPhoto photo={item} slideKey={`${item.storage_path}-${itemIndex}`} />
       </View>
     ),
     [imageHeight, slideWidth],
@@ -151,68 +339,72 @@ export function ListingCarousel({
   if (sorted.length === 0) {
     return (
       <Image
-        source={{ uri: LISTING_PHOTO_PLACEHOLDER }}
+        source={LISTING_PHOTO_PLACEHOLDER_SOURCE}
         style={{ width: slideWidth, height: imageHeight, borderRadius: 12 }}
         contentFit="cover"
       />
     );
   }
 
+  if (prioritizeHorizontalSwipe && Platform.OS !== 'web') {
+    return (
+      <SheetPhotoPager
+        photos={photos}
+        width={slideWidth}
+        height={imageHeight}
+        pagination={pagination}
+      />
+    );
+  }
+
   return (
     <View style={[styles.wrap, { width: slideWidth, height: wrapHeight, minHeight: imageHeight }]}>
-      <AnimatedFlatList
+      <FlatList
         ref={listRef}
         horizontal
         data={sorted}
-        keyExtractor={(item, index) => `${item.id}-${index}`}
+        keyExtractor={(item, itemIndex) => `${item.id}-${itemIndex}`}
         renderItem={renderItem}
         getItemLayout={getItemLayout}
-        pagingEnabled
+        snapToInterval={slideWidth}
+        snapToAlignment="start"
+        scrollEnabled={scrollEnabled}
         nestedScrollEnabled
         directionalLockEnabled
         showsHorizontalScrollIndicator={false}
-        decelerationRate="normal"
+        decelerationRate="fast"
         bounces={false}
         overScrollMode="never"
-        disableIntervalMomentum={false}
+        disableIntervalMomentum
         scrollEventThrottle={16}
-        onScroll={scrollHandler}
+        onScroll={handleScroll}
+        onScrollEndDrag={handleScrollEnd}
+        onMomentumScrollEnd={handleScrollEnd}
         style={{ width: slideWidth, height: imageHeight }}
         contentContainerStyle={WEB_SNAP_STYLE}
-        windowSize={3}
-        initialNumToRender={Math.min(sorted.length, 3)}
-        maxToRenderPerBatch={2}
+        windowSize={5}
+        initialNumToRender={sorted.length}
+        maxToRenderPerBatch={sorted.length}
         removeClippedSubviews={false}
+        extraData={slideWidth}
       />
-      {showDots ? (
-        <View style={overlay ? styles.overlayFooter : styles.footer} pointerEvents="none">
-          <View style={styles.dots}>
-            {sorted.map((photo, i) => (
-              <PaginationDot
-                key={`${photo.id}-${i}`}
-                dotIndex={i}
-                scrollX={scrollX}
-                slideWidth={slideWidth}
-                inactiveColor={overlay ? 'rgba(255,255,255,0.55)' : theme.colors.border}
-                activeColor={overlay ? '#ffffff' : theme.colors.primary}
-                overlay={overlay}
-              />
-            ))}
-          </View>
-          {pagination === 'below' ? (
-            <AppText variant="micro" style={styles.counter}>
-              {index + 1}/{sorted.length}
-            </AppText>
-          ) : null}
-        </View>
-      ) : null}
+      <CarouselFooter
+        sorted={sorted}
+        index={index}
+        overlay={overlay}
+        pagination={pagination}
+        scrollX={scrollX}
+        slideWidth={slideWidth}
+        theme={theme}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   wrap: { position: 'relative', overflow: 'hidden' },
-  slide: { borderRadius: 12 },
+  pagerStrip: { flexDirection: 'row' },
+  slide: { overflow: 'hidden', backgroundColor: '#0b0f1a' },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -233,4 +425,5 @@ const styles = StyleSheet.create({
   dots: { flexDirection: 'row', gap: spacing.xs, alignItems: 'center' },
   dot: { height: 6, borderRadius: 3 },
   counter: { opacity: 0.8 },
+  overlayCounter: { color: 'rgba(255,255,255,0.9)', marginLeft: spacing.sm, fontWeight: '600' },
 });

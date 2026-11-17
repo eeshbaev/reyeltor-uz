@@ -1,8 +1,11 @@
 import { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+import { FilterRangeInput } from '@/components/filters/FilterRangeInput';
+import { FilterSegmentedControl } from '@/components/filters/FilterSegmentedControl';
+import { AppText } from '@/components/ui/AppText';
 import { uzsToUsd } from '@/lib/exchange/cbuRate';
-import { fontSize, spacing, useTheme } from '@/lib/theme';
+import { spacing, useTheme } from '@/lib/theme';
 import type { PriceCurrency } from '@/types';
 
 interface DualCurrencyRangeProps {
@@ -30,32 +33,14 @@ export function DualCurrencyRange({
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        wrap: { marginTop: spacing.md },
-        currencyRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.xs },
-        currencyPill: {
-          paddingHorizontal: spacing.md,
+        wrap: { gap: spacing.md },
+        rateNote: {
+          paddingHorizontal: spacing.sm,
           paddingVertical: spacing.xs,
-          borderRadius: 999,
-          borderWidth: 1,
-          borderColor: theme.colors.border,
-          backgroundColor: theme.colors.surfaceElevated,
-        },
-        currencyPillActive: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
-        currencyText: { fontWeight: '600', color: theme.colors.primary },
-        currencyTextActive: { color: theme.colors.onAccent },
-        rateNote: { fontSize: fontSize.xs, color: theme.colors.secondary, marginBottom: spacing.sm },
-        row: { flexDirection: 'row', gap: spacing.sm },
-        inputWrap: { flex: 1 },
-        input: {
-          borderWidth: 1,
-          borderColor: theme.colors.border,
           borderRadius: 8,
-          padding: spacing.sm,
-          fontSize: fontSize.md,
-          backgroundColor: theme.colors.surfaceElevated,
-          color: theme.colors.primary,
+          backgroundColor: theme.isDark ? 'rgba(59,130,246,0.12)' : theme.colors.accentSurface,
+          alignSelf: 'flex-start',
         },
-        hint: { fontSize: fontSize.xs, color: theme.colors.secondary, marginTop: 4 },
       }),
     [theme],
   );
@@ -73,42 +58,30 @@ export function DualCurrencyRange({
 
   return (
     <View style={styles.wrap}>
-      <View style={styles.currencyRow}>
-        {(['UZS', 'USD'] as PriceCurrency[]).map((c) => (
-          <Pressable
-            key={c}
-            style={[styles.currencyPill, currency === c && styles.currencyPillActive]}
-            onPress={() => onCurrencyChange(c)}
-          >
-            <Text style={[styles.currencyText, currency === c && styles.currencyTextActive]}>{c}</Text>
-          </Pressable>
-        ))}
+      <FilterSegmentedControl
+        options={[
+          { value: 'UZS' as const, label: 'UZS' },
+          { value: 'USD' as const, label: 'USD' },
+        ]}
+        value={currency}
+        onChange={(next) => next && onCurrencyChange(next)}
+        allowDeselect={false}
+      />
+      <View style={styles.rateNote}>
+        <AppText variant="micro" color="accent" style={{ fontWeight: '600' }}>
+          {t('filters.cbuRate', { rate: usdRate.toLocaleString('uz-UZ') })}
+        </AppText>
       </View>
-      <Text style={styles.rateNote}>
-        {t('filters.cbuRate', { rate: usdRate.toLocaleString('uz-UZ') })}
-      </Text>
-      <View style={styles.row}>
-        <View style={styles.inputWrap}>
-          <TextInput
-            style={styles.input}
-            placeholder={t('filters.min')}
-            keyboardType="numeric"
-            value={priceMin}
-            onChangeText={onPriceMinChange}
-          />
-          {convertedHint(priceMin) ? <Text style={styles.hint}>{convertedHint(priceMin)}</Text> : null}
-        </View>
-        <View style={styles.inputWrap}>
-          <TextInput
-            style={styles.input}
-            placeholder={t('filters.max')}
-            keyboardType="numeric"
-            value={priceMax}
-            onChangeText={onPriceMaxChange}
-          />
-          {convertedHint(priceMax) ? <Text style={styles.hint}>{convertedHint(priceMax)}</Text> : null}
-        </View>
-      </View>
+      <FilterRangeInput
+        minValue={priceMin}
+        maxValue={priceMax}
+        onMinChange={onPriceMinChange}
+        onMaxChange={onPriceMaxChange}
+        minPlaceholder={t('filters.min')}
+        maxPlaceholder={t('filters.max')}
+        minHint={convertedHint(priceMin)}
+        maxHint={convertedHint(priceMax)}
+      />
     </View>
   );
 }

@@ -4,15 +4,30 @@ export type PriceCurrency = 'UZS' | 'USD';
 export type ListingStatus = 'active' | 'archived' | 'deleted';
 export type ArchivedReason = 'rented' | 'sold' | 'expired' | 'manually_archived';
 export type FlagReason = 'already_rented' | 'wrong_price' | 'fake_photos' | 'duplicate';
-export type CoinType = 'welcome' | 'checkin' | 'post_cost' | 'reactivation';
+export type CoinType =
+  | 'welcome'
+  | 'checkin'
+  | 'post_cost'
+  | 'reactivation'
+  | 'referral_register'
+  | 'referral_bonus'
+  | 'referral_first_post'
+  | 'referral_first_favorite';
 
 export interface User {
   id: string;
   full_name: string;
   phone: string;
-  email: string;
+  /** Optional since Telegram registration. */
+  email: string | null;
   telegram_username?: string | null;
+  telegram_id?: number | null;
+  /** Set when the phone was confirmed through Telegram; such a phone cannot be edited. */
+  phone_verified_at?: string | null;
   avatar_url?: string | null;
+  bio?: string | null;
+  phone_visible?: boolean;
+  email_visible?: boolean;
   total_posted: number;
   total_rented: number;
   total_sold: number;
@@ -20,9 +35,13 @@ export interface User {
   avg_days_on_market: number | null;
   close_rate: number | null;
   coin_balance: number;
+  /** Why the user is here (personalization only — never restricts features). */
+  purposes?: UserPurpose[];
   last_active_at: string;
   created_at: string;
 }
+
+export type UserPurpose = 'investor' | 'realtor' | 'rent' | 'buy';
 
 export interface Listing {
   id: string;
@@ -49,6 +68,8 @@ export interface Listing {
   view_count: number;
   posted_at: string;
   last_edited_at: string;
+  /** Server-set: when the owner last confirmed the property is still available. */
+  availability_confirmed_at?: string | null;
   expires_at: string;
   archived_at: string | null;
   deletes_at: string | null;
@@ -118,6 +139,8 @@ export interface ListingWithPhotos extends Listing {
     | 'id'
     | 'full_name'
     | 'phone'
+    | 'phone_visible'
+    | 'email'
     | 'telegram_username'
     | 'avatar_url'
     | 'created_at'

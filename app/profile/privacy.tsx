@@ -1,10 +1,11 @@
+import React from 'react';
 import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ScrollView } from '@/components/ui/GestureScrollView';
+import { StackScreenHeader } from '@/components/navigation/StackScreenHeader';
 import { AppText } from '@/components/ui/AppText';
-import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
+import { ScrollView } from '@/components/ui/GestureScrollView';
 import { PRIVACY_CONTACT_EMAIL, PRIVACY_POLICY_URL } from '@/lib/constants';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
@@ -23,13 +24,14 @@ export default function PrivacyPolicyScreen() {
   };
 
   return (
-    <>
-      <Stack.Screen options={{ title: t('privacy.title'), headerShown: true }} />
+    <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
+      <Stack.Screen options={{ headerShown: false }} />
+      <StackScreenHeader title={t('privacy.title')} backHref="/(tabs)/profile" />
       <ScrollView
-        style={[styles.container, { backgroundColor: theme.colors.background }]}
+        style={styles.container}
         contentContainerStyle={{
           padding: spacing.lg,
-          paddingBottom: insets.bottom + TAB_BAR_CLEARANCE,
+          paddingBottom: insets.bottom + spacing.xxl,
         }}
       >
         <AppText variant="body" color="secondary" style={styles.intro}>
@@ -47,9 +49,11 @@ export default function PrivacyPolicyScreen() {
             {t('privacy.collectIntro')}
           </AppText>
           <Bullet text={t('privacy.collectPhone')} />
+          <Bullet text={t('privacy.collectTelegram')} />
           <Bullet text={t('privacy.collectEmail')} />
           <Bullet text={t('privacy.collectListings')} />
           <Bullet text={t('privacy.collectPhotos')} />
+          <Bullet text={t('privacy.collectAlerts')} />
         </Section>
 
         <Section title={t('privacy.noSellTitle')}>
@@ -73,7 +77,7 @@ export default function PrivacyPolicyScreen() {
           {t('privacy.lastUpdated')}
         </AppText>
       </ScrollView>
-    </>
+    </View>
   );
 }
 
@@ -102,6 +106,7 @@ function Bullet({ text }: { text: string }) {
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1 },
   container: { flex: 1 },
   intro: { marginBottom: spacing.sm },
   onlineLink: { marginBottom: spacing.lg },

@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppText } from '@/components/ui/AppText';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
 import { MoneyInput } from '@/components/tools/MoneyInput';
 import { PercentInput } from '@/components/tools/PercentInput';
@@ -15,14 +14,15 @@ import {
   ToolResultLine,
   toolScreenStyles,
 } from '@/components/tools/toolUi';
+import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { useListingsCache } from '@/lib/context/ListingsContext';
-import { toolScreenBackground } from '@/lib/design/toolChrome';
 import { spacing } from '@/lib/design/spacing';
+import { toolScreenBackground } from '@/lib/design/toolChrome';
 import { formatListingPrice } from '@/lib/format';
+import { useTheme } from '@/lib/theme';
 import { calculateAffordability } from '@/lib/tools/affordability';
 import { buildAffordabilityReportHtml } from '@/lib/tools/instrumentReports';
-import { useTheme } from '@/lib/theme';
 
 const TERM_PRESETS = [5, 10, 15, 20, 25, 30];
 
@@ -61,11 +61,14 @@ export default function AffordabilityScreen() {
     [monthlyIncome, monthlyLivingExpenses, monthlyDebtPayments, savedDownPayment, annualRate, termYears, monthlySavings, targetPropertyPrice],
   );
 
-  const formatMonths = (months: number) => {
-    if (months === Infinity || !Number.isFinite(months)) return '—';
-    if (months <= 0) return t('tools.affordability.readyNow');
-    return t('tools.affordability.months', { count: months });
-  };
+  const formatMonths = useCallback(
+    (months: number) => {
+      if (months === Infinity || !Number.isFinite(months)) return '—';
+      if (months <= 0) return t('tools.affordability.readyNow');
+      return t('tools.affordability.months', { count: months });
+    },
+    [t],
+  );
 
   const headlineLabel = result.incomeLimited
     ? t('tools.affordability.cashOnlyAfford')

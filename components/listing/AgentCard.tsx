@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Avatar } from '@/components/ui/Avatar';
 import { formatDate } from '@/lib/format';
+import { resolveAvatarSource } from '@/lib/profile/avatar';
 import { colors, fontSize, spacing } from '@/lib/theme';
 import type { User } from '@/types';
 
@@ -29,7 +30,7 @@ export function AgentCard({ agent, activeCount = 0 }: AgentCardProps) {
 
   return (
     <Pressable style={styles.card} onPress={() => router.push(`/agent/${agent.id}`)}>
-      <Avatar name={agent.full_name} size={56} imageUrl={agent.avatar_url} />
+      <Avatar name={agent.full_name} size={56} source={resolveAvatarSource(agent.avatar_url)} />
       <View style={styles.info}>
         <Text style={styles.name}>{agent.full_name}</Text>
         <Text style={styles.meta}>

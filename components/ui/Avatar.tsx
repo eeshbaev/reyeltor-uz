@@ -1,4 +1,5 @@
-import { Image } from 'expo-image';
+import { useEffect, useState } from 'react';
+import { Image, type ImageSource } from 'expo-image';
 import { StyleSheet, Text, View } from 'react-native';
 import { getInitials } from '@/lib/format';
 import { useTheme } from '@/lib/theme';
@@ -7,16 +8,23 @@ interface AvatarProps {
   name: string;
   size?: number;
   imageUrl?: string | null;
+  source?: ImageSource | null;
 }
 
-export function Avatar({ name, size = 48, imageUrl }: AvatarProps) {
+export function Avatar({ name, size = 48, imageUrl, source }: AvatarProps) {
   const theme = useTheme();
   const fontScale = size * 0.38;
+  const [imageFailed, setImageFailed] = useState(false);
+  const resolvedSource = source ?? (imageUrl ? { uri: imageUrl } : null);
 
-  if (imageUrl) {
+  useEffect(() => {
+    setImageFailed(false);
+  }, [imageUrl, source]);
+
+  if (resolvedSource && !imageFailed) {
     return (
       <Image
-        source={{ uri: imageUrl }}
+        source={resolvedSource}
         style={{
           width: size,
           height: size,
@@ -24,6 +32,8 @@ export function Avatar({ name, size = 48, imageUrl }: AvatarProps) {
           backgroundColor: theme.colors.surface,
         }}
         contentFit="cover"
+        transition={0}
+        onError={() => setImageFailed(true)}
       />
     );
   }

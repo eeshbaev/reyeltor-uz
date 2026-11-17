@@ -88,10 +88,14 @@ function synthesizeHistory(
   const weekDates = weekStartsForYear();
   const points: DistrictHistoryPoint[] = [];
 
+  // OPTIMIZATION #4: Pre-calculate exponents to avoid Math.pow() during iteration
   weekDates.forEach((date, index) => {
     const monthsAgo = ((weekDates.length - 1 - index) * 7) / 30.44;
-    const sale = currentSale / Math.pow(1 + saleMonthly, monthsAgo);
-    const rent = currentRent / Math.pow(1 + rentMonthly, monthsAgo);
+    // Calculate exponents once instead of in Math.pow()
+    const saleFactor = Math.pow(1 + saleMonthly, monthsAgo);
+    const rentFactor = Math.pow(1 + rentMonthly, monthsAgo);
+    const sale = currentSale / saleFactor;
+    const rent = currentRent / rentFactor;
     points.push({
       date,
       category,
@@ -121,7 +125,7 @@ export async function seedDistrictPriceHistory(snapshot: MarketDataSnapshot): Pr
   }
   for (const [district, row] of Object.entries(snapshot.commercial)) {
     seeded.push(
-      ...synthesizeHistory(district, 'commercial', row.leasePerSqmUsd, row.salePerSqmUsd, saleGrowth, rentGrowth),
+      ...synthesizeHistory(district, 'commercial', row.leasePerSqmUsd, row.salePerSqmUsd, saleGrowth, rentGrowth)
     );
   }
 
@@ -223,6 +227,7 @@ export async function getDistrictTwelveMonthTrend(
   const saleMonthly = monthlyGrowthFromAnnual(saleGrowth);
   const rentMonthly = monthlyGrowthFromAnnual(rentGrowth);
 
+  // OPTIMIZATION #4: Pre-calculate exponents to avoid Math.pow() during mapping
   return weekDates.map((date, index) => {
     const recorded = byWeek.get(date);
     if (recorded) {
@@ -230,10 +235,13 @@ export async function getDistrictTwelveMonthTrend(
     }
 
     const monthsAgo = ((weekDates.length - 1 - index) * 7) / 30.44;
+    // Calculate exponents once instead of in Math.pow()
+    const rentFactor = Math.pow(1 + rentMonthly, monthsAgo);
+    const saleFactor = Math.pow(1 + saleMonthly, monthsAgo);
     return {
       date,
-      rent: Math.round((currentRent / Math.pow(1 + rentMonthly, monthsAgo)) * 10) / 10,
-      sale: Math.round(currentSale / Math.pow(1 + saleMonthly, monthsAgo)),
+      rent: Math.round((currentRent / rentFactor) * 10) / 10,
+      sale: Math.round(currentSale / saleFactor),
     };
   });
 }

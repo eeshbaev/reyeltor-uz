@@ -2,153 +2,44 @@
   "expo": {
     "name": "Reyeltor-uz",
     "slug": "reyeltor-uz",
-    "version": "1.1.0",
-    "orientation": "portrait",
+    "version": "1.3.0",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "scheme": "reyeltor",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/icon.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
+      "backgroundColor": "#07090F",
+      "tabletSplashScreen": "./assets/splash-icon.png",
+      "tabletBackgroundColor": "#07090F"
     },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "uz.reyeltor.app",
-      "associatedDomains": [
-        "applinks:reyeltor.uz",
-        "applinks:www.reyeltor.uz"
-      ],
       "infoPlist": {
+        "UISupportedInterfaceOrientations": [
+          "UIInterfaceOrientationPortrait"
+        ],
         "NSPhotoLibraryUsageDescription": "Upload photos of your property listing.",
-        "NSCameraUsageDescription": "Take photos of your property listing."
+        "NSLocationWhenInUseUsageDescription": "Place your listing pin at your current location on the map."
       }
     },
     "android": {
+      "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
-        "backgroundColor": "#FFFFFF",
+        "backgroundColor": "#F6EFE5",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "package": "uz.reyeltor.app",
       "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE"
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
       ],
       "intentFilters": [
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
-              "host": "reyeltor.uz",
-              "pathPrefix": "/listing"
-            },
-            {
-              "scheme": "https",
-              "host": "reyeltor.uz",
-              "pathPrefix": "/agent"
-            },
-            {
-              "scheme": "https",
-              "host": "reyeltor.uz",
-              "pathPrefix": "/auth"
-            },
-            {
-              "scheme": "https",
-              "host": "reyeltor.uz",
-              "pathPrefix": "/profile"
-            },
-            {
-              "scheme": "https",
-              "host": "reyeltor.uz",
-              "pathPrefix": "/post"
-            },
-            {
-              "scheme": "https",
-              "host": "reyeltor.uz",
-              "pathPrefix": "/map"
-            },
-            {
-              "scheme": "https",
-              "host": "reyeltor.uz",
-              "pathPrefix": "/list"
-            },
-            {
-              "scheme": "https",
-              "host": "reyeltor.uz",
-              "pathPrefix": "/favorites"
-            },
-            {
-              "scheme": "https",
-              "host": "reyeltor.uz",
-              "pathPrefix": "/onboarding"
-            },
-            {
-              "scheme": "https",
-              "host": "reyeltor.uz",
-              "pathPrefix": "/registration-welcome"
-            },
-            {
-              "scheme": "https",
-              "host": "www.reyeltor.uz",
-              "pathPrefix": "/listing"
-            },
-            {
-              "scheme": "https",
-              "host": "www.reyeltor.uz",
-              "pathPrefix": "/agent"
-            },
-            {
-              "scheme": "https",
-              "host": "www.reyeltor.uz",
-              "pathPrefix": "/auth"
-            },
-            {
-              "scheme": "https",
-              "host": "www.reyeltor.uz",
-              "pathPrefix": "/profile"
-            },
-            {
-              "scheme": "https",
-              "host": "www.reyeltor.uz",
-              "pathPrefix": "/post"
-            },
-            {
-              "scheme": "https",
-              "host": "www.reyeltor.uz",
-              "pathPrefix": "/map"
-            },
-            {
-              "scheme": "https",
-              "host": "www.reyeltor.uz",
-              "pathPrefix": "/list"
-            },
-            {
-              "scheme": "https",
-              "host": "www.reyeltor.uz",
-              "pathPrefix": "/favorites"
-            },
-            {
-              "scheme": "https",
-              "host": "www.reyeltor.uz",
-              "pathPrefix": "/onboarding"
-            },
-            {
-              "scheme": "https",
-              "host": "www.reyeltor.uz",
-              "pathPrefix": "/registration-welcome"
-            }
-          ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
-        },
         {
           "action": "VIEW",
           "data": [
@@ -161,6 +52,12 @@
             "DEFAULT"
           ]
         }
+      ],
+      "blockedPermissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
       ]
     },
     "web": {
@@ -168,17 +65,24 @@
       "bundler": "metro"
     },
     "plugins": [
-      [
-        "expo-router",
-        {
-          "origin": "https://reyeltor.uz"
-        }
-      ],
+      "expo-router",
       [
         "expo-build-properties",
         {
           "android": {
-            "ndkVersion": "27.1.12297006"
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "buildToolsVersion": "36.0.0",
+            "ndkVersion": "27.1.12297006",
+            "packagingOptions": {
+              "jniLibs": {
+                "useLegacyPackaging": false
+              }
+            },
+            "frescoKitMemoryTrimmingMinimumUtilization": 0.33,
+            "frescoBitmapMemoryCacheSize": 52428800,
+            "frescoSmallImageMemoryCacheSize": 10485760,
+            "minSdkVersion": 26
           }
         }
       ],
@@ -186,14 +90,34 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/icon.png",
+          "icon": "./assets/notification-icon.png",
           "color": "#2563EB"
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Upload photos for your listings and profile."
+          "photosPermission": "Upload photos for your listings and profile.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Place your listing pin at your current location on the map."
+        }
+      ],
+      "expo-asset",
+      "expo-font",
+      "expo-splash-screen",
+      [
+        "react-native-edge-to-edge",
+        {
+          "android": {
+            "parentTheme": "Material3",
+            "enforceNavigationBarContrast": false
+          }
         }
       ]
     ],
@@ -201,9 +125,6 @@
       "typedRoutes": true
     },
     "extra": {
-      "router": {
-        "origin": "https://reyeltor.uz"
-      },
       "eas": {
         "projectId": "24bcc57e-18b0-44d6-b79f-c9caddd0ce4a"
       }

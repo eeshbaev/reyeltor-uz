@@ -1,9 +1,9 @@
 import Supercluster from 'supercluster';
+import { ClusterBubble, getClusterSize } from './ClusterBubble';
+import { ListingBubble } from './ListingBubble';
 import { CLUSTER_MAX_ZOOM, CLUSTER_RADIUS } from '@/lib/constants';
 import type { CategoryColorSet } from '@/lib/design/categoryColors';
 import type { MapListingPoint } from '@/types';
-import { ClusterBubble, getClusterSize } from './ClusterBubble';
-import { ListingBubble } from './ListingBubble';
 
 type MapClusterFeature = Supercluster.ClusterFeature<{
   cluster?: boolean;
@@ -61,7 +61,7 @@ export function MapMarkersLayer({
                 left: screen.x,
                 top: screen.y,
                 transform: 'translate(-50%, -50%)',
-                zIndex: 2,
+                zIndex: 8,
                 pointerEvents: 'auto',
               }}
             >
@@ -85,7 +85,7 @@ export function MapMarkersLayer({
                 left: screen.x,
                 top: screen.y,
                 transform: 'translate(-50%, -50%)',
-                zIndex: 2,
+                zIndex: 8,
                 pointerEvents: 'auto',
               }}
             >
@@ -94,7 +94,7 @@ export function MapMarkersLayer({
                 size={getClusterSize(1)}
                 color={categoryColors.mapCluster}
                 textColor={categoryColors.mapClusterText}
-                onPress={() => onListingPress(props.listingId!)}
+                onPress={() => props.listingId && onListingPress(props.listingId)}
               />
             </div>
           );
@@ -116,7 +116,7 @@ export function MapMarkersLayer({
               price={props.price ?? 0}
               featured={props.featured}
               accentColor={categoryColors.main}
-              onPress={() => onListingPress(props.listingId!)}
+              onPress={() => props.listingId && onListingPress(props.listingId)}
             />
           </div>
         );

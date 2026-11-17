@@ -1,6 +1,6 @@
-# Reyeltor.uz
+# Reyeltor-uz
 
-Real estate rental and sales mobile app for Uzbekistan (Tashkent city and region). Built with Expo SDK 52, Supabase, and MapLibre GL.
+Real estate rental and sales mobile app for Uzbekistan (Tashkent city and region). Built with Expo SDK 53 (React Native 0.79), Supabase, and MapLibre GL.
 
 ## Setup
 
@@ -15,9 +15,11 @@ Fill in:
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
 - `EXPO_PUBLIC_MAPTILER_KEY`
 
-2. Run the SQL in `supabase/schema.sql` in your Supabase SQL editor.
+2. Run the SQL in `supabase/schema.sql` in your Supabase SQL editor, then `supabase/storage-setup.sql`.
 
-3. Create a public Supabase Storage bucket named `listings`.
+   **Starting fresh?** Follow [docs/SUPABASE_FRESH_START.md](docs/SUPABASE_FRESH_START.md).
+
+3. Verify connection: `npm run verify:supabase`
 
 4. Install dependencies (already done if cloned):
 

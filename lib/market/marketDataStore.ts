@@ -1,4 +1,3 @@
-import type { RenovationLevel } from '@/lib/tools/renovationRates';
 import {
   DEFAULT_ANNUAL_APPRECIATION_PCT,
   DEFAULT_ANNUAL_RENT_INCREASE_PCT,
@@ -12,6 +11,7 @@ import {
   type CommercialDistrictMarketAverages,
   type DistrictMarketAverages,
 } from '@/lib/market/defaultMarketData';
+import type { RenovationLevel } from '@/lib/tools/renovationRates';
 
 export interface MarketMacroRates {
   annualAppreciationPct: number;

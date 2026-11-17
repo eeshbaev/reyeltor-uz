@@ -1,10 +1,11 @@
+import React from "react";
 import { BlurView } from 'expo-blur';
-import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '@/lib/theme';
 
 interface FrostedViewProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   intensity?: number;
   /** When false, children are not clipped to the rounded rect (e.g. jumping emblem). */
   clip?: boolean;
@@ -13,7 +14,8 @@ interface FrostedViewProps {
 export function FrostedView({ children, style, intensity = 80, clip = true }: FrostedViewProps) {
   const theme = useTheme();
   const flat = theme.isDark ? 'rgba(26,26,26,0.88)' : 'rgba(255,255,255,0.88)';
-  const radius = typeof style?.borderRadius === 'number' ? style.borderRadius : 20;
+  const flatStyle = StyleSheet.flatten(style);
+  const radius = typeof flatStyle?.borderRadius === 'number' ? flatStyle.borderRadius : 20;
 
   const webGlass =
     Platform.OS === 'web'

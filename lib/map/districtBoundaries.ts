@@ -1,10 +1,13 @@
+import rawCityDistricts from './tashkent-districts.json';
+import rawRegionDistricts from './tashkent-region-districts.json';
 import {
   TASHKENT_CITY_DISTRICTS,
+  TASHKENT_DISTRICTS,
   TASHKENT_REGION_DISTRICTS,
   type MapCoverage,
 } from '@/lib/constants';
-import rawCityDistricts from './tashkent-districts.json';
-import rawRegionDistricts from './tashkent-region-districts.json';
+import { isInsidePolygon } from '@/lib/map/polygon';
+import type { MapAreaPolygon } from '@/types';
 
 export type BoundaryTier = 'city' | 'region';
 
@@ -54,6 +57,34 @@ const CITY_FEATURES = (
 const REGION_FEATURES = (
   rawRegionDistricts as GeoJSON.FeatureCollection<GeoJSON.Polygon, { name: string }>
 ).features.map((f) => withLabel(f, 'region'));
+
+const ALL_DISTRICT_FEATURES: DistrictPolygon[] = [...CITY_FEATURES, ...REGION_FEATURES];
+
+function featureToPolygon(feature: DistrictPolygon): MapAreaPolygon {
+  const ring = feature.geometry.coordinates[0];
+  return { points: ring.map(([lng, lat]) => ({ lat, lng })) };
+}
+
+export function getDistrictCenter(name: string): { lat: number; lng: number } | null {
+  const feature = ALL_DISTRICT_FEATURES.find((f) => f.properties.name === name);
+  if (!feature) return null;
+  return { lat: feature.properties.labelLat, lng: feature.properties.labelLng };
+}
+
+export function findDistrictAtPoint(lng: number, lat: number): string | null {
+  for (const feature of ALL_DISTRICT_FEATURES) {
+    if (isInsidePolygon(featureToPolygon(feature), lat, lng)) {
+      return feature.properties.name;
+    }
+  }
+  return null;
+}
+
+export function filterDistricts(query: string): string[] {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) return [];
+  return TASHKENT_DISTRICTS.filter((district) => district.toLowerCase().includes(normalized)).slice(0, 8);
+}
 
 function filterByCoverage(features: DistrictPolygon[], coverage: MapCoverage): DistrictPolygon[] {
   const citySet = new Set<string>(TASHKENT_CITY_DISTRICTS);

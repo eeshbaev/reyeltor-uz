@@ -1,7 +1,7 @@
-import { isInsidePolygon } from '@/lib/map/polygon';
 import { filterPriceToUzs } from '@/lib/exchange/cbuRate';
 import { normalizePropertyTypeKey } from '@/lib/i18n/filterLabels';
-import { enrichListing, getListingCategory, getListingPropertyType } from '@/lib/listing';
+import { getListingCategory, getListingPropertyType } from '@/lib/listing';
+import { isInsidePolygon } from '@/lib/map/polygon';
 import type { ListingFilters, ListingWithPhotos } from '@/types';
 import { DEFAULT_FILTERS } from '@/types';
 
@@ -29,9 +29,32 @@ export function hasAreaSearch(filters: ListingFilters): boolean {
   return Boolean(filters.mapArea) || filters.districts.length > 0;
 }
 
+/** Compare search filters without expensive JSON serialization */
+function areSearchFiltersEqual(a: ListingFilters, b: ListingFilters): boolean {
+  return (
+    a.priceMin === b.priceMin &&
+    a.priceMax === b.priceMax &&
+    a.priceCurrency === b.priceCurrency &&
+    a.roomsMin === b.roomsMin &&
+    a.bathroomsMin === b.bathroomsMin &&
+    a.areaMin === b.areaMin &&
+    a.areaMax === b.areaMax &&
+    a.propertyType === b.propertyType &&
+    a.yearBuiltMin === b.yearBuiltMin &&
+    a.yearBuiltMax === b.yearBuiltMax &&
+    a.listedSinceDays === b.listedSinceDays &&
+    a.keywords === b.keywords &&
+    a.views.length === b.views.length &&
+    a.views.every((v, i) => v === b.views[i]) &&
+    a.level === b.level &&
+    a.residentialTransaction === b.residentialTransaction &&
+    a.commercialTransaction === b.commercialTransaction
+  );
+}
+
 export function hasSearchFiltersActive(filters: ListingFilters): boolean {
   const preserved = resetSearchFiltersPreservingArea(filters);
-  return JSON.stringify(preserved) !== JSON.stringify(filters);
+  return !areSearchFiltersEqual(preserved, filters);
 }
 
 /** Clear price, rooms, type, etc. while keeping category and drawn/selected area. */
@@ -60,8 +83,11 @@ export function getNoResultsReason(
   filters: ListingFilters,
   usdRate = 12_017,
 ): NoResultsReason {
-  if (applyClientFilters(items, filters, usdRate).length > 0) return 'none';
+  // Compute full filter result once, reuse below
+  const filteredResults = applyClientFilters(items, filters, usdRate);
+  if (filteredResults.length > 0) return 'none';
 
+  // Reuse the full filter to check area filters only
   const areaOnly = resetSearchFiltersPreservingArea(filters);
   const inArea = applyClientFilters(items, areaOnly, usdRate);
   const areaActive = hasAreaSearch(filters);
@@ -95,6 +121,40 @@ function matchesTransaction(listing: ListingWithPhotos, filters: ListingFilters)
   return listing.type === 'buy';
 }
 
+/** Adjust filters so a newly posted listing is visible on the map. */
+export function filtersToRevealListing(
+  filters: ListingFilters,
+  listing: Pick<ListingWithPhotos, 'category' | 'type' | 'lat' | 'lng' | 'district'>,
+): ListingFilters {
+  const category = listing.category ?? filters.category;
+  if (!category) return filters;
+
+  let next = resetSearchFiltersPreservingArea({
+    ...filters,
+    category,
+    residentialTransaction:
+      category === 'residential'
+        ? listing.type === 'rent'
+          ? 'rent'
+          : 'sale'
+        : filters.residentialTransaction,
+    commercialTransaction:
+      category === 'commercial'
+        ? listing.type === 'lease'
+          ? 'lease'
+          : 'sale'
+        : filters.commercialTransaction,
+  });
+
+  if (next.mapArea && !isInsidePolygon(next.mapArea, listing.lat, listing.lng)) {
+    next = resetAreaSearch(next);
+  } else if (next.districts.length > 0 && !next.districts.includes(listing.district)) {
+    next = { ...next, districts: [] };
+  }
+
+  return next;
+}
+
 export function applyClientFilters(
   items: ListingWithPhotos[],
   filters: ListingFilters,
@@ -107,8 +167,9 @@ export function applyClientFilters(
     ? filterPriceToUzs(filters.priceMax, filters.priceCurrency, usdRate)
     : null;
 
+  // OPTIMIZATION #1: Assume listings are already enriched at fetch time
+  // This avoids re-enriching on every filter application (massive CPU savings)
   return items
-    .map(enrichListing)
     .filter((item) => {
       if (getListingCategory(item) !== filters.category) return false;
       if (!matchesTransaction(item, filters)) return false;

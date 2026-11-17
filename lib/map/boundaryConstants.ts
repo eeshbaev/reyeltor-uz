@@ -15,27 +15,27 @@ export function getBoundaryLabelOpacity(zoom: number): number {
 
 export const BOUNDARY_LABEL_FRAME = {
   city: {
-    border: '#1d4ed8',
-    title: '#1e3a8a',
-    subtitle: '#475569',
-    background: 'rgba(255, 255, 255, 0.96)',
+    border: 'rgba(15, 23, 42, 0.1)',
+    title: '#0F172A',
+    subtitle: '#64748B',
+    background: 'rgba(255, 255, 255, 0.94)',
   },
   region: {
-    border: '#b45309',
-    title: '#92400e',
-    subtitle: '#78716c',
-    background: 'rgba(255, 255, 255, 0.96)',
+    border: 'rgba(120, 53, 15, 0.14)',
+    title: '#1C1917',
+    subtitle: '#78716C',
+    background: 'rgba(255, 255, 255, 0.92)',
   },
 } as const;
 
 export const CITY_BOUNDARY_STYLE = {
-  fill: 'rgba(37, 99, 235, 0.08)',
-  stroke: '#1d4ed8',
-  strokeWidth: 1.5,
+  fill: 'rgba(15, 118, 110, 0.06)',
+  stroke: 'rgba(15, 118, 110, 0.45)',
+  strokeWidth: 1.25,
 } as const;
 
 export const REGION_BOUNDARY_STYLE = {
-  fill: 'rgba(217, 119, 6, 0.07)',
-  stroke: '#b45309',
-  strokeWidth: 1.25,
+  fill: 'rgba(194, 65, 12, 0.05)',
+  stroke: 'rgba(194, 65, 12, 0.38)',
+  strokeWidth: 1.1,
 } as const;

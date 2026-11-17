@@ -1,20 +1,22 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { JumpingEmblem } from '@/components/brand/JumpingEmblem';
+import { ListingDetailSheet, type ListingDetailSheetRef } from '@/components/listing/ListingDetailSheet';
 import { CurrencyToggle } from '@/components/map/CurrencyToggle';
 import { DrawAreaButton } from '@/components/map/DrawAreaButton';
 import { FilterButton } from '@/components/map/FilterButton';
-import { JumpingEmblem } from '@/components/brand/JumpingEmblem';
 import { FilterSheet } from '@/components/map/FilterSheet';
 import { MapListingCarousel, MAP_LISTING_CAROUSEL_HEIGHT, mapListingCarouselBottomOffset } from '@/components/map/MapListingCarousel';
 import { MapNoResultsOverlay } from '@/components/map/MapNoResultsOverlay';
 import { MapView, type MapViewRef } from '@/components/map/MapView';
+import { MapZoomControls } from '@/components/map/MapZoomControls';
 import { PenDrawOverlay } from '@/components/map/PenDrawOverlay';
-import { ListingDetailSheet, type ListingDetailSheetRef } from '@/components/listing/ListingDetailSheet';
+import { SaveSearchControl } from '@/components/savedSearches/SaveSearchControl';
 import { AppText } from '@/components/ui/AppText';
 import { FrostedView } from '@/components/ui/FrostedView';
 import {
@@ -22,40 +24,60 @@ import {
   LISTING_MAP_FOCUS_ZOOM,
   MAP_COVERAGE_CENTER,
 } from '@/lib/constants';
-import { spacing } from '@/lib/design/spacing';
-import { buildFiltersForMapArea } from '@/lib/map/areaFilter';
-import { countActiveFilters, resetAreaSearch, resetSearchFiltersPreservingArea, shouldShowDistrictMarketStats } from '@/lib/filters';
 import { useDisplayCurrency } from '@/lib/context/DisplayCurrencyContext';
-import { useMapFocus } from '@/lib/context/MapFocusContext';
 import { useListingsCache } from '@/lib/context/ListingsContext';
+import { useMapFocus } from '@/lib/context/MapFocusContext';
+import { spacing } from '@/lib/design/spacing';
+import { countActiveFilters, filtersToRevealListing, resetAreaSearch, resetSearchFiltersPreservingArea, shouldShowDistrictMarketStats } from '@/lib/filters';
+import { useLastSearchSync } from '@/lib/hooks/useLastSearchSync';
 import { useSheetOverlay } from '@/lib/hooks/useSheetOverlay';
-import { buildDistrictMarketLabelForCategory } from '@/lib/market/tashkentDistrictMarket';
+import { buildFiltersForMapArea } from '@/lib/map/areaFilter';
 import { mapOverlayTop } from '@/lib/mapChrome';
-import { useTheme } from '@/lib/theme';
-import { DEFAULT_FILTERS, type ListingFilters, type MapAreaPolygon } from '@/types';
+import { buildDistrictMarketLabelForCategory } from '@/lib/market/tashkentDistrictMarket';
+import { DEFAULT_FILTERS, type ListingCategory, type ListingFilters, type ListingType, type MapAreaPolygon } from '@/types';
 
 export default function MapScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const theme = useTheme();
+  const params = useLocalSearchParams<{
+    postedListingId?: string;
+    postedLat?: string;
+    postedLng?: string;
+    postedCategory?: ListingCategory;
+    postedType?: ListingType;
+    postedDistrict?: string;
+  }>();
   const insets = useSafeAreaInsets();
   const controlsTop = mapOverlayTop(insets);
   const sheetRef = useRef<BottomSheet>(null);
   const mapRef = useRef<MapViewRef>(null);
   const detailRef = useRef<ListingDetailSheetRef>(null);
-  const { filters, setFilters, resetFilters, mapPoints, allListings, filteredListings, usdRate, loading } = useListingsCache();
+  const { filters, setFilters, resetFilters, mapPoints, allListings, filteredListings, usdRate, loading, loadListingsIfNeeded, liveFetchFailed, refetch } = useListingsCache();
+  // New listings matching the latest map search are pushed (Favorites → Searches shows it).
+  useLastSearchSync();
+
+  // Lazy-load listings when map screen mounts
+  useEffect(() => {
+    loadListingsIfNeeded();
+  }, [loadListingsIfNeeded]);
   const { displayCurrency } = useDisplayCurrency();
   const { focusVersion, consumeFocus } = useMapFocus();
   const [draftFilters, setDraftFilters] = useState(filters);
   const [showTooltip, setShowTooltip] = useState(false);
   const [drawMode, setDrawMode] = useState(false);
-  const [drawArea, setDrawArea] = useState<MapAreaPolygon | null>(filters.mapArea);
+  const [, setDrawArea] = useState<MapAreaPolygon | null>(filters.mapArea);
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [filterSheetMounted, setFilterSheetMounted] = useState(false);
   const [detailSheetOpen, setDetailSheetOpen] = useState(false);
   const [neighborhoodOpen, setNeighborhoodOpen] = useState(false);
   const [focusedListingId, setFocusedListingId] = useState<string | null>(null);
-  const mapChromeHidden = filterSheetOpen || detailSheetOpen || neighborhoodOpen;
-  useSheetOverlay('map-sheets', mapChromeHidden);
+  const [postSuccessVisible, setPostSuccessVisible] = useState(false);
+  const postSuccessHandledRef = useRef<string | null>(null);
+  // OPTIMIZATION #7: Debounce filter changes to avoid excessive re-renders during slider drags
+  const filterChangeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingFilterChangeRef = useRef<ListingFilters | null>(null);
+  const mapChromeHidden = filterSheetOpen || neighborhoodOpen;
+  useSheetOverlay('map-sheets', neighborhoodOpen);
   const filterCount = countActiveFilters(filters);
   const showDistrictMarketStats = shouldShowDistrictMarketStats(filters);
   const showMapMarkers = mapPoints.length > 0 && !filterSheetOpen && !detailSheetOpen && !drawMode;
@@ -63,6 +85,9 @@ export default function MapScreen() {
   const carouselBottom = mapListingCarouselBottomOffset(insets.bottom);
   const sheetsAboveCarousel = filterSheetOpen;
   const showNoResults = !loading && filteredListings.length === 0 && showListingCarousel;
+  const showZoomControls = !mapChromeHidden && !drawMode && !detailSheetOpen;
+  const zoomControlsBottom =
+    carouselBottom + (showListingCarousel ? MAP_LISTING_CAROUSEL_HEIGHT + spacing.sm : spacing.md);
 
   const focusedListing = useMemo(() => {
     if (!focusedListingId) return null;
@@ -109,13 +134,71 @@ export default function MapScreen() {
     if (!target) return;
 
     detailRef.current?.close();
-    setFocusedListingId(null);
+    setFocusedListingId(target.listingId);
     mapRef.current?.flyToCoverage({
       latitude: target.lat,
       longitude: target.lng,
       zoom: LISTING_MAP_FOCUS_ZOOM,
     });
   }, [focusVersion, consumeFocus]);
+
+  useEffect(() => {
+    const listingId = params.postedListingId;
+    const lat = params.postedLat ? Number(params.postedLat) : NaN;
+    const lng = params.postedLng ? Number(params.postedLng) : NaN;
+    if (!listingId || !Number.isFinite(lat) || !Number.isFinite(lng)) return;
+    if (postSuccessHandledRef.current === listingId) return;
+    postSuccessHandledRef.current = listingId;
+
+    const listing = allListings.find((item) => item.id === listingId);
+    const revealTarget =
+      listing ??
+      (params.postedCategory && params.postedDistrict
+        ? {
+            category: params.postedCategory,
+            type: params.postedType ?? 'rent',
+            lat,
+            lng,
+            district: params.postedDistrict,
+          }
+        : null);
+
+    if (revealTarget) {
+      setFilters(filtersToRevealListing(filters, revealTarget));
+    }
+
+    setFocusedListingId(listingId);
+    setPostSuccessVisible(true);
+    mapRef.current?.flyToCoverage({
+      latitude: lat,
+      longitude: lng,
+      zoom: LISTING_MAP_FOCUS_ZOOM,
+    });
+
+    router.setParams({
+      postedListingId: undefined,
+      postedLat: undefined,
+      postedLng: undefined,
+      postedCategory: undefined,
+      postedType: undefined,
+      postedDistrict: undefined,
+      posted: undefined,
+    });
+
+    const timer = setTimeout(() => setPostSuccessVisible(false), 4500);
+    return () => clearTimeout(timer);
+  }, [
+    allListings,
+    filters,
+    params.postedCategory,
+    params.postedDistrict,
+    params.postedLat,
+    params.postedListingId,
+    params.postedLng,
+    params.postedType,
+    router,
+    setFilters,
+  ]);
 
   const dismissTooltip = async () => {
     setShowTooltip(false);
@@ -125,9 +208,17 @@ export default function MapScreen() {
   const openFilters = useCallback(() => {
     detailRef.current?.close();
     setDraftFilters(filters);
-    sheetRef.current?.expand();
+    setFilterSheetMounted(true);
+    setFilterSheetOpen(true);
     dismissTooltip();
   }, [filters]);
+
+  const handleFilterSheetIndexChange = useCallback((index: number) => {
+    setFilterSheetOpen(index >= 0);
+    if (index < 0) {
+      setFilterSheetMounted(false);
+    }
+  }, []);
 
   const applyFilters = useCallback(() => {
     setFilters(draftFilters);
@@ -135,15 +226,47 @@ export default function MapScreen() {
     sheetRef.current?.close();
   }, [draftFilters, setFilters]);
 
+  // OPTIMIZATION #7: Debounce filter changes with 300ms delay
+  // This prevents excessive re-renders during slider drags (60+ times/sec → 3-4 times/sec)
   const handleFilterChange = useCallback(
     (next: ListingFilters) => {
       setDraftFilters(next);
+
+      // Always update immediately if category changes (better UX)
       if (next.category !== filters.category) {
+        if (filterChangeTimeoutRef.current) {
+          clearTimeout(filterChangeTimeoutRef.current);
+        }
         setFilters(next);
+        pendingFilterChangeRef.current = null;
+      } else {
+        // For other changes, debounce to avoid excessive re-filtering during slider drags
+        pendingFilterChangeRef.current = next;
+
+        if (filterChangeTimeoutRef.current) {
+          clearTimeout(filterChangeTimeoutRef.current);
+        }
+
+        filterChangeTimeoutRef.current = setTimeout(() => {
+          if (pendingFilterChangeRef.current) {
+            setFilters(pendingFilterChangeRef.current);
+            pendingFilterChangeRef.current = null;
+          }
+          filterChangeTimeoutRef.current = null;
+        }, 300);
       }
     },
     [filters.category, setFilters],
   );
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (filterChangeTimeoutRef.current) {
+        clearTimeout(filterChangeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const clearFilters = useCallback(() => {
     resetFilters();
@@ -214,6 +337,14 @@ export default function MapScreen() {
     mapRef.current?.flyToCoverage(MAP_COVERAGE_CENTER.region);
   }, [filters, setFilters]);
 
+  const handleZoomIn = useCallback(() => {
+    mapRef.current?.zoomBy(1);
+  }, []);
+
+  const handleZoomOut = useCallback(() => {
+    mapRef.current?.zoomBy(-1);
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.mapLayer} pointerEvents={drawMode ? 'none' : 'auto'}>
@@ -244,6 +375,7 @@ export default function MapScreen() {
       {!mapChromeHidden ? (
         <View style={[styles.topRight, { top: controlsTop }]} pointerEvents={drawMode ? 'none' : 'box-none'}>
           <FilterButton count={filterCount} onPress={openFilters} />
+          {!drawMode ? <SaveSearchControl filters={filters} /> : null}
         </View>
       ) : null}
 
@@ -276,6 +408,34 @@ export default function MapScreen() {
         </Pressable>
       ) : null}
 
+      {postSuccessVisible && !mapChromeHidden ? (
+        <View style={[styles.postSuccess, { top: controlsTop + 52 }]} pointerEvents="none">
+          <FrostedView style={styles.postSuccessInner}>
+            <AppText variant="caption" color="accent" style={styles.postSuccessText}>
+              {t('listing.postSuccess')}
+            </AppText>
+          </FrostedView>
+        </View>
+      ) : null}
+
+      {liveFetchFailed && !mapChromeHidden && !drawMode ? (
+        <Pressable
+          style={[styles.liveNotice, { bottom: zoomControlsBottom }]}
+          onPress={() => void refetch()}
+          accessibilityRole="button"
+        >
+          <FrostedView style={styles.liveNoticeInner}>
+            <AppText variant="caption">{t('demo.liveUnavailable')}</AppText>
+          </FrostedView>
+        </Pressable>
+      ) : null}
+
+      {showZoomControls ? (
+        <View style={[styles.zoomControls, { bottom: zoomControlsBottom }]} pointerEvents="box-none">
+          <MapZoomControls onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} />
+        </View>
+      ) : null}
+
       <View pointerEvents={drawMode ? 'none' : 'auto'}>
         <MapListingCarousel
           listings={filteredListings}
@@ -297,16 +457,19 @@ export default function MapScreen() {
         />
       ) : null}
 
-      <View style={styles.sheetLayer} pointerEvents={mapChromeHidden ? 'box-none' : 'none'}>
-        <FilterSheet
-          ref={sheetRef}
-          filters={draftFilters}
-          onChange={handleFilterChange}
-          onApply={applyFilters}
-          onClear={clearFilters}
-          allListings={allListings}
-          onIndexChange={(index) => setFilterSheetOpen(index >= 0)}
-        />
+      <View style={styles.sheetLayer} pointerEvents="box-none">
+        {filterSheetMounted ? (
+          <FilterSheet
+            ref={sheetRef}
+            initialIndex={0}
+            filters={draftFilters}
+            onChange={handleFilterChange}
+            onApply={applyFilters}
+            onClear={clearFilters}
+            allListings={allListings}
+            onIndexChange={handleFilterSheetIndexChange}
+          />
+        ) : null}
         <ListingDetailSheet
           ref={detailRef}
           onIndexChange={(index) => {
@@ -316,26 +479,13 @@ export default function MapScreen() {
           onNeighborhoodIndexChange={(index) => setNeighborhoodOpen(index >= 0)}
         />
       </View>
-
-      {Platform.OS === 'android' && !sheetsAboveCarousel ? (
-        <Pressable
-          style={[styles.fab, { bottom: carouselBottom + (showListingCarousel ? MAP_LISTING_CAROUSEL_HEIGHT + spacing.sm : 0) }]}
-          onPress={() => router.push('/(tabs)/post')}
-        >
-          <FrostedView style={styles.fabInner}>
-            <AppText variant="h2" color="accent">
-              +
-            </AppText>
-          </FrostedView>
-        </Pressable>
-      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  mapLayer: { flex: 1, zIndex: 0, overflow: 'hidden' },
+  container: { flex: 1, backgroundColor: '#07090F' },
+  mapLayer: { flex: 1, zIndex: 0, overflow: 'hidden', backgroundColor: '#07090F' },
   penDrawLayer: {
     position: 'absolute',
     top: 0,
@@ -354,21 +504,35 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: spacing.md,
     zIndex: 10,
+    gap: spacing.sm,
   },
   drawHint: { position: 'absolute', left: spacing.md, right: spacing.md, zIndex: 11 },
   drawHintInner: { padding: spacing.sm, borderRadius: 12, alignSelf: 'flex-start', maxWidth: 280 },
-  tooltip: { position: 'absolute', right: spacing.md, zIndex: 11, maxWidth: 220 },
+  tooltip: { position: 'absolute', right: spacing.md + 58, zIndex: 11, maxWidth: 220 },
   tooltipInner: { padding: spacing.sm, borderRadius: 12 },
+  postSuccess: {
+    position: 'absolute',
+    left: spacing.md,
+    right: spacing.md,
+    zIndex: 12,
+    alignItems: 'center',
+  },
+  postSuccessInner: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: 12,
+    maxWidth: 340,
+  },
+  postSuccessText: { textAlign: 'center', fontWeight: '600' },
+  liveNotice: { position: 'absolute', left: spacing.md, right: 72, zIndex: 11 },
+  liveNoticeInner: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, borderRadius: 12 },
+  zoomControls: {
+    position: 'absolute',
+    right: spacing.md,
+    zIndex: 10,
+  },
   sheetLayer: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 20,
-  },
-  fab: { position: 'absolute', right: spacing.md, zIndex: 10 },
-  fabInner: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

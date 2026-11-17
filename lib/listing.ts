@@ -61,7 +61,14 @@ export function getListingLevel(listing: ListingWithPhotos): PropertyLevel | nul
 }
 
 export function enrichListing(listing: ListingWithPhotos): ListingWithPhotos {
-  if (listing.category && listing.property_type) return listing;
+  // CRITICAL FIX #1: Even on early return, guarantee photos are preserved
+  if (listing.category && listing.property_type) {
+    return {
+      ...listing,
+      listing_photos: listing.listing_photos,
+      users: listing.users,
+    };
+  }
 
   const isCommercial = listing.type === 'lease' || listing.category === 'commercial';
   const floor = listing.floor;
@@ -87,5 +94,7 @@ export function enrichListing(listing: ListingWithPhotos): ListingWithPhotos {
     year_built: listing.year_built ?? 2012 + (listing.id.charCodeAt(10) % 12),
     property_views: listing.property_views ?? ['city'],
     level,
+    listing_photos: listing.listing_photos,
+    users: listing.users,
   };
 }

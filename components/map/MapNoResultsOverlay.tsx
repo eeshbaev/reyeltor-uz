@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Button } from '@/components/ui/Button';
 import { AppText } from '@/components/ui/AppText';
+import { Button } from '@/components/ui/Button';
 import { FrostedView } from '@/components/ui/FrostedView';
+import { spacing } from '@/lib/design/spacing';
 import {
   getNoResultsReason,
   hasAreaSearch,
   hasSearchFiltersActive,
   type NoResultsReason,
 } from '@/lib/filters';
-import { spacing } from '@/lib/design/spacing';
 import type { ListingFilters, ListingWithPhotos } from '@/types';
 
 interface MapNoResultsOverlayProps {

@@ -1,5 +1,5 @@
-import type { ListingCategory } from '@/types';
 import type { ColorScheme } from './colors';
+import type { ListingCategory } from '@/types';
 
 export interface CategoryColorSet {
   main: string;
@@ -12,34 +12,34 @@ export interface CategoryColorSet {
 const CATEGORY_COLORS = {
   light: {
     residential: {
-      main: '#0D9488',
+      main: '#0F766E',
       surface: '#F0FDFA',
       onMain: '#FFFFFF',
-      mapCluster: '#0D9488',
+      mapCluster: '#0F766E',
       mapClusterText: '#FFFFFF',
     },
     commercial: {
-      main: '#EA580C',
+      main: '#C2410C',
       surface: '#FFF7ED',
       onMain: '#FFFFFF',
-      mapCluster: '#EA580C',
+      mapCluster: '#C2410C',
       mapClusterText: '#FFFFFF',
     },
   },
   dark: {
     residential: {
-      main: '#14B8A6',
+      main: '#2DD4BF',
       surface: '#042F2E',
-      onMain: '#FFFFFF',
+      onMain: '#042F2E',
       mapCluster: '#14B8A6',
-      mapClusterText: '#FFFFFF',
+      mapClusterText: '#042F2E',
     },
     commercial: {
-      main: '#F97316',
+      main: '#FB923C',
       surface: '#431407',
-      onMain: '#FFFFFF',
+      onMain: '#431407',
       mapCluster: '#F97316',
-      mapClusterText: '#FFFFFF',
+      mapClusterText: '#431407',
     },
   },
 } as const satisfies Record<ColorScheme, Record<ListingCategory, CategoryColorSet>>;

@@ -1,6 +1,6 @@
 import { View, StyleSheet } from 'react-native';
-import { Button } from './Button';
 import { AppText } from './AppText';
+import { Button } from './Button';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -23,7 +23,6 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ illustration, title, cta, onCta, secondaryCta, onSecondaryCta }: EmptyStateProps) {
-  const theme = useTheme();
 
   return (
     <View style={styles.container}>

@@ -1,22 +1,29 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlashList } from '@shopify/flash-list';
-import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { GuestPrompt } from '@/components/auth/GuestPrompt';
-import { ListingCard } from '@/components/listing/ListingCard';
+import { FavoriteListingCard } from '@/components/favorites/FavoriteListingCard';
+import { FavoritesAmbientBackground } from '@/components/favorites/FavoritesAmbientBackground';
+import { FavoritesEmptyState } from '@/components/favorites/FavoritesEmptyState';
+import { FavoritesScreenHeader } from '@/components/favorites/FavoritesScreenHeader';
+import { FavoritesSegment, type FavoritesTab } from '@/components/favorites/FavoritesSegment';
 import { ListingDetailSheet, type ListingDetailSheetRef } from '@/components/listing/ListingDetailSheet';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
+import { SavedSearchesPanel } from '@/components/savedSearches/SavedSearchesPanel';
+import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
-import { ListingCardSkeleton } from '@/components/ui/Skeleton';
-import { spacing } from '@/lib/design/spacing';
+import { FavoriteListingCardSkeleton } from '@/components/ui/Skeleton';
 import { useAuth } from '@/lib/context/AuthContext';
+import { useGuestFavoriteAuth } from '@/lib/context/GuestFavoriteAuthContext';
+import { spacing } from '@/lib/design/spacing';
+import { subscribeFavoritesChanged } from '@/lib/favorites/events';
+import { loadFavoriteListings, type FavoriteListing } from '@/lib/favorites/loadFavoriteListings';
+import { useSavedSearches } from '@/lib/hooks/useSavedSearches';
 import { useSheetOverlay } from '@/lib/hooks/useSheetOverlay';
 import { sheetOverlayLayerStyle } from '@/lib/sheetChrome';
-import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/lib/theme';
-import type { ListingWithPhotos } from '@/types';
 
 export default function FavoritesScreen() {
   const { t } = useTranslation();
@@ -24,99 +31,138 @@ export default function FavoritesScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { session, loading: authLoading } = useAuth();
+  const { openGuestSignIn } = useGuestFavoriteAuth();
+  const params = useLocalSearchParams<{ tab?: string }>();
+  const [tab, setTab] = useState<FavoritesTab>(params.tab === 'searches' ? 'searches' : 'listings');
+  const { searches, refetch: refetchSearches } = useSavedSearches();
   const detailRef = useRef<ListingDetailSheetRef>(null);
-  const [listings, setListings] = useState<Array<ListingWithPhotos & { unavailable?: boolean }>>([]);
+  const [listings, setListings] = useState<FavoriteListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [detailOpen, setDetailOpen] = useState(false);
   const [neighborhoodOpen, setNeighborhoodOpen] = useState(false);
   useSheetOverlay('favorites-detail', detailOpen || neighborhoodOpen);
 
   const loadFavorites = useCallback(async () => {
-    if (!session?.user?.id) return;
-    setLoading(true);
-    const { data } = await supabase.from('favorites').select('listing_id').eq('user_id', session.user.id);
-    const ids = (data ?? []).map((f) => f.listing_id);
-
-    if (ids.length === 0) {
+    if (!session?.user?.id) {
       setListings([]);
       setLoading(false);
       return;
     }
 
-    const { data: listingData } = await supabase.from('listings').select('*, listing_photos(*)').in('id', ids);
-    const found = new Map((listingData ?? []).map((l) => [l.id, l as ListingWithPhotos]));
-    const result = ids.map((id) => {
-      const listing = found.get(id);
-      if (listing) return listing;
-      return {
-        id,
-        unavailable: true,
-        price: 0,
-        rooms: 0,
-        area_m2: 0,
-        district: '',
-        type: 'rent' as const,
-        user_id: '',
-        lat: 0,
-        lng: 0,
-        status: 'deleted' as const,
-      } as ListingWithPhotos & { unavailable: boolean };
-    });
-
-    setListings(result);
-    setLoading(false);
+    setLoading(true);
+    try {
+      const next = await loadFavoriteListings(session.user.id);
+      setListings(next);
+    } finally {
+      setLoading(false);
+    }
   }, [session?.user?.id]);
 
+  useFocusEffect(
+    useCallback(() => {
+      void loadFavorites();
+      if (session?.user?.id) void refetchSearches();
+    }, [loadFavorites, refetchSearches, session?.user?.id]),
+  );
+
+  useEffect(
+    () =>
+      subscribeFavoritesChanged(() => {
+        void loadFavorites();
+      }),
+    [loadFavorites],
+  );
+
   useEffect(() => {
-    if (session?.user?.id) loadFavorites();
-  }, [loadFavorites, session?.user?.id]);
+    if (params.tab === 'searches' || params.tab === 'listings') setTab(params.tab);
+  }, [params.tab]);
+
+  const savedCount = listings.filter((item) => !item.unavailable).length;
+  const listBottom = insets.bottom + TAB_BAR_CLEARANCE + spacing.md;
+  const unseenMatches = useMemo(() => searches.reduce((sum, search) => sum + search.newMatches, 0), [searches]);
+
+  const header = (
+    <View>
+      <FavoritesScreenHeader count={savedCount} />
+      <View style={styles.segmentWrap}>
+        <FavoritesSegment
+          tab={tab}
+          listingsLabel={t('savedSearches.tabListings')}
+          searchesLabel={t('savedSearches.tabSearches')}
+          listingsCount={savedCount}
+          searchesCount={searches.length}
+          searchesBadge={unseenMatches}
+          onChange={setTab}
+        />
+      </View>
+    </View>
+  );
 
   if (authLoading) {
     return (
-      <View style={[styles.container, { backgroundColor: theme.colors.background, padding: spacing.md }]}>
-        <ListingCardSkeleton />
+      <View style={[styles.screen, styles.centered, { backgroundColor: theme.colors.background }]}>
+        <ActivityIndicator color={theme.colors.accent} />
       </View>
     );
   }
 
   if (!session) {
     return (
-      <GuestPrompt title={t('favorites.signInRequired')} subtitle={t('favorites.signInHint')} />
+      <FavoritesEmptyState
+        onSignIn={openGuestSignIn}
+        onExploreMap={() => router.push('/(tabs)/map')}
+      />
+    );
+  }
+
+  if (tab === 'searches') {
+    return (
+      <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
+        <FavoritesAmbientBackground />
+        <SavedSearchesPanel header={header} bottomPadding={listBottom} />
+      </View>
     );
   }
 
   if (loading) {
     return (
-      <View style={[styles.container, { backgroundColor: theme.colors.background, padding: spacing.md }]}>
-        <ListingCardSkeleton />
-        <ListingCardSkeleton />
+      <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
+        <FavoritesAmbientBackground />
+        <View style={styles.loadingHeader}>{header}</View>
+        <View style={styles.loadingList}>
+          <FavoriteListingCardSkeleton />
+          <FavoriteListingCardSkeleton />
+        </View>
       </View>
     );
   }
 
   if (listings.length === 0) {
-    return (
-      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-        <EmptyState
-          illustration="favorites"
-          title={t('favorites.empty')}
-          cta={t('favorites.exploreMap')}
-          onCta={() => router.push('/(tabs)/map')}
-        />
-      </View>
-    );
+    return <FavoritesEmptyState header={header} onExploreMap={() => router.push('/(tabs)/map')} />;
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
+      <FavoritesAmbientBackground />
       <FlashList
         data={listings}
-        estimatedItemSize={260}
+        estimatedItemSize={340}
         renderScrollComponent={ScrollView}
-        contentContainerStyle={{ padding: spacing.md, paddingBottom: insets.bottom + 100 }}
+        ListHeaderComponent={header}
+        ListFooterComponent={
+          savedCount > 0 && savedCount < 4 ? (
+            <View style={[styles.footerTip, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]}>
+              <AppText variant="caption" color="secondary" style={styles.footerTipText}>
+                {t('favorites.compareHint')}
+              </AppText>
+            </View>
+          ) : null
+        }
+        contentContainerStyle={{ paddingHorizontal: spacing.md, paddingBottom: listBottom }}
         keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
-          <ListingCard
+          <FavoriteListingCard
             listing={item}
             unavailable={item.unavailable}
             onPress={() => !item.unavailable && detailRef.current?.open(item.id)}
@@ -136,5 +182,36 @@ export default function FavoritesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  screen: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+  centered: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  segmentWrap: {
+    marginBottom: spacing.md,
+  },
+  loadingHeader: {
+    paddingHorizontal: spacing.md,
+  },
+  loadingList: {
+    paddingHorizontal: spacing.md,
+    gap: spacing.lg,
+  },
+  separator: {
+    height: spacing.lg,
+  },
+  footerTip: {
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  footerTipText: {
+    textAlign: 'center',
+    lineHeight: 20,
+  },
 });

@@ -1,22 +1,23 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Switch, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppText } from '@/components/ui/AppText';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
 import { CurrencyPills } from '@/components/tools/CurrencyPills';
 import { IntegerInput } from '@/components/tools/IntegerInput';
 import { ToolReportExport } from '@/components/tools/ToolReportExport';
 import { ToolCard, ToolField, ToolHighlightCard, ToolPill, toolScreenStyles } from '@/components/tools/toolUi';
+import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { useListingsCache } from '@/lib/context/ListingsContext';
 import { spacing } from '@/lib/design/spacing';
+import { toolScreenBackground } from '@/lib/design/toolChrome';
 import { formatListingPrice } from '@/lib/format';
+import { useTheme } from '@/lib/theme';
 import { buildRenovationReportHtml } from '@/lib/tools/instrumentReports';
 import { calculateRenovation } from '@/lib/tools/renovation';
-import { toolScreenBackground } from '@/lib/design/toolChrome';
 import { RENOVATION_LEVELS, type RenovationLevel } from '@/lib/tools/renovationRates';
-import { useTheme } from '@/lib/theme';
 import type { PriceCurrency } from '@/types';
 
 export default function RenovationScreen() {
@@ -31,7 +32,9 @@ export default function RenovationScreen() {
     [displayCurrency, usdRate],
   );
 
-  const [areaM2, setAreaM2] = useState(0);
+  // Optional prefill from a listing ("Renovation cost" link on a property).
+  const { area: routeArea } = useLocalSearchParams<{ area?: string }>();
+  const [areaM2, setAreaM2] = useState(routeArea ? Math.max(0, Math.round(Number(routeArea)) || 0) : 0);
   const [level, setLevel] = useState<RenovationLevel>('basic');
   const [includeFurniture, setIncludeFurniture] = useState(false);
 
@@ -88,7 +91,7 @@ export default function RenovationScreen() {
       itemLabel,
       itemNote,
     }),
-    [t, areaM2, level, includeFurniture, levelLabel, formatPrice, result, itemLabel, itemNote, displayCurrency],
+    [t, areaM2, level, includeFurniture, levelLabel, formatPrice, result, itemLabel, itemNote],
   );
 
   return (

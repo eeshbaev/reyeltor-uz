@@ -1,20 +1,19 @@
-import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Animated, StyleSheet, View } from 'react-native';
-import { Button } from '@/components/ui/Button';
+import { Animated, StyleSheet } from 'react-native';
+import { WelcomeCoin } from '@/components/registration/WelcomeCoin';
 import { AppText } from '@/components/ui/AppText';
+import { Button } from '@/components/ui/Button';
+import { SafeScreen } from '@/components/ui/SafeScreen';
 import { WELCOME_COINS } from '@/lib/constants';
-import { motion } from '@/lib/design/motion';
 import { spacing } from '@/lib/design/spacing';
-import { useReduceMotion } from '@/lib/hooks/useReduceMotion';
-import { useTheme } from '@/lib/theme';
 import { hapticSuccess } from '@/lib/haptics';
+import { useReduceMotion } from '@/lib/hooks/useReduceMotion';
 
 export default function WelcomeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const theme = useTheme();
   const reduceMotion = useReduceMotion();
   const anim = useRef(new Animated.Value(0)).current;
   const [displayBalance, setDisplayBalance] = useState(0);
@@ -40,8 +39,10 @@ export default function WelcomeScreen() {
   const scale = anim.interpolate({ inputRange: [0, 1], outputRange: [0.8, 1] });
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Animated.Text style={[styles.emoji, { transform: [{ scale }] }]}>🪙</Animated.Text>
+    <SafeScreen edges={['top', 'left', 'right', 'bottom']} style={styles.container}>
+      <Animated.View style={{ transform: [{ scale }], marginBottom: spacing.lg }}>
+        <WelcomeCoin size="lg" />
+      </Animated.View>
       <AppText variant="h1" style={styles.title}>
         {t('welcome.title')}
       </AppText>
@@ -52,7 +53,7 @@ export default function WelcomeScreen() {
         {displayBalance}
       </AppText>
       <Button label={t('welcome.start')} onPress={() => router.replace('/(tabs)/map')} />
-    </View>
+    </SafeScreen>
   );
 }
 
@@ -63,7 +64,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: spacing.lg,
   },
-  emoji: { fontSize: 72, marginBottom: spacing.lg },
   title: { textAlign: 'center' },
   subtitle: { textAlign: 'center', marginTop: spacing.sm, marginBottom: spacing.lg, maxWidth: 300 },
   balance: { marginBottom: spacing.xl },

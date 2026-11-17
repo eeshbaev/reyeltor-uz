@@ -2,27 +2,28 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppText } from '@/components/ui/AppText';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
 import { CurrencyPills } from '@/components/tools/CurrencyPills';
 import { DistrictTrendChart } from '@/components/tools/DistrictTrendChart';
 import { ToolReportExport } from '@/components/tools/ToolReportExport';
 import { ToolCard, ToolPill, toolScreenStyles } from '@/components/tools/toolUi';
+import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { useListingsCache } from '@/lib/context/ListingsContext';
-import { toolPickerStyle, toolScreenBackground, toolSelectorStyle } from '@/lib/design/toolChrome';
 import { spacing } from '@/lib/design/spacing';
+import { toolPickerStyle, toolScreenBackground, toolSelectorStyle } from '@/lib/design/toolChrome';
+import { buildToolShareSummary } from '@/lib/growth/shareMessage';
 import { useDistrictTwelveMonthTrend } from '@/lib/hooks/useDistrictTrend';
-import { buildDistrictComparisonReportHtml } from '@/lib/tools/instrumentReports';
+import { useMarketDataVersion } from '@/lib/hooks/useMarketData';
+import { DEFAULT_RESIDENTIAL_DISTRICT_MARKET } from '@/lib/market/defaultMarketData';
+import type { DistrictTrendPoint } from '@/lib/market/districtPriceHistory';
 import {
   formatMarketPerSqm,
   getCommercialDistrictMarketAverages,
   getDistrictMarketAverages,
 } from '@/lib/market/tashkentDistrictMarket';
-import { DEFAULT_RESIDENTIAL_DISTRICT_MARKET } from '@/lib/market/defaultMarketData';
-import type { DistrictTrendPoint } from '@/lib/market/districtPriceHistory';
-import { useMarketDataVersion } from '@/lib/hooks/useMarketData';
 import { useTheme } from '@/lib/theme';
+import { buildDistrictComparisonReportHtml } from '@/lib/tools/instrumentReports';
 import type { PriceCurrency } from '@/types';
 
 const DISTRICTS = Object.keys(DEFAULT_RESIDENTIAL_DISTRICT_MARKET);
@@ -64,6 +65,19 @@ export default function DistrictComparisonScreen() {
   const rentLabel =
     category === 'residential' ? t('tools.districtComparison.avgRent') : t('tools.districtComparison.avgLease');
   const saleLabel = t('tools.districtComparison.avgSale');
+
+  const buildShareSummary = useCallback(() => {
+    if (!dataA || !dataB || !summary) return '';
+    return buildToolShareSummary(
+      t('tools.districtComparison.title'),
+      [
+        `${districtA}: ${rentLabel} ${formatVal(dataA.rent)} · ${saleLabel} ${formatVal(dataA.sale)}`,
+        `${districtB}: ${rentLabel} ${formatVal(dataB.rent)} · ${saleLabel} ${formatVal(dataB.sale)}`,
+        summary,
+      ],
+      t,
+    );
+  }, [dataA, dataB, districtA, districtB, formatVal, rentLabel, saleLabel, summary, t]);
 
   const buildReportHtml = useCallback(() => {
     if (!dataA || !dataB || !summary) {
@@ -189,6 +203,7 @@ export default function DistrictComparisonScreen() {
         visible={Boolean(dataA && dataB && summary)}
         title={t('tools.districtComparison.title')}
         buildHtml={buildReportHtml}
+        buildShareSummary={buildShareSummary}
       />
     </ScrollView>
   );

@@ -1,25 +1,27 @@
+import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetScrollView,
   useBottomSheetSpringConfigs,
 } from '@gorhom/bottom-sheet';
 import { Image } from 'expo-image';
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { POI_CATEGORY_ORDER } from '@/components/map/neighborhoodMarkerStyles';
 import { AppText } from '@/components/ui/AppText';
-import {
-  getNearbyAmenities,
-  groupAmenitiesByCategory,
-  type AmenityCategory,
-} from '@/lib/neighborhood/amenities';
+import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
 import { hapticLight } from '@/lib/haptics';
 import { useOpenListingOnMap } from '@/lib/hooks/useOpenListingOnMap';
+import { TAB_BAR_CLEARANCE } from '@/lib/navigation/tabBarMetrics';
+import {
+  getNearbyAmenitiesForSheet,
+  groupAmenitiesByCategory,
+  poiDisplayName,
+} from '@/lib/neighborhood/amenities';
+import { SHEET_BEHIND_TAB_Z_INDEX_NESTED } from '@/lib/sheetChrome';
 import { getStaticMapUrl } from '@/lib/supabase';
-import { SHEET_BEHIND_TAB_Z_INDEX_NESTED, sheetBottomInset } from '@/lib/sheetChrome';
-import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
 import { spacing, useTheme } from '@/lib/theme';
 
 export interface NeighborhoodSheetRef {
@@ -29,20 +31,16 @@ export interface NeighborhoodSheetRef {
 
 interface NeighborhoodSheetProps {
   onIndexChange?: (index: number) => void;
+  /** When true, sheet slides behind the floating tab bar on the map. */
+  reserveTabBar?: boolean;
 }
 
-const CATEGORY_ORDER: AmenityCategory[] = [
-  'amenity',
-  'transport',
-  'education',
-  'government',
-  'entertainment',
-];
+const CATEGORY_ORDER = POI_CATEGORY_ORDER;
 
 const screenHeight = Dimensions.get('window').height;
 
 export const NeighborhoodSheet = forwardRef<NeighborhoodSheetRef, NeighborhoodSheetProps>(
-  ({ onIndexChange }, ref) => {
+  ({ onIndexChange, reserveTabBar = false }, ref) => {
     const { t, i18n } = useTranslation();
     const theme = useTheme();
     const insets = useSafeAreaInsets();
@@ -51,7 +49,10 @@ export const NeighborhoodSheet = forwardRef<NeighborhoodSheetRef, NeighborhoodSh
     const [coords, setCoords] = useState({ lat: 41.3111, lng: 69.2797 });
     const [listingId, setListingId] = useState<string | null>(null);
     const [sheetIndex, setSheetIndex] = useState(-1);
-    const tabBarClearance = sheetBottomInset(insets.bottom);
+    const bottomInset = reserveTabBar ? 0 : Math.max(insets.bottom, spacing.sm);
+    const scrollBottomPadding = reserveTabBar
+      ? Math.max(insets.bottom, spacing.sm) + TAB_BAR_CLEARANCE + spacing.lg
+      : Math.max(insets.bottom, spacing.sm) + spacing.lg;
     const sheetHeight = Math.round(screenHeight * 0.92);
 
     const snapPoints = useMemo(() => [sheetHeight], [sheetHeight]);
@@ -61,7 +62,7 @@ export const NeighborhoodSheet = forwardRef<NeighborhoodSheetRef, NeighborhoodSh
       mass: 0.75,
     });
 
-    const nearby = useMemo(() => getNearbyAmenities(coords.lat, coords.lng, 500), [coords]);
+    const nearby = useMemo(() => getNearbyAmenitiesForSheet(coords.lat, coords.lng), [coords]);
     const grouped = useMemo(() => groupAmenitiesByCategory(nearby), [nearby]);
     const mapUrl = getStaticMapUrl(coords.lat, coords.lng, 400, 220);
 
@@ -82,7 +83,7 @@ export const NeighborhoodSheet = forwardRef<NeighborhoodSheetRef, NeighborhoodSh
     }, [coords.lat, coords.lng, listingId, openListingOnMap]);
 
     const renderBackdrop = useCallback(
-      (props: React.ComponentProps<typeof BottomSheetBackdrop>) => null,
+      (_props: React.ComponentProps<typeof BottomSheetBackdrop>) => null,
       [],
     );
 
@@ -90,9 +91,17 @@ export const NeighborhoodSheet = forwardRef<NeighborhoodSheetRef, NeighborhoodSh
       (index: number) => {
         setSheetIndex(index);
         onIndexChange?.(index);
+        if (index < 0) {
+          setListingId(null);
+        }
       },
       [onIndexChange],
     );
+
+    const handleSheetClose = useCallback(() => {
+      setSheetIndex(-1);
+      onIndexChange?.(-1);
+    }, [onIndexChange]);
 
     return (
       <BottomSheet
@@ -103,7 +112,8 @@ export const NeighborhoodSheet = forwardRef<NeighborhoodSheetRef, NeighborhoodSh
         enablePanDownToClose
         backdropComponent={renderBackdrop}
         onChange={handleSheetChange}
-        bottomInset={0}
+        onClose={handleSheetClose}
+        bottomInset={bottomInset}
         containerStyle={sheetIndex < 0 ? styles.passThrough : undefined}
         style={styles.sheet}
         backgroundStyle={{ backgroundColor: theme.colors.surfaceElevated }}
@@ -113,7 +123,10 @@ export const NeighborhoodSheet = forwardRef<NeighborhoodSheetRef, NeighborhoodSh
         <View style={styles.body}>
           <BottomSheetScrollView
             style={styles.scroll}
-            contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance + spacing.lg }]}
+            contentContainerStyle={[
+              styles.content,
+              { paddingBottom: scrollBottomPadding },
+            ]}
             keyboardShouldPersistTaps="handled"
             nestedScrollEnabled
             showsVerticalScrollIndicator={false}
@@ -161,7 +174,7 @@ export const NeighborhoodSheet = forwardRef<NeighborhoodSheetRef, NeighborhoodSh
                       key={`${poi.id}-${index}`}
                       style={[styles.poiRow, { borderBottomColor: theme.colors.border }]}
                     >
-                      <AppText variant="body">{i18n.language === 'uz' ? poi.nameUz : poi.name}</AppText>
+                      <AppText variant="body">{poiDisplayName(poi, i18n.language)}</AppText>
                       <AppText variant="caption" color="secondary">
                         {poi.distanceM} m
                       </AppText>

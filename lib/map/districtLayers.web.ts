@@ -1,7 +1,7 @@
 import type { GeoJSONSource, Map as MapLibreMap } from 'maplibre-gl';
+import type { MapCoverage } from '@/lib/constants';
 import { CITY_BOUNDARY_STYLE, REGION_BOUNDARY_STYLE } from '@/lib/map/boundaryConstants';
 import { getCityDistrictCollection, getRegionDistrictCollection } from '@/lib/map/districtBoundaries';
-import type { MapCoverage } from '@/lib/constants';
 
 const CITY_SOURCE_ID = 'tashkent-city-districts';
 const REGION_SOURCE_ID = 'tashkent-region-districts';

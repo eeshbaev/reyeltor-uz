@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+import type { MapViewRef } from './types';
 import {
   isClosedPath,
   simplifyPath,
   type MapAreaPolygon,
 } from '@/lib/map/polygon';
-import type { MapViewRef } from './types';
 
 interface PenDrawOverlayProps {
   mapRef: React.RefObject<MapViewRef | null>;

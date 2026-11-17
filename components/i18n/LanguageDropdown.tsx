@@ -1,14 +1,19 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ScrollView } from '@/components/ui/GestureScrollView';
 import { AppText } from '@/components/ui/AppText';
+import { ScrollView } from '@/components/ui/GestureScrollView';
 import { DEFAULT_LANGUAGE, LANGUAGE_LABELS, SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/lib/constants';
+import { colorTokens } from '@/lib/design/colors';
 import { spacing } from '@/lib/design/spacing';
+import { typography } from '@/lib/design/typography';
 import { hapticLight } from '@/lib/haptics';
 import { useTheme } from '@/lib/theme';
+
+/** Menu always uses the light palette so text stays readable inside RN Modal (Android can force a light surface). */
+const menuColors = colorTokens.light;
 
 interface LanguageDropdownProps {
   onSelect: (lang: SupportedLanguage) => void;
@@ -59,9 +64,8 @@ export function LanguageDropdown({ onSelect }: LanguageDropdownProps) {
               {
                 top: insets.top + spacing.sm,
                 right: spacing.md,
-                backgroundColor: theme.colors.surfaceElevated,
-                borderColor: theme.colors.border,
-                shadowColor: theme.isDark ? '#000' : '#1a1a1a',
+                backgroundColor: menuColors.surfaceElevated,
+                borderColor: menuColors.borderStrong,
               },
             ]}
           >
@@ -74,14 +78,20 @@ export function LanguageDropdown({ onSelect }: LanguageDropdownProps) {
                     onPress={() => handleSelect(lang)}
                     style={[
                       styles.option,
-                      active && { backgroundColor: theme.colors.accentSurface },
+                      active && { backgroundColor: menuColors.accentSurface },
                     ]}
                   >
-                    <AppText variant="body" color={active ? 'accent' : 'primary'}>
+                    <Text
+                      allowFontScaling
+                      style={[
+                        styles.optionLabel,
+                        { color: active ? menuColors.accent : menuColors.primary },
+                      ]}
+                    >
                       {LANGUAGE_LABELS[lang]}
-                    </AppText>
+                    </Text>
                     {active ? (
-                      <Ionicons name="checkmark" size={18} color={theme.colors.accent} />
+                      <Ionicons name="checkmark" size={18} color={menuColors.accent} />
                     ) : null}
                   </Pressable>
                 );
@@ -118,6 +128,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     overflow: 'hidden',
+    shadowColor: '#1a1a1a',
     shadowOpacity: 0.12,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 4 },
@@ -133,5 +144,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     gap: spacing.sm,
+  },
+  optionLabel: {
+    ...typography.body,
+    fontWeight: '500',
   },
 });

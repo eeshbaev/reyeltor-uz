@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LanguageTopBar } from '@/components/i18n/LanguageTopBar';

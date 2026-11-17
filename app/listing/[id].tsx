@@ -1,59 +1,86 @@
-import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
-import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
+  Alert,
   Linking,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { ScrollView } from '@/components/ui/GestureScrollView';
-import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ShareSheet, type ShareSheetRef } from '@/components/growth/ShareSheet';
 import { AgentCard } from '@/components/listing/AgentCard';
+import { DemoListingNotice } from '@/components/listing/DemoListingNotice';
+import { FreshnessLabel } from '@/components/listing/FreshnessLabel';
 import { ListingCarousel } from '@/components/listing/ListingCarousel';
 import { ListingLocationPreview } from '@/components/listing/ListingLocationPreview';
+import { ListingToolLinks } from '@/components/listing/ListingToolLinks';
 import { NeighborhoodSheet, type NeighborhoodSheetRef } from '@/components/listing/NeighborhoodSheet';
-import { PropertyInfoSection } from '@/components/listing/PropertyInfoSection';
 import { PriceBadge } from '@/components/listing/PriceBadge';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { PropertyInfoSection } from '@/components/listing/PropertyInfoSection';
+import { BackButton } from '@/components/navigation/BackButton';
+import { StackScreenHeader } from '@/components/navigation/StackScreenHeader';
 import { Badge } from '@/components/ui/Badge';
-import { openTelegramChat } from '@/lib/contact';
-import { getDeviceId } from '@/lib/device';
-import { isDemoId } from '@/lib/demo';
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { FrostedView } from '@/components/ui/FrostedView';
+import { ScrollView } from '@/components/ui/GestureScrollView';
+import { SafeScreen } from '@/components/ui/SafeScreen';
 import { useAuth } from '@/lib/context/AuthContext';
 import { useListingsCache } from '@/lib/context/ListingsContext';
+import { isDemoId } from '@/lib/demo';
+import { getDeviceId } from '@/lib/device';
 import { formatDate } from '@/lib/format';
+import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
+import { fetchListingEngagement } from '@/lib/growth/listingEngagement';
+import { quickShare } from '@/lib/growth/quickShare';
 import { hapticLight } from '@/lib/haptics';
-import { useOpenListingOnMap } from '@/lib/hooks/useOpenListingOnMap';
-import { useListingFavorite } from '@/lib/hooks/useListingFavorite';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
+import { useListingFavorite } from '@/lib/hooks/useListingFavorite';
 import { fetchAreaMedianPrice, fetchActiveListingCount, fetchListingById, fetchPriceHistory } from '@/lib/hooks/useListings';
-import { shareListing } from '@/lib/shareListing';
-import { supabase } from '@/lib/supabase';
+import { useOpenListingOnMap } from '@/lib/hooks/useOpenListingOnMap';
+import { recordListingEvent } from '@/lib/listingEvents';
+import { logger } from '@/lib/logging/logger';
+import { getPublicPhone } from '@/lib/profile/publicContact';
+import { buildListingSharePayload } from '@/lib/shareListing';
 import { SHEET_Z_INDEX } from '@/lib/sheetChrome';
+import { supabase } from '@/lib/supabase';
 import { colors, fontSize, spacing } from '@/lib/theme';
+import { validateRouteId } from '@/lib/validation/uuid';
 import type { FlagReason, ListingWithPhotos, PriceHistoryEntry } from '@/types';
 
-export default function ListingDetailScreen() {
+function ListingDetailScreenContent() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
   const { session } = useAuth();
   const { usdRate } = useListingsCache();
   const { formatPrice } = useFormatPrice();
   const openListingOnMap = useOpenListingOnMap();
+  const router = useRouter();
   const sheetRef = useRef<BottomSheet>(null);
+  const shareSheetRef = useRef<ShareSheetRef>(null);
   const neighborhoodRef = useRef<NeighborhoodSheetRef>(null);
   const insets = useSafeAreaInsets();
   const [listing, setListing] = useState<ListingWithPhotos | null>(null);
   const [priceHistory, setPriceHistory] = useState<PriceHistoryEntry[]>([]);
+  const [saveCount, setSaveCount] = useState<number | null>(null);
   const [medianPrice, setMedianPrice] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [invalidId, setInvalidId] = useState(false);
   const [activeCount, setActiveCount] = useState(0);
+
+  // Validate route ID format
+  useEffect(() => {
+    if (!id || !validateRouteId(id)) {
+      setInvalidId(true);
+      setLoading(false);
+    }
+  }, [id]);
+
   const { isFavorite, toggleFavorite } = useListingFavorite(id ?? null);
 
   const snapPoints = useMemo(() => ['40%'], []);
@@ -63,6 +90,54 @@ export default function ListingDetailScreen() {
     ),
     [],
   );
+
+  const handleSharePress = useCallback(() => {
+    if (!listing) return;
+    const payload = buildListingSharePayload(listing, formatPrice, t, {
+      priceHistory,
+      saveCount,
+    });
+    void recordListingEvent(listing.id, 'share');
+    void quickShare(payload, shareSheetRef);
+  }, [listing, formatPrice, t, priceHistory, saveCount]);
+
+  const handleSharePicker = useCallback(() => {
+    if (!listing) return;
+    const payload = buildListingSharePayload(listing, formatPrice, t, {
+      priceHistory,
+      saveCount,
+    });
+    void quickShare(payload, shareSheetRef, { forcePicker: true });
+  }, [listing, formatPrice, t, priceHistory, saveCount]);
+
+  const handleToggleFavorite = useCallback(() => {
+    hapticLight();
+    toggleFavorite();
+  }, [toggleFavorite]);
+
+  const handleOpenMap = useCallback(() => {
+    if (!listing) return;
+    hapticLight();
+    openListingOnMap(listing.id, listing.lat, listing.lng);
+  }, [listing, openListingOnMap]);
+
+  const handleOpenNeighborhood = useCallback(() => {
+    hapticLight();
+    if (!listing) return;
+    neighborhoodRef.current?.open(listing.lat, listing.lng, listing.id);
+  }, [listing]);
+
+  const handleCallAgent = useCallback(() => {
+    const publicPhone = getPublicPhone(listing?.users ?? null);
+    if (publicPhone) {
+      if (listing) void recordListingEvent(listing.id, 'contact_call');
+      Linking.openURL(`tel:${publicPhone}`);
+    }
+  }, [listing]);
+
+  const handleReportPress = useCallback(() => {
+    sheetRef.current?.expand();
+  }, []);
 
   useEffect(() => {
     if (!id) return;
@@ -74,6 +149,8 @@ export default function ListingDetailScreen() {
         setMedianPrice(median);
         const history = await fetchPriceHistory(id);
         setPriceHistory(history as PriceHistoryEntry[]);
+        const engagement = await fetchListingEngagement(id);
+        setSaveCount(engagement?.saveCount ?? null);
 
         if (data.users?.id) {
           const count = await fetchActiveListingCount(data.users.id);
@@ -81,7 +158,8 @@ export default function ListingDetailScreen() {
         }
 
         if (!isDemoId(id)) {
-          await supabase.from('listings').update({ view_count: (data.view_count ?? 0) + 1 }).eq('id', id);
+          // Server-side counter: deduplicated per viewer, owner's own views excluded.
+          void recordListingEvent(id, 'view');
         }
       }
       setLoading(false);
@@ -90,25 +168,67 @@ export default function ListingDetailScreen() {
 
   const submitFlag = async (reason: FlagReason) => {
     if (!listing) return;
-    const deviceId = await getDeviceId();
-    await supabase.from('flags').insert({
-      listing_id: listing.id,
-      user_id: session?.user?.id ?? null,
-      reason,
-      device_id: deviceId,
-    });
-    sheetRef.current?.close();
+    // Reports need an account: anonymous reports let anyone take listings down.
+    if (!session?.user?.id) {
+      sheetRef.current?.close();
+      Alert.alert(t('flags.signInTitle'), t('flags.signInBody'), [
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('flags.signIn'), onPress: () => router.push('/auth/welcome') },
+      ]);
+      return;
+    }
+    try {
+      const deviceId = await getDeviceId();
+      const { error } = await supabase.from('flags').insert({
+        listing_id: listing.id,
+        user_id: session.user.id,
+        reason,
+        device_id: deviceId,
+      });
+      sheetRef.current?.close();
+      if (error?.code === '23505') {
+        Alert.alert(t('flags.already'));
+        return;
+      }
+      if (error) throw error;
+      Alert.alert(t('flags.thanks'));
+    } catch (error) {
+      logger.warn('Flag submission failed', { extra: { error } });
+      Alert.alert(t('common.error'), t('flags.failed'));
+    }
   };
+
+  if (invalidId) {
+    return (
+      <SafeScreen edges={['left', 'right']}>
+        <Stack.Screen options={{ headerShown: false }} />
+        <StackScreenHeader title={t('common.error')} backFallbackHref="/(tabs)/map" />
+        <View style={styles.centered}>
+          <Text style={{ fontSize: fontSize.lg, fontWeight: 'bold', marginBottom: spacing.md }}>
+            {t('common.error')}
+          </Text>
+          <Text style={{ fontSize: fontSize.md, color: colors.textSecondary, marginBottom: spacing.xl }}>
+            {t('listing.invalidLink')}
+          </Text>
+        </View>
+      </SafeScreen>
+    );
+  }
 
   if (loading || !listing) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
+      <SafeScreen edges={['left', 'right']}>
+        <Stack.Screen options={{ headerShown: false }} />
+        <StackScreenHeader title={t('common.loading')} backFallbackHref="/(tabs)/map" />
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      </SafeScreen>
     );
   }
 
   const agent = listing.users;
+  const demo = isDemoId(listing.id);
   const floorText =
     listing.floor != null
       ? `${listing.floor}${listing.total_floors ? `/${listing.total_floors}` : ''}`
@@ -120,43 +240,45 @@ export default function ListingDetailScreen() {
 
   return (
     <View style={styles.screen}>
-      <ListingCarousel photos={listing.listing_photos ?? []} />
+      <View style={styles.carouselHost}>
+        <ListingCarousel photos={listing.listing_photos ?? []} />
+        <View style={[styles.backOverlay, { top: insets.top + spacing.xs }]} pointerEvents="box-none">
+          <FrostedView style={styles.backChip} intensity={80}>
+            <BackButton fallbackHref="/(tabs)/map" />
+          </FrostedView>
+        </View>
+      </View>
       <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, spacing.md) + spacing.xl }}>
         <View style={styles.body}>
           <View style={styles.priceRow}>
             <Text style={styles.price}>{formatPrice(listing.price)}</Text>
             <View style={styles.iconRow}>
+              {demo ? null : (
               <Pressable
                 accessibilityLabel={t('listing.share')}
-                onPress={async () => {
-                  hapticLight();
-                  await shareListing(
-                    t('listing.shareMessage', {
-                      price: formatPrice(listing.price),
-                      district: listing.district,
-                    }),
-                    listing.id,
-                    t('listing.shareTitle'),
-                  );
-                }}
+                onPress={handleSharePress}
+                onLongPress={handleSharePicker}
+                delayLongPress={280}
                 style={styles.iconBtn}
               >
                 <Ionicons name="share-outline" size={24} color={colors.text} />
               </Pressable>
+              )}
               <Pressable
                 accessibilityLabel={t('favorites.add')}
-                onPress={() => {
-                  hapticLight();
-                  toggleFavorite();
-                }}
+                onPress={handleToggleFavorite}
                 style={styles.iconBtn}
               >
-                <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={24} color={isFavorite ? colors.error : colors.text} />
+                <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={24} color={isFavorite ? colors.danger : colors.text} />
               </Pressable>
             </View>
           </View>
           <PriceBadge price={listing.price} medianPrice={medianPrice} />
           <Badge label={t(transactionKey)} variant={badgeVariant} />
+          <View style={styles.freshness}>
+            <FreshnessLabel listing={listing} />
+          </View>
+          {demo ? <DemoListingNotice /> : null}
 
           <Text style={styles.stats}>
             {listing.rooms > 0 ? `${listing.rooms} ${t('common.rooms')} · ` : ''}
@@ -172,22 +294,18 @@ export default function ListingDetailScreen() {
 
           <PropertyInfoSection listing={listing} locale={i18n.language} usdRate={usdRate} />
 
+          <ListingToolLinks listing={listing} />
+
           <ListingLocationPreview
             lat={listing.lat}
             lng={listing.lng}
             title={t('listing.location')}
             subtitle={t('listing.openMap')}
-            onPress={() => {
-              hapticLight();
-              openListingOnMap(listing.id, listing.lat, listing.lng);
-            }}
+            onPress={handleOpenMap}
           />
 
           <Pressable
-            onPress={() => {
-              hapticLight();
-              neighborhoodRef.current?.open(listing.lat, listing.lng, listing.id);
-            }}
+            onPress={handleOpenNeighborhood}
             style={styles.neighborhoodLink}
           >
             <Text style={styles.neighborhoodLinkText}>{t('listing.neighborhoodExplore')}</Text>
@@ -213,20 +331,26 @@ export default function ListingDetailScreen() {
           ) : null}
 
           <View style={styles.actions}>
-            {agent?.phone ? (
-              <Pressable style={styles.actionBtn} onPress={() => Linking.openURL(`tel:${agent.phone}`)}>
+            {getPublicPhone(agent) ? (
+              <Pressable style={styles.actionBtn} onPress={handleCallAgent}>
                 <Text style={styles.actionText}>{t('common.call')}</Text>
               </Pressable>
             ) : null}
-            <Pressable
-              style={styles.actionBtn}
-              onPress={() => openTelegramChat(agent?.telegram_username, t('listing.noTelegram'), t('common.telegram'))}
-            >
-              <Text style={styles.actionText}>{t('common.telegram')}</Text>
-            </Pressable>
-            <Pressable style={styles.reportBtn} onPress={() => sheetRef.current?.expand()}>
-              <Text style={styles.reportText}>{t('common.report')}</Text>
-            </Pressable>
+            {demo ? null : (
+              <>
+                <Pressable
+                  style={styles.actionBtn}
+                  onPress={handleSharePress}
+                  onLongPress={handleSharePicker}
+                  delayLongPress={280}
+                >
+                  <Text style={styles.actionText}>{t('listing.share')}</Text>
+                </Pressable>
+                <Pressable style={styles.reportBtn} onPress={handleReportPress}>
+                  <Text style={styles.reportText}>{t('common.report')}</Text>
+                </Pressable>
+              </>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -253,14 +377,34 @@ export default function ListingDetailScreen() {
         </BottomSheetView>
       </BottomSheet>
       <NeighborhoodSheet ref={neighborhoodRef} />
+      <ShareSheet ref={shareSheetRef} />
     </View>
   );
 }
 
+export default function ListingDetailScreen() {
+  return (
+    <ErrorBoundary context="ListingDetailScreen">
+      <ListingDetailScreenContent />
+    </ErrorBoundary>
+  );
+}
+
 const styles = StyleSheet.create({
+  freshness: { marginTop: spacing.sm },
   screen: { flex: 1, backgroundColor: colors.background },
+  carouselHost: { position: 'relative' },
+  backOverlay: {
+    position: 'absolute',
+    left: spacing.md,
+    zIndex: 2,
+  },
+  backChip: {
+    borderRadius: 999,
+    overflow: 'hidden',
+  },
   container: { flex: 1 },
-  centered: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background },
+  centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   body: { padding: spacing.md },
   priceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   price: { fontSize: fontSize.xl, fontWeight: '800', color: colors.text, flex: 1 },
@@ -274,7 +418,7 @@ const styles = StyleSheet.create({
   actionBtn: { flex: 1, minWidth: '45%', backgroundColor: colors.primary, padding: spacing.md, borderRadius: 10, alignItems: 'center' },
   actionText: { color: colors.surface, fontWeight: '700' },
   reportBtn: { width: '100%', padding: spacing.md, alignItems: 'center' },
-  reportText: { color: colors.error, fontWeight: '600' },
+  reportText: { color: colors.danger, fontWeight: '600' },
   sheet: { padding: spacing.md },
   sheetTitle: { fontSize: fontSize.lg, fontWeight: '700', marginBottom: spacing.md },
   flagOption: { paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },

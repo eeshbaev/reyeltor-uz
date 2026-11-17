@@ -1,5 +1,5 @@
-import type { PriceCurrency } from '@/types';
 import { uzsToUsd } from '@/lib/exchange/cbuRate';
+import type { PriceCurrency } from '@/types';
 
 export function formatPriceUZS(price: number): string {
   return new Intl.NumberFormat('uz-UZ').format(price) + ' UZS';

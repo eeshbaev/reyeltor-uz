@@ -1,10 +1,13 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { Platform } from 'react-native';
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
+    ...(Platform.OS !== 'web' ? { storage: AsyncStorage } : {}),
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
@@ -12,15 +15,28 @@ export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKe
 });
 
 export const maptilerKey = process.env.EXPO_PUBLIC_MAPTILER_KEY ?? '';
+export const cartoKey = process.env.EXPO_PUBLIC_CARTO_API_KEY ?? '';
 
 /** Supabase Storage bucket for listing photos (must match dashboard bucket name). */
 export const LISTINGS_STORAGE_BUCKET = 'reyeltor-listings';
 
-const PLACEHOLDER_KEY_PATTERN = /placeholder|your_|example|test|dummy|invalid|changeme/i;
+const PLACEHOLDER_KEY_PATTERN = /placeholder|your_|example|test|dummy|invalid|changeme|^none$/i;
 
 export function isMaptilerConfigured(): boolean {
   const key = maptilerKey.trim();
   return key.length >= 12 && !PLACEHOLDER_KEY_PATTERN.test(key);
+}
+
+export function isCartoConfigured(): boolean {
+  const key = cartoKey.trim();
+  return key.length >= 8 && !PLACEHOLDER_KEY_PATTERN.test(key);
+}
+
+/** Append CARTO basemap key when configured (required since 2025). */
+export function appendCartoKey(url: string): string {
+  if (!isCartoConfigured()) return url;
+  const sep = url.includes('?') ? '&' : '?';
+  return `${url}${sep}key=${encodeURIComponent(cartoKey.trim())}`;
 }
 
 export function getMapTileUrl(): string | null {
@@ -47,7 +63,7 @@ export function getStaticMapUrl(
     const ty = Math.floor(((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * scale);
     return { x: tx, y: ty };
   })();
-  return `https://basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}@2x.png`;
+  return appendCartoKey(`https://basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}@2x.png`);
 }
 
 export function isSupabaseConfigured(): boolean {
@@ -66,8 +82,18 @@ export function shouldUseDemoData(): boolean {
 }
 
 export function getPhotoUrl(storagePath: string): string {
-  if (storagePath.startsWith('demo:')) return storagePath.slice(5);
-  if (storagePath.startsWith('http://') || storagePath.startsWith('https://')) return storagePath;
-  const { data } = supabase.storage.from(LISTINGS_STORAGE_BUCKET).getPublicUrl(storagePath);
-  return data.publicUrl;
+  if (!storagePath) return '';
+  if (storagePath.startsWith('demo:') || storagePath.startsWith('local:')) {
+    return storagePath;
+  }
+  if (storagePath.startsWith('http://') || storagePath.startsWith('https://')) {
+    return storagePath;
+  }
+
+  try {
+    const { data } = supabase.storage.from(LISTINGS_STORAGE_BUCKET).getPublicUrl(storagePath);
+    return data?.publicUrl ?? '';
+  } catch {
+    return '';
+  }
 }

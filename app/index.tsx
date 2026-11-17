@@ -1,59 +1,38 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useRef, useState } from 'react';
 import { Redirect } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { JumpingEmblem } from '@/components/brand/JumpingEmblem';
-import { AppText } from '@/components/ui/AppText';
-import { APP_NAME } from '@/lib/constants';
-import { ONBOARDING_DONE_KEY } from '@/lib/onboarding/constants';
-import { spacing } from '@/lib/design/spacing';
-
-const SPLASH_BG = '#0A0A0A';
+import { AppLoadingScreen } from '@/components/AppLoadingScreen';
+import { isOnboardingDone } from '@/lib/onboarding/storage';
+/** If AsyncStorage is slow on older devices, assume first launch → show onboarding. */
+const ROUTE_DECISION_TIMEOUT_MS = 4_000;
 
 export default function Index() {
   const [target, setTarget] = useState<'onboarding' | 'map' | null>(null);
+  const resolvedRef = useRef(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(ONBOARDING_DONE_KEY).then((done) => {
-      setTarget(done === '1' ? 'map' : 'onboarding');
-    });
+    let cancelled = false;
+
+    const resolve = (next: 'onboarding' | 'map') => {
+      if (cancelled || resolvedRef.current) return;
+      resolvedRef.current = true;
+      setTarget(next);
+    };
+
+    const timeout = setTimeout(() => resolve('onboarding'), ROUTE_DECISION_TIMEOUT_MS);
+
+    isOnboardingDone()
+      .then((done) => resolve(done ? 'map' : 'onboarding'))
+      .catch(() => resolve('onboarding'));
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
   }, []);
 
-  if (!target) {
-    return (
-      <View style={styles.splash}>
-        <View style={styles.glow} />
-        <JumpingEmblem variant="hero" size={72} jumpHeight={16} pauseMs={900} entrance />
-        <AppText variant="h2" style={styles.brandName}>
-          {APP_NAME}
-        </AppText>
-      </View>
-    );
+  if (target === null) {
+    return <AppLoadingScreen />;
   }
 
   return <Redirect href={target === 'onboarding' ? '/onboarding' : '/(tabs)/map'} />;
 }
-
-const styles = StyleSheet.create({
-  splash: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: SPLASH_BG,
-    gap: spacing.md,
-    paddingHorizontal: spacing.lg,
-  },
-  glow: {
-    position: 'absolute',
-    width: 280,
-    height: 280,
-    borderRadius: 140,
-    backgroundColor: 'rgba(37, 99, 235, 0.12)',
-    top: '34%',
-  },
-  brandName: {
-    color: '#FFFFFF',
-    letterSpacing: -0.3,
-    textAlign: 'center',
-  },
-});

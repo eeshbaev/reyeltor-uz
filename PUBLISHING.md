@@ -1,4 +1,4 @@
-# Publishing Reyeltor.uz
+# Publishing Reyeltor-uz
 
 ## Privacy policy (GitHub Pages)
 
@@ -53,17 +53,29 @@ cd /Users/Erkin/Documents/Reyeltor.uz
 # 2. Ensure .env has real values (not placeholders)
 #    EXPO_PUBLIC_SUPABASE_URL, EXPO_PUBLIC_SUPABASE_ANON_KEY, EXPO_PUBLIC_MAPTILER_KEY
 
-# 3. Install deps
+# 3. Install deps in the project folder first (required for local build)
 npm install
 
 # 4. Log in to Expo (if not already)
 npx eas-cli login
 
-# 5. Build signed .aab locally (first run may prompt for Android keystore — let EAS create one)
-npx eas-cli build --platform android --profile production --local
+# 5. Build signed .aab locally — copies node_modules to avoid npm timeout in /tmp
+npm run build:android:local
 
 # Output: path printed in terminal, usually *.aab in project directory
 ```
+
+**If install still times out:** use stable Wi‑Fi (no VPN), retry, or run:
+
+```bash
+npm config set fetch-timeout 300000
+npm config set fetch-retries 5
+npm run build:android:local
+```
+
+**Terminal tips:** do not paste lines starting with `#` into zsh (they cause errors). Run SQL in **Supabase → SQL Editor**, not in Terminal.
+
+**Git remote:** use `https://github.com/eeshbaev/reyeltor-uz.git` (not `eeshbaev95`).
 
 Alternative **Gradle-only** path (manual signing):
 
@@ -79,14 +91,14 @@ Download cloud `.aab` from the [Expo dashboard](https://expo.dev/accounts/eeshba
 
 ### 2. Play Console — create app
 
-1. **Create app** → name **Reyeltor.uz**, default language, app/game, free.
+1. **Create app** → name **Reyeltor-uz**, default language, app/game, free.
 2. **App content**
    - Privacy policy URL: `https://eeshbaev.github.io/reyeltor-uz/privacy.html`
    - Complete Data safety, Ads (if none), Content rating, Target audience, News app (No), COVID (No), etc.
 3. **Store listing**
    - Short & full description (Uzbek and/or English).
    - App icon: `assets/google-play-icon-512.png` (512×512).
-   - Feature graphic: 1024×500 (create in Canva/Figma if needed).
+   - Feature graphic: `assets/google-play-feature-graphic-1024x500.png` (1024×500).
    - Phone screenshots (min 2): capture from emulator or device.
 4. **Release → Internal testing** (recommended first) or Production
    - Upload the `.aab` from EAS local/cloud build.

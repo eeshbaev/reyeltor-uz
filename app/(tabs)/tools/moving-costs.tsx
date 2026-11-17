@@ -1,20 +1,20 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Switch, View } from 'react-native';
+import { Switch, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppText } from '@/components/ui/AppText';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
 import { IntegerInput } from '@/components/tools/IntegerInput';
 import { MoneyInput } from '@/components/tools/MoneyInput';
 import { ToolReportExport } from '@/components/tools/ToolReportExport';
 import { ToolCard, ToolField, ToolPill, toolScreenStyles } from '@/components/tools/toolUi';
+import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
-import { toolScreenBackground } from '@/lib/design/toolChrome';
 import { spacing } from '@/lib/design/spacing';
+import { toolScreenBackground } from '@/lib/design/toolChrome';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
+import { useTheme } from '@/lib/theme';
 import { buildMovingCostsReportHtml } from '@/lib/tools/instrumentReports';
 import { calculateMovingCosts, type MovingCostLineItem, type MovingCostParams } from '@/lib/tools/movingCosts';
-import { useTheme } from '@/lib/theme';
 
 type RenovationLevel = MovingCostParams['renovationLevel'];
 
@@ -48,10 +48,13 @@ export default function MovingCostsScreen() {
     [transactionType, propertyPrice, monthlyRent, areaM2, renovationLevel, includesFurniture, rooms],
   );
 
-  const renovationLabel = (level: RenovationLevel) => {
-    const key = `tools.movingCosts.renovation${level.charAt(0).toUpperCase()}${level.slice(1)}` as const;
-    return t(key);
-  };
+  const renovationLabel = useCallback(
+    (level: RenovationLevel) => {
+      const key = `tools.movingCosts.renovation${level.charAt(0).toUpperCase()}${level.slice(1)}` as const;
+      return t(key);
+    },
+    [t],
+  );
 
   const movingItemLabel = useCallback(
     (item: MovingCostLineItem) => {
@@ -60,7 +63,7 @@ export default function MovingCostsScreen() {
       }
       return t(`tools.movingCosts.items.${item.key}`);
     },
-    [t],
+    [t, renovationLabel],
   );
 
   const movingItemNote = useCallback(
@@ -105,7 +108,7 @@ export default function MovingCostsScreen() {
         itemLabel: movingItemLabel,
         itemNote: movingItemNote,
       }),
-    [t, transactionType, monthlyRent, propertyPrice, areaM2, rooms, renovationLevel, includesFurniture, formatPrice, result, movingItemLabel, movingItemNote],
+    [t, transactionType, monthlyRent, propertyPrice, areaM2, rooms, renovationLevel, includesFurniture, formatPrice, result, movingItemLabel, movingItemNote, renovationLabel],
   );
 
   return (

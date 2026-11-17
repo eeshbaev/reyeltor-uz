@@ -1,9 +1,11 @@
-import { Pressable, StyleSheet } from 'react-native';
-import { Animated } from 'react-native';
+import { Animated, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native-gesture-handler';
 import { AppText } from '@/components/ui/AppText';
-import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
+import { FrostedView } from '@/components/ui/FrostedView';
+import { mapChromeBorder } from '@/lib/design/mapChrome';
 import { spacing } from '@/lib/design/spacing';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
+import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
 import { useTheme } from '@/lib/theme';
 
 interface ListingBubbleProps {
@@ -21,19 +23,19 @@ export function ListingBubble({ price, onPress, featured, accentColor }: Listing
 
   return (
     <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onPress={handlePress} hitSlop={8}>
-      <Animated.View
-        style={[
-          styles.bubble,
-          {
-            backgroundColor: theme.colors.mapBubble,
-            borderColor: featured ? highlightColor : theme.colors.borderStrong,
-            transform: [{ scale }],
-          },
-        ]}
-      >
-        <AppText variant="label" style={{ color: theme.colors.mapBubbleText }}>
-          {formatPriceShort(price)}
-        </AppText>
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <FrostedView
+          style={[
+            styles.bubble,
+            mapChromeBorder(theme),
+            featured && { borderColor: highlightColor, borderWidth: 1.5 },
+          ]}
+          intensity={64}
+        >
+          <AppText variant="label" style={[styles.label, { color: theme.colors.primary }]}>
+            {formatPriceShort(price)}
+          </AppText>
+        </FrostedView>
       </Animated.View>
     </Pressable>
   );
@@ -41,9 +43,12 @@ export function ListingBubble({ price, onPress, featured, accentColor }: Listing
 
 const styles = StyleSheet.create({
   bubble: {
-    borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm + 2,
+    paddingVertical: spacing.xs + 2,
+  },
+  label: {
+    fontWeight: '700',
+    letterSpacing: -0.2,
   },
 });

@@ -1,9 +1,9 @@
-import type { ListingCategory, PriceCurrency } from '@/types';
 import { usdToUzs } from '@/lib/exchange/cbuRate';
 import {
   getCommercialDistrictMarket,
   getResidentialDistrictMarket,
 } from '@/lib/market/marketDataStore';
+import type { ListingCategory, PriceCurrency } from '@/types';
 
 export type { CommercialDistrictMarketAverages, DistrictMarketAverages } from '@/lib/market/defaultMarketData';
 
