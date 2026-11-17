@@ -3,7 +3,6 @@
  * Fetches OpenStreetMap POIs for greater Tashkent and writes tashkentPois.ts.
  * Run: npm run build:tashkent-pois
  */
-import { execFileSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -14,16 +13,53 @@ const OUT = join(__dirname, '../lib/neighborhood/tashkentPois.ts');
 // Greater Tashkent incl. Yangihayot and Yangi Toshkent (south, north-east).
 const BBOX = '41.10,69.05,41.48,69.62';
 // nwr + "out center": most schools, hospitals and parks are mapped as areas, not points.
-const QUERY = `[out:json][timeout:180];
-(
-  nwr["amenity"~"^(school|kindergarten|college|university|hospital|clinic|doctors|pharmacy|marketplace|library|theatre|place_of_worship)$"](${BBOX});
-  nwr["shop"~"^(supermarket|mall|department_store)$"](${BBOX});
-  nwr["leisure"~"^(park|garden|sports_centre|stadium|water_park)$"](${BBOX});
-  nwr["tourism"~"^(museum|attraction|zoo|theme_park)$"](${BBOX});
-  nwr["railway"="station"]["station"="subway"](${BBOX});
-  nwr["public_transport"="station"]["subway"="yes"](${BBOX});
-);
-out center tags 12000;`;
+// Split into small queries: one big query times out on the public servers.
+const QUERIES = [
+  `nwr["amenity"~"^(school|kindergarten|college|university)$"](${BBOX});`,
+  `nwr["amenity"~"^(hospital|clinic|doctors)$"](${BBOX});`,
+  `nwr["amenity"="pharmacy"](${BBOX});`,
+  `nwr["amenity"~"^(marketplace|library|theatre|place_of_worship)$"](${BBOX});`,
+  `nwr["shop"~"^(supermarket|mall|department_store)$"](${BBOX});`,
+  `nwr["leisure"~"^(park|garden|sports_centre|stadium|water_park)$"](${BBOX});`,
+  `nwr["tourism"~"^(museum|attraction|zoo|theme_park)$"](${BBOX});
+   nwr["railway"="station"]["station"="subway"](${BBOX});
+   nwr["public_transport"="station"]["subway"="yes"](${BBOX});`,
+].map((body) => `[out:json][timeout:90];(${body});out center tags;`);
+
+// Public Overpass servers; if one is busy (HTML error page), the next one is tried.
+const SERVERS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://overpass.private.coffee/api/interpreter',
+];
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function runQuery(query, label) {
+  for (let attempt = 0; attempt < SERVERS.length * 2; attempt += 1) {
+    const server = SERVERS[attempt % SERVERS.length];
+    try {
+      const res = await fetch(server, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'ReyeltorApp/1.0 (POI build script)' },
+        body: `data=${encodeURIComponent(query)}`,
+        signal: AbortSignal.timeout(120_000),
+      });
+      const text = await res.text();
+      if (res.ok && text.trimStart().startsWith('{')) {
+        const data = JSON.parse(text);
+        console.log(`  ${label}: ${data.elements?.length ?? 0} places (${new URL(server).host})`);
+        return data.elements ?? [];
+      }
+      const reason = text.match(/<strong[^>]*>([^<]+)/)?.[1] ?? `HTTP ${res.status}`;
+      console.warn(`  ${label}: ${new URL(server).host} busy (${reason.trim()}), trying another server...`);
+    } catch (error) {
+      console.warn(`  ${label}: ${new URL(server).host} failed (${error.message}), trying another server...`);
+    }
+    await sleep(3000 * (attempt + 1));
+  }
+  throw new Error(`All Overpass servers failed for "${label}". Try again in a few minutes.`);
+}
 
 /** Fine-grained kind (icon + how early it appears on the map). */
 function kindOf(tags) {
@@ -78,14 +114,14 @@ function esc(s) {
   return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 }
 
-function main() {
-  const json = execFileSync(
-    'curl',
-    ['-s', '--max-time', '200', '-X', 'POST', 'https://overpass-api.de/api/interpreter', '--data-urlencode', `data=${QUERY}`],
-    { encoding: 'utf8', maxBuffer: 80 * 1024 * 1024 },
-  );
-
-  const data = JSON.parse(json);
+async function main() {
+  console.log('Downloading places from OpenStreetMap...');
+  const elements = [];
+  for (const [index, query] of QUERIES.entries()) {
+    elements.push(...(await runQuery(query, `group ${index + 1}/${QUERIES.length}`)));
+    await sleep(1500); // be polite to the free servers
+  }
+  const data = { elements };
   const seen = new Set();
   const pois = [];
 
@@ -139,4 +175,7 @@ ${lines.join('\n')}
   console.log(`Wrote ${pois.length} POIs to ${OUT}`);
 }
 
-main();
+main().catch((error) => {
+  console.error(error.message ?? error);
+  process.exit(1);
+});
