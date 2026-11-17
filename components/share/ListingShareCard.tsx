@@ -26,7 +26,7 @@ interface ListingShareCardProps {
  * Branded advertising card for a listing. Fixed light design (independent of the
  * app theme) so the exported image looks the same everywhere.
  */
-export const ListingShareCard = forwardRef<View, ListingShareCardProps>(({ listing, price, url, onPhotoReady }, ref) => {
+export const ListingShareCard = forwardRef<React.ComponentRef<typeof View>, ListingShareCardProps>(({ listing, price, url, onPhotoReady }, ref) => {
   const { t } = useTranslation();
   const photo = [...(listing.listing_photos ?? [])].sort((a, b) => a.order_index - b.order_index)[0];
   const transactionKey =
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   photoWrap: { flex: 1, backgroundColor: '#E5E7EB' },
-  scrim: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(15,23,42,0.28)' },
+  scrim: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(15,23,42,0.28)' },
   pillRow: { position: 'absolute', top: 14, left: 14, flexDirection: 'row', gap: 6 },
   pill: {
     backgroundColor: BRAND_BLUE,

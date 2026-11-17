@@ -259,7 +259,7 @@ function createStyles(theme: ReturnType<typeof useTheme>) {
       height: '100%',
     },
     imageOverlay: {
-      ...StyleSheet.absoluteFillObject,
+      ...StyleSheet.absoluteFill,
       backgroundColor: 'transparent',
     },
     imageArchived: {

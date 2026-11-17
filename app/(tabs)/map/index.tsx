@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   sheetLayer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 20,
   },
 });

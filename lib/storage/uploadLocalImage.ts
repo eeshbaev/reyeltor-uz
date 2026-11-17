@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { LISTINGS_STORAGE_BUCKET, supabase } from '@/lib/supabase';
 
 function base64ToArrayBuffer(base64: string): ArrayBuffer {

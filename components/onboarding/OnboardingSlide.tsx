@@ -58,7 +58,7 @@ export function OnboardingSlide({ slide, active, onComplete }: OnboardingSlidePr
   return (
     <View style={[styles.slide, { width, height }]}>
       <Image
-        source={slide.image}
+        source={slide.image as import('expo-image').ImageSource}
         style={StyleSheet.absoluteFill}
         contentFit="cover"
         transition={200}

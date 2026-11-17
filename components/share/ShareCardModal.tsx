@@ -28,7 +28,7 @@ export function ShareCardModal({ listing, onClose, onShared }: ShareCardModalPro
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const { formatPrice } = useFormatPrice();
-  const cardRef = useRef<View>(null);
+  const cardRef = useRef<React.ComponentRef<typeof View>>(null);
   const [photoReady, setPhotoReady] = useState(false);
   const [busy, setBusy] = useState(false);
 

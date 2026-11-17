@@ -1,4 +1,6 @@
-import type { Router } from 'expo-router';
+import type { useRouter } from 'expo-router';
+
+type Router = ReturnType<typeof useRouter>;
 
 /** Return guests to the main app without trapping them on auth screens. */
 export function leaveAuthScreen(router: Router): void {

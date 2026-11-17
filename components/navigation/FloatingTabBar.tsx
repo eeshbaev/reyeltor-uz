@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { usePathname, useRouter } from 'expo-router';
+import type { BottomTabBarProps } from 'expo-router/tabs';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,7 +34,19 @@ const TAB_LABEL_KEYS: Record<string, string> = {
   profile: 'tabs.profile',
 };
 
-export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+/** URL of each tab's first screen (tapping the active tab returns there). */
+const TAB_ROOT_PATHS: Record<string, string> = {
+  map: '/map',
+  'map/index': '/map',
+  tools: '/tools',
+  'post/index': '/post',
+  'favorites/index': '/favorites',
+  profile: '/profile',
+};
+
+export function FloatingTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const theme = useTheme();
@@ -67,29 +80,16 @@ export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarP
             hapticLight();
             dismissMapOverlays();
 
-            const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+            const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
             if (event.defaultPrevented) return;
 
-            const nestedState = route.state;
-            const isNestedDeep =
-              nestedState != null &&
-              typeof nestedState.index === 'number' &&
-              nestedState.index > 0;
-
-            const rootScreen = nestedState?.routes?.[0]?.name;
-
             if (isFocused) {
-              if (isNestedDeep && rootScreen) {
-                navigation.navigate(route.name, { screen: rootScreen });
-              }
+              // Tapping the active tab goes back to its first screen (e.g. Tools list).
+              const rootPath = TAB_ROOT_PATHS[route.name];
+              if (rootPath && pathname !== rootPath) router.navigate(rootPath as never);
               return;
             }
-
-            if (isNestedDeep && rootScreen) {
-              navigation.navigate(route.name, { screen: rootScreen });
-            } else {
-              navigation.navigate(route.name);
-            }
+            navigateToTab(route.key);
           };
 
           return (

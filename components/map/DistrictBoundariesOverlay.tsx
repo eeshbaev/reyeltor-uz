@@ -69,5 +69,5 @@ export function DistrictBoundariesOverlay({
 }
 
 const styles = StyleSheet.create({
-  overlay: { ...StyleSheet.absoluteFillObject, zIndex: 2 },
+  overlay: { ...StyleSheet.absoluteFill, zIndex: 2 },
 });

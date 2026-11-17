@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   map: { width: '100%', height: '100%' },
   pinWrap: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: 'center',
     justifyContent: 'center',
     transform: [{ translateY: -14 }],

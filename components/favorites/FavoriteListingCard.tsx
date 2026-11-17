@@ -172,7 +172,7 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
       backgroundColor: '#0b0f1a',
     },
     image: {
-      ...StyleSheet.absoluteFillObject,
+      ...StyleSheet.absoluteFill,
     },
     imageScrimTop: {
       position: 'absolute',
@@ -258,7 +258,7 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
       flex: 1,
     },
     unavailableVeil: {
-      ...StyleSheet.absoluteFillObject,
+      ...StyleSheet.absoluteFill,
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: 'rgba(15, 23, 42, 0.55)',

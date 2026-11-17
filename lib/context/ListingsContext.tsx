@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { AppState, InteractionManager, type AppStateStatus } from 'react-native';
+import { AppState, type AppStateStatus } from 'react-native';
 import { attachListingPhotos } from '@/lib/attachListingPhotos';
 import { listingCache } from '@/lib/cache/listingMemoryCache';
 import { getDemoListings, isDemoId } from '@/lib/demo';
@@ -44,6 +44,23 @@ function withListingPhotos(listings: ListingWithPhotos[]): ListingWithPhotos[] {
 }
 
 // Demo listings are already on screen while this loads, so a slow mobile connection can take its time.
+/** Runs work once the UI is idle (replacement for InteractionManager.runAfterInteractions). */
+function runAfterFirstFrames(task: () => void): { cancel: () => void } {
+  let cancelled = false;
+  const idle = (globalThis as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
+  const timer = setTimeout(() => {
+    if (cancelled) return;
+    if (idle) idle(() => !cancelled && task());
+    else task();
+  }, 0);
+  return {
+    cancel: () => {
+      cancelled = true;
+      clearTimeout(timer);
+    },
+  };
+}
+
 const LISTINGS_FETCH_TIMEOUT_MS = 20_000;
 const MARKET_DATA_SYNC_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
@@ -93,7 +110,8 @@ export function ListingsProvider({ children }: { children: ReactNode }) {
     let isMounted = true;
     const abortController = new AbortController();
 
-    const interactionTask = InteractionManager.runAfterInteractions(() => {
+    // After the first frames are drawn (InteractionManager was removed in React Native 0.82).
+    const interactionTask = runAfterFirstFrames(() => {
       void (async () => {
         try {
           if (!isMounted) return;

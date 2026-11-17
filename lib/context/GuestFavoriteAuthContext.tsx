@@ -78,7 +78,7 @@ export function GuestFavoriteAuthProvider({ children }: { children: ReactNode })
 
   const isSheetAllowedOnCurrentTab = useCallback(() => {
     if (segments[0] !== '(tabs)') return true;
-    const tab = segments[1];
+    const tab = (segments as string[])[1];
     return !tab || !SHEET_DISALLOWED_TABS.has(tab);
   }, [segments]);
 
@@ -180,7 +180,7 @@ export function GuestFavoriteAuthProvider({ children }: { children: ReactNode })
 
   useEffect(() => {
     if (segments[0] !== '(tabs)') return;
-    const tab = segments[1];
+    const tab = (segments as string[])[1];
     if (!tab || !SHEET_DISALLOWED_TABS.has(tab)) return;
     if (preservePendingRef.current || pendingListingId) {
       sheetRef.current?.dismiss();

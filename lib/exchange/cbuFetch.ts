@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 
 const SPOT_TIMEOUT_MS = 8_000;
 export const HISTORY_TIMEOUT_MS = 6_000;

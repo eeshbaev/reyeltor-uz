@@ -27,7 +27,6 @@
       }
     },
     "android": {
-      "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "backgroundColor": "#F6EFE5",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -70,9 +69,9 @@
         "expo-build-properties",
         {
           "android": {
-            "compileSdkVersion": 36,
+            "compileSdkVersion": 37,
             "targetSdkVersion": 36,
-            "buildToolsVersion": "36.0.0",
+            "buildToolsVersion": "37.0.0",
             "ndkVersion": "27.1.12297006",
             "packagingOptions": {
               "jniLibs": {
@@ -111,15 +110,7 @@
       "expo-asset",
       "expo-font",
       "expo-splash-screen",
-      [
-        "react-native-edge-to-edge",
-        {
-          "android": {
-            "parentTheme": "Material3",
-            "enforceNavigationBarContrast": false
-          }
-        }
-      ]
+      "./plugins/withLibraryNdkVersion"
     ],
     "experiments": {
       "typedRoutes": true

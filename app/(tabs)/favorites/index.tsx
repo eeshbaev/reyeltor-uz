@@ -146,7 +146,6 @@ export default function FavoritesScreen() {
       <FavoritesAmbientBackground />
       <FlashList
         data={listings}
-        estimatedItemSize={340}
         renderScrollComponent={ScrollView}
         ListHeaderComponent={header}
         ListFooterComponent={

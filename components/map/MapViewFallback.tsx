@@ -117,7 +117,7 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>((
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#e8eef5' },
   map: { flex: 1 },
-  overlay: { ...StyleSheet.absoluteFillObject },
+  overlay: { ...StyleSheet.absoluteFill },
   marker: { position: 'absolute', transform: [{ translateX: -20 }, { translateY: -20 }] },
-  zoomTap: { ...StyleSheet.absoluteFillObject, opacity: 0 },
+  zoomTap: { ...StyleSheet.absoluteFill, opacity: 0 },
 });

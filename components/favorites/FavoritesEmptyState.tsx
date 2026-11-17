@@ -87,7 +87,7 @@ export function FavoritesEmptyState({ onExploreMap, onSignIn, header }: Favorite
           label={t('favorites.exploreMap')}
           onPress={onExploreMap}
           variant={onSignIn ? 'secondary' : 'primary'}
-          style={StyleSheet.flatten([styles.cta, onSignIn ? styles.secondaryCta : null])}
+          style={onSignIn ? { ...styles.cta, ...styles.secondaryCta } : styles.cta}
         />
       </Animated.View>
     </View>

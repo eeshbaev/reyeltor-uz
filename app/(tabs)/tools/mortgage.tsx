@@ -248,7 +248,6 @@ export default function MortgageCalculatorScreen() {
               <View style={{ height: Math.min(displayResult.schedule.length * 36, 400) }}>
                 <FlashList
                   data={displayResult.schedule}
-                  estimatedItemSize={36}
                   keyExtractor={(item) => String(item.month)}
                   renderItem={({ item }) => <ScheduleRow row={item} formatPrice={formatPrice} />}
                 />

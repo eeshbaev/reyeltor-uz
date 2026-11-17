@@ -353,7 +353,7 @@ function ListingCardPhoto({
   return (
     <Image
       source={resolvedSource}
-      style={fill ? StyleSheet.absoluteFillObject : style}
+      style={fill ? StyleSheet.absoluteFill : style}
       contentFit="cover"
       placeholder={placeholder}
       transition={200}

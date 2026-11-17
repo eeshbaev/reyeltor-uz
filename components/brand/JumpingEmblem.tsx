@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     overflow: 'visible',
   },
   discCenter: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'visible',

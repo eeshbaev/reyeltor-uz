@@ -2,10 +2,10 @@ import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
-  type ViewToken,
   StyleSheet,
   View,
   useWindowDimensions,
+  type ListViewToken,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { OnboardingDotIndicator } from './OnboardingDotIndicator';
@@ -26,7 +26,7 @@ export function OnboardingPager({ onComplete }: OnboardingPagerProps) {
   const listRef = useRef<FlatList<OnboardingSlideData>>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
+  const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ListViewToken[] }) => {
     const index = viewableItems[0]?.index;
     if (index != null) setActiveIndex(index);
   }).current;

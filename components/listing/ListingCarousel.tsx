@@ -52,7 +52,7 @@ function CarouselPhoto({ photo, slideKey }: { photo: ListingPhoto; slideKey: str
   return (
     <Image
       source={resolveListingPhotoSource(photo.storage_path, getPhotoUrl(photo.storage_path))}
-      style={StyleSheet.absoluteFillObject}
+      style={StyleSheet.absoluteFill}
       contentFit="cover"
       contentPosition="center"
       recyclingKey={slideKey}

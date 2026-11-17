@@ -1,10 +1,7 @@
 package uz.reyeltor.app
-import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
 import android.os.Bundle
-
-import androidx.activity.enableEdgeToEdge
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
@@ -15,20 +12,11 @@ import expo.modules.ReactActivityDelegateWrapper
 
 class MainActivity : ReactActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
-    // Set AppTheme before splash hands off — keeps NoActionBar edge-to-edge theme.
-    setTheme(R.style.AppTheme)
-    // Android 15+ edge-to-edge: recommended by Play Console for SDK 35+ targets.
-    enableEdgeToEdge()
-    // @generated begin expo-splashscreen - expo prebuild (DO NOT MODIFY) sync-f3ff59a738c56c9a6119210cb55f0b613eb8b6af
-    SplashScreenManager.registerOnActivity(this)
-    // @generated end expo-splashscreen
+    // Set the theme to AppTheme BEFORE onCreate to support
+    // coloring the background, status bar, and navigation bar.
+    // This is required for expo-splash-screen.
+    setTheme(R.style.AppTheme);
     super.onCreate(null)
-    supportActionBar?.hide()
-  }
-
-  override fun onResume() {
-    super.onResume()
-    supportActionBar?.hide()
   }
 
   /**

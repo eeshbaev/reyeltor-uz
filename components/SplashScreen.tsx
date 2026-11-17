@@ -147,14 +147,14 @@ export function SplashScreen({ isVisible }: SplashScreenProps) {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: APP_LOADING_BG,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 9999,
   },
   background: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: APP_LOADING_BG,
   },
   centerContent: {

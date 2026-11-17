@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   face: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backfaceVisibility: 'hidden',
   },
   backFace: {

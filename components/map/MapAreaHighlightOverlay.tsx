@@ -42,5 +42,5 @@ export function MapAreaHighlightOverlay({ area, width, height, project }: MapAre
 }
 
 const styles = StyleSheet.create({
-  overlay: { ...StyleSheet.absoluteFillObject, zIndex: 3 },
+  overlay: { ...StyleSheet.absoluteFill, zIndex: 3 },
 });

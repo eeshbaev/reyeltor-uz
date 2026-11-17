@@ -26,6 +26,6 @@ export function tabBarScrollPadding(safeBottom: number): number {
 
 /** Full-screen host for bottom sheets on list/favorites/agent screens. */
 export const sheetOverlayLayerStyle = StyleSheet.flatten([
-  StyleSheet.absoluteFillObject,
+  StyleSheet.absoluteFill,
   { zIndex: 20 },
 ]);
