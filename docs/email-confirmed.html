@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Reyeltor-uz</title>
+  <style>
+    body { margin: 0; font-family: -apple-system, system-ui, Segoe UI, Roboto, sans-serif; background: #f6f7f9; color: #111827; }
+    main { max-width: 420px; margin: 18vh auto 0; padding: 32px 24px; background: #fff; border-radius: 20px; text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,.06); }
+    .icon { width: 64px; height: 64px; border-radius: 32px; background: #dcfce7; color: #16a34a; font-size: 34px; line-height: 64px; margin: 0 auto 16px; }
+    h1 { font-size: 22px; margin: 0 0 8px; }
+    p { color: #4b5563; line-height: 1.5; margin: 0 0 24px; }
+    a.button { display: inline-block; background: #2563eb; color: #fff; text-decoration: none; padding: 14px 22px; border-radius: 12px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="icon">✓</div>
+    <h1 id="title">Email tasdiqlandi</h1>
+    <p id="body">Email hisobingizga qo'shildi. Endi u bilan kirishingiz va parolni tiklashingiz mumkin.</p>
+    <a class="button" id="open" href="reyeltor://">Ilovani ochish</a>
+  </main>
+  <script>
+    var copy = {
+      uz: ['Email tasdiqlandi', "Email hisobingizga qo'shildi. Endi u bilan kirishingiz va parolni tiklashingiz mumkin.", 'Ilovani ochish'],
+      ru: ['Email подтверждён', 'Email добавлен в ваш аккаунт. Теперь по нему можно входить и восстанавливать пароль.', 'Открыть приложение'],
+      en: ['Email confirmed', 'The email is now on your account. You can use it to sign in and to recover your password.', 'Open the app'],
+      zh: ['邮箱已确认', '邮箱已添加到您的账户，可用于登录和找回密码。', '打开应用'],
+      tr: ['E-posta onaylandı', 'E-posta hesabınıza eklendi. Artık giriş ve şifre kurtarma için kullanabilirsiniz.', 'Uygulamayı aç'],
+    };
+    var hash = location.hash || '';
+    var failed = /error=/.test(hash) || /error=/.test(location.search);
+    var lang = (navigator.language || 'uz').slice(0, 2);
+    var c = copy[lang] || copy.uz;
+    if (failed) {
+      var err = {
+        uz: ['Havola eskirgan', "Bu havola ishlamadi yoki muddati tugagan. Ilovada emailni qaytadan kiriting.", 'Ilovani ochish'],
+        ru: ['Ссылка устарела', 'Ссылка не сработала или истекла. Введите email в приложении ещё раз.', 'Открыть приложение'],
+        en: ['Link expired', 'This link did not work or has expired. Enter your email in the app again.', 'Open the app'],
+        zh: ['链接已失效', '此链接无效或已过期，请在应用中重新输入邮箱。', '打开应用'],
+        tr: ['Bağlantının süresi doldu', 'Bu bağlantı çalışmadı veya süresi doldu. E-postanızı uygulamada tekrar girin.', 'Uygulamayı aç'],
+      };
+      c = err[lang] || err.uz;
+    }
+    document.documentElement.lang = lang;
+    document.getElementById('title').textContent = c[0];
+    document.getElementById('body').textContent = c[1];
+    document.getElementById('open').textContent = c[2];
+  </script>
+</body>
+</html>

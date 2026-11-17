@@ -26,6 +26,9 @@ export function telegramErrorMessage(t: TFunction, error: unknown): string {
       return t('telegramAuth.invalidCredentials');
     case 'too_many_attempts':
       return t('telegramAuth.tooManyAttempts');
+    case 'email_send_failed':
+    case 'confirmation_required':
+      return t('telegramAuth.emailSendFailed');
     default:
       return t('telegramAuth.failed');
   }

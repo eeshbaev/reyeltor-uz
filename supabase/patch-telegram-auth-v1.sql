@@ -94,6 +94,8 @@ begin
   else
     new.telegram_id := old.telegram_id;
     new.phone_verified_at := old.phone_verified_at;
+    -- Email changes go through Supabase's confirmation link (synced by sync_profile_email).
+    new.email := old.email;
     -- A Telegram-verified phone can only change through a new Telegram confirmation.
     if old.phone_verified_at is not null then
       new.phone := old.phone;

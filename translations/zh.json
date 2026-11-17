@@ -1019,7 +1019,10 @@
       "notConfigured": "Telegram 登录尚未设置。",
       "phoneLocked": "已通过 Telegram 确认——此处无法修改。",
       "waitingHint": "在 Telegram 中点击「开始」，然后点击「📱 分享手机号」，再返回此处。",
-      "openTelegramAgain": "再次打开 Telegram"
+      "openTelegramAgain": "再次打开 Telegram",
+      "emailConfirmTitle": "确认您的邮箱",
+      "emailConfirmSent": "我们已向 {{email}} 发送确认链接。打开链接后，该邮箱将添加到您的账户。",
+      "emailSendFailed": "无法发送确认邮件，请稍后再试。"
     }
   }
 }

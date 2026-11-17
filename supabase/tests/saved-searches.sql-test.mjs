@@ -61,11 +61,13 @@ await db.exec(fs.readFileSync(`${ROOT}/patch-telegram-auth-v1.sql`, 'utf8'));
 await db.exec(fs.readFileSync(`${ROOT}/patch-telegram-auth-v1.sql`, 'utf8'));
 await db.exec(fs.readFileSync(`${ROOT}/patch-alerts-v1.sql`, 'utf8'));
 await db.exec(fs.readFileSync(`${ROOT}/patch-alerts-v1.sql`, 'utf8'));
+await db.exec(fs.readFileSync(`${ROOT}/patch-ops-v1.sql`, 'utf8'));
+await db.exec(fs.readFileSync(`${ROOT}/patch-ops-v1.sql`, 'utf8'));
 console.log('schema + patches applied');
 // Re-run safety
 await db.exec(fs.readFileSync(`${ROOT}/patch-saved-searches-v1.sql`, 'utf8'));
 // Later patches redefine some of its functions: re-apply them too, in bundle order.
-for (const later of ['patch-hardening-v1.sql', 'patch-telegram-auth-v1.sql', 'patch-alerts-v1.sql']) {
+for (const later of ['patch-hardening-v1.sql', 'patch-telegram-auth-v1.sql', 'patch-alerts-v1.sql', 'patch-ops-v1.sql']) {
   await db.exec(fs.readFileSync(`${ROOT}/${later}`, 'utf8'));
 }
 console.log('patch re-applied (idempotent)');
@@ -420,9 +422,12 @@ await q(`update users set telegram_id = 555, phone_verified_at = now() where id 
 await asUser(T, () => q(`update users set phone = '+998907777777', telegram_id = 1, phone_verified_at = null where id = $1`, [T]));
 r = await q(`select phone, telegram_id, phone_verified_at is not null v from users where id = $1`, [T]);
 ok(r[0].phone === '+998906666666' && Number(r[0].telegram_id) === 555 && r[0].v, 'users cannot change a verified phone or their Telegram link');
-await asUser(T, () => q(`update users set email = 'aziz@x.uz' where id = $1`, [T]));
+await asUser(T, () => q(`update users set email = 'squat@x.uz' where id = $1`, [T]));
 r = await q(`select email from users where id = $1`, [T]);
-ok(r[0].email === 'aziz@x.uz', 'users can add an optional email');
+ok(r[0].email === null, 'users cannot write an unconfirmed email into their profile');
+await q(`update auth.users set email = 'aziz@x.uz' where id = $1`, [T]); // Supabase does this when the link is clicked
+r = await q(`select email from users where id = $1`, [T]);
+ok(r[0].email === 'aziz@x.uz', 'a confirmed email change is copied to the profile');
 
 r = await q(`select find_user_by_phone('+998 90 666-66-66') a, find_user_by_phone('906666666') b, find_user_by_phone('998906666666') c, find_user_by_phone('123') d`);
 ok(r[0].a === T && r[0].b === T && r[0].c === T && r[0].d === null, 'phone lookup matches any formatting, ignores short input');
@@ -526,6 +531,29 @@ await asUser(B, () => q(`update listings set price = 400000000 where id = $1`, [
 r = await q(`select * from claim_price_drop_alerts()`);
 ok(!r.some((x) => x.listing_id === ownFav.id), 'no alert for your own listing');
 await expectError(() => asUser(B, () => q(`select * from claim_price_drop_alerts()`)), 'permission denied', 'app users cannot run the price-drop job');
+
+console.log('\n[19] Error log + verified email edge cases');
+await db.exec('set role anon;');
+try {
+  await q(`insert into app_errors (level, message, context, platform, app_version) values ('fatal', 'Boom', 'global', 'android 34', '1.3.0')`);
+  ok(true, 'the app (even signed out) can report an error');
+  const visible = await q(`select * from app_errors`);
+  ok(visible.length === 0, 'error reports are not readable from the app');
+  await expectError(() => q(`insert into app_errors (message) values ($1)`, ['x'.repeat(600)]), 'check', 'oversized reports are rejected');
+} finally { await db.exec('reset role;'); }
+r = await q(`select count(*)::int n from app_errors`);
+ok(r[0].n === 1, 'report stored');
+await q(`update app_errors set created_at = now() - interval '31 days'`);
+r = await q(`select purge_old_app_errors() n`);
+ok(r[0].n === 1, 'reports older than 30 days are purged');
+// Someone typed an address into an old profile; the real owner confirms it: owner wins.
+await q(`update users set email = 'owner@x.uz' where id = $1`, [D]);
+await q(`update auth.users set email = 'owner@x.uz' where id = $1`, [T]);
+r = await q(`select (select email from users where id = $1) t, (select email from users where id = $2) d`, [T, D]);
+ok(r[0].t === 'owner@x.uz' && r[0].d === null, 'the confirmed owner of an address takes it over');
+await q(`update auth.users set email = 'tg555@telegram.reyeltor.invalid' where id = $1`, [T]);
+r = await q(`select email from users where id = $1`, [T]);
+ok(r[0].email === null, 'removing the email (placeholder sign-in address) clears the profile email');
 
 console.log(`\n${passes} passed, ${failures} failed`);
 process.exit(failures ? 1 : 0);

@@ -1019,7 +1019,10 @@
       "notConfigured": "Telegram sign-in is not set up yet.",
       "phoneLocked": "Confirmed via Telegram — it can't be changed here.",
       "waitingHint": "In Telegram, tap Start, then “📱 Share phone number”. Then come back here.",
-      "openTelegramAgain": "Open Telegram again"
+      "openTelegramAgain": "Open Telegram again",
+      "emailConfirmTitle": "Confirm your email",
+      "emailConfirmSent": "We sent a confirmation link to {{email}}. The email is added to your account after you open the link.",
+      "emailSendFailed": "Couldn't send the confirmation email. Please try again later."
     }
   }
 }

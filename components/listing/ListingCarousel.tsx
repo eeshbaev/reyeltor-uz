@@ -21,7 +21,7 @@ import Animated, {
 import { AppText } from '@/components/ui/AppText';
 import { spacing } from '@/lib/design/spacing';
 import { hapticLight } from '@/lib/haptics';
-import { LISTING_PHOTO_PLACEHOLDER_SOURCE, resolveListingPhotoSource } from '@/lib/listingPhotos';
+import { LISTING_PHOTO_PLACEHOLDER_SOURCE, listingPhotoPlaceholder, resolveListingPhotoSource } from '@/lib/listingPhotos';
 import { preloadCarouselImages } from '@/lib/network/imagePreloader';
 import { getPhotoUrl } from '@/lib/supabase';
 import { useTheme } from '@/lib/theme';
@@ -56,7 +56,7 @@ function CarouselPhoto({ photo, slideKey }: { photo: ListingPhoto; slideKey: str
       contentFit="cover"
       contentPosition="center"
       recyclingKey={slideKey}
-      placeholder={LISTING_PHOTO_PLACEHOLDER_SOURCE}
+      placeholder={listingPhotoPlaceholder(photo.storage_path)}
       transition={0}
       cachePolicy="memory-disk"
     />

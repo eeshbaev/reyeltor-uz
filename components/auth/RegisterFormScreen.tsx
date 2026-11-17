@@ -4,6 +4,7 @@ import { Link, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -114,7 +115,7 @@ export function RegisterFormScreen({ loginHref = '/(tabs)/profile/login' }: Regi
     setSubmitting(true);
     setError('');
     try {
-      const userId = await registerWithTelegram(flow, {
+      const { userId, confirmationSentTo } = await registerWithTelegram(flow, {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         password,
@@ -129,6 +130,9 @@ export function RegisterFormScreen({ loginHref = '/(tabs)/profile/login' }: Regi
       if (referralCode.trim()) {
         await applyReferralCode(userId, referralCode);
         await clearPendingReferralCode();
+      }
+      if (confirmationSentTo) {
+        Alert.alert(t('telegramAuth.emailConfirmTitle'), t('telegramAuth.emailConfirmSent', { email: confirmationSentTo }));
       }
       if (pendingListingId) return;
       router.replace({ pathname: REGISTRATION_WELCOME_ROUTE, params: { name: fullName, mode: 'first' } });

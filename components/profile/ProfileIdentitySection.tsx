@@ -5,7 +5,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { ScreenSection } from '@/components/ui/ScreenSection';
 import { TextField } from '@/components/ui/TextField';
-import { syncAccountEmail } from '@/lib/auth/telegramAuth';
+import { clearAccountEmail, requestEmailChange } from '@/lib/auth/telegramAuth';
 import { telegramErrorMessage } from '@/lib/auth/telegramMessages';
 import { spacing } from '@/lib/design/spacing';
 import { setRegisteredFullName } from '@/lib/onboarding/storage';
@@ -95,10 +95,16 @@ export function ProfileIdentitySection({
 
     const nextFullName = combineFullName(firstName, lastName);
     setSaving(true);
-    // The email is also the login/recovery address, so it is changed on the server.
+    // The email is also the login/recovery address: a new one must be confirmed by link first.
+    let confirmationSentTo: string | null = null;
     if (trimmedEmail !== (email ?? '').trim().toLowerCase()) {
       try {
-        await syncAccountEmail(trimmedEmail || null);
+        if (trimmedEmail) {
+          await requestEmailChange(trimmedEmail);
+          confirmationSentTo = trimmedEmail;
+        } else {
+          await clearAccountEmail();
+        }
       } catch (caught) {
         setSaving(false);
         Alert.alert(telegramErrorMessage(t, caught));
@@ -132,7 +138,13 @@ export function ProfileIdentitySection({
 
     await setRegisteredFullName(userId, nextFullName);
     await onSaved();
-    Alert.alert(t('profile.identitySaved'));
+    if (confirmationSentTo) {
+      // Keep showing the current email until the new one is confirmed.
+      setEmailInput(email ?? '');
+      Alert.alert(t('profile.identitySaved'), t('telegramAuth.emailConfirmSent', { email: confirmationSentTo }));
+    } else {
+      Alert.alert(t('profile.identitySaved'));
+    }
   };
 
   return (

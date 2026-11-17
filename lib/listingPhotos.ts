@@ -1,4 +1,5 @@
 import type { ImageSource } from 'expo-image';
+import { DEMO_PHOTO_POOLS, type DemoPhotoPool } from '@/lib/demo/photoCatalog';
 
 /** Bundled fallback when a listing has no photo or remote load fails. */
 export const LISTING_PHOTO_PLACEHOLDER_SOURCE: ImageSource = require('../assets/listings/placeholder.jpg');
@@ -62,4 +63,41 @@ function demoUrlToLocalKey(url: string): string | null {
   if (url.includes('1554118811')) return 'cafe';
   if (url.includes('1556912173')) return 'kitchen';
   return null;
+}
+
+/** Which bundled photo stands in for each online demo photo pool when offline. */
+const POOL_TO_LOCAL: Record<DemoPhotoPool, string> = {
+  living: 'living',
+  bedroom: 'bedroom',
+  kitchen: 'kitchen',
+  bathroom: 'kitchen',
+  building: 'apartment',
+  loft: 'loft',
+  house: 'balcony',
+  townhouse: 'balcony',
+  parking: 'apartment',
+  office: 'office',
+  retail: 'retail',
+  hotel: 'bedroom',
+  restaurant: 'cafe',
+  warehouse: 'warehouse',
+  industrial: 'warehouse',
+};
+
+let poolByUrl: Map<string, DemoPhotoPool> | null = null;
+
+/**
+ * Placeholder shown while a photo loads — and kept if it cannot load (no internet).
+ * Online demo photos get a similar bundled photo, everything else the generic placeholder.
+ */
+export function listingPhotoPlaceholder(storagePath: string | null | undefined): ImageSource {
+  if (!storagePath?.startsWith('https://images.pexels.com/')) return LISTING_PHOTO_PLACEHOLDER_SOURCE;
+  if (!poolByUrl) {
+    poolByUrl = new Map();
+    for (const [pool, urls] of Object.entries(DEMO_PHOTO_POOLS) as [DemoPhotoPool, readonly string[]][]) {
+      for (const url of urls) poolByUrl.set(url, pool);
+    }
+  }
+  const pool = poolByUrl.get(storagePath.split('?')[0]);
+  return pool ? resolveLocalListingPhoto(POOL_TO_LOCAL[pool]) : LISTING_PHOTO_PLACEHOLDER_SOURCE;
 }

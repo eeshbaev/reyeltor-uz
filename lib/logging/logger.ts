@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react-native';
+import { reportErrorRemotely } from '@/lib/logging/remoteErrors';
 
 /**
  * Centralized logging utility for Reyeltor.uz
@@ -68,6 +69,8 @@ function logToService(
   if (level === 'debug') return;
   try {
     if (level === 'error') {
+      // Without a Sentry key, errors go to the app's own error log (Supabase app_errors).
+      reportErrorRemotely('error', message, error, context?.context, context?.extra);
       Sentry.captureException(error instanceof Error ? error : new Error(message), {
         tags: context?.context ? { context: context.context } : undefined,
         extra: { message, ...(context?.extra ?? {}), ...(error instanceof Error ? {} : { error }) },

@@ -1019,7 +1019,10 @@
       "notConfigured": "Telegram orqali kirish hali sozlanmagan.",
       "phoneLocked": "Telegram orqali tasdiqlangan — bu yerda o'zgartirib bo'lmaydi.",
       "waitingHint": "Telegramda «Start», so'ng «📱 Raqamni ulashish» tugmasini bosing. Keyin shu yerga qayting.",
-      "openTelegramAgain": "Telegramni qayta ochish"
+      "openTelegramAgain": "Telegramni qayta ochish",
+      "emailConfirmTitle": "Emailni tasdiqlang",
+      "emailConfirmSent": "{{email}} manziliga tasdiqlash havolasini yubordik. Havolani ochganingizdan so'ng email hisobingizga qo'shiladi.",
+      "emailSendFailed": "Tasdiqlash xatini yuborib bo'lmadi. Keyinroq qayta urinib ko'ring."
     }
   }
 }

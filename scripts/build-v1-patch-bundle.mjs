@@ -20,6 +20,7 @@ const ORDER = [
   'patch-hardening-v1.sql',
   'patch-telegram-auth-v1.sql',
   'patch-alerts-v1.sql',
+  'patch-ops-v1.sql',
 ];
 
 const parts = ORDER.map((name) => `-- >>>>>>>>>>>>>>>> ${name} <<<<<<<<<<<<<<<<\n${fs.readFileSync(path.join(dir, name), 'utf8').trim()}\n`);

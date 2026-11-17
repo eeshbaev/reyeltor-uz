@@ -1,5 +1,6 @@
 import { FunctionsFetchError, FunctionsHttpError, FunctionsRelayError } from '@supabase/supabase-js';
 import * as Linking from 'expo-linking';
+import { EMAIL_CONFIRMED_URL } from '@/lib/constants';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
 /**
@@ -43,7 +44,9 @@ export type TelegramAuthErrorCode =
   | 'password_too_short'
   | 'invalid_credentials'
   | 'too_many_attempts'
-  | 'not_signed_in';
+  | 'not_signed_in'
+  | 'confirmation_required'
+  | 'email_send_failed';
 
 export class TelegramAuthError extends Error {
   constructor(public readonly code: TelegramAuthErrorCode) {
@@ -175,8 +178,16 @@ export interface TelegramRegistrationInput {
 }
 
 /** Creates the account from a verified Telegram confirmation and signs in. Returns the user id. */
-export async function registerWithTelegram(flow: TelegramFlow, input: TelegramRegistrationInput): Promise<string> {
-  const { tokenHash } = await callFunction<{ tokenHash: string }>({
+/**
+ * Creates the account from a verified Telegram confirmation and signs in. An email (optional)
+ * is not trusted yet: a confirmation link is sent, and it is added once the user clicks it.
+ * Returns the user id and whether a confirmation email was sent.
+ */
+export async function registerWithTelegram(
+  flow: TelegramFlow,
+  input: TelegramRegistrationInput,
+): Promise<{ userId: string; confirmationSentTo: string | null }> {
+  const { tokenHash, pendingEmail } = await callFunction<{ tokenHash: string; pendingEmail?: string | null }>({
     action: 'register',
     flowId: flow.flowId,
     secret: flow.secret,
@@ -187,7 +198,34 @@ export async function registerWithTelegram(flow: TelegramFlow, input: TelegramRe
     phoneVisible: input.phoneVisible,
     locale: input.locale,
   });
-  return signInWithTokenHash(tokenHash);
+  const userId = await signInWithTokenHash(tokenHash);
+  let confirmationSentTo: string | null = null;
+  if (pendingEmail) {
+    try {
+      await requestEmailChange(pendingEmail);
+      confirmationSentTo = pendingEmail;
+    } catch {
+      // The account exists; the email can be added again later from Profile.
+    }
+  }
+  return { userId, confirmationSentTo };
+}
+
+/**
+ * Starts an email change: Supabase emails a confirmation link to the new address; the
+ * profile shows the email once the link is clicked (patch-ops-v1.sql sync_profile_email).
+ */
+export async function requestEmailChange(email: string): Promise<void> {
+  const { error } = await supabase.auth.updateUser(
+    { email: email.trim().toLowerCase() },
+    { emailRedirectTo: EMAIL_CONFIRMED_URL },
+  );
+  if (!error) return;
+  const message = error.message.toLowerCase();
+  if (message.includes('already') || error.code === 'email_exists') throw new TelegramAuthError('email_taken');
+  if (message.includes('invalid')) throw new TelegramAuthError('invalid_email');
+  if (error.status === 429 || message.includes('rate limit')) throw new TelegramAuthError('too_many_attempts');
+  throw new TelegramAuthError('email_send_failed');
 }
 
 /** Sets a new password after a Telegram confirmation and signs in. */
@@ -224,7 +262,7 @@ export async function loginWithPassword(identifier: string, password: string): P
   await signInWithTokenHash(tokenHash);
 }
 
-/** Saves (or clears) the account email used for login and password recovery. */
-export async function syncAccountEmail(email: string | null): Promise<void> {
-  await callFunction<{ ok: true }>({ action: 'sync_email', email });
+/** Removes the account email (login then works with the phone number only). */
+export async function clearAccountEmail(): Promise<void> {
+  await callFunction<{ ok: true }>({ action: 'sync_email', email: null });
 }

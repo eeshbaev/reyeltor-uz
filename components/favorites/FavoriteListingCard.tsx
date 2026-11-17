@@ -13,7 +13,7 @@ import { daysSince } from '@/lib/format';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
 import { getListingCategory } from '@/lib/listing';
-import { LISTING_PHOTO_PLACEHOLDER_SOURCE, resolveListingPhotoSource } from '@/lib/listingPhotos';
+import { LISTING_PHOTO_PLACEHOLDER_SOURCE, listingPhotoPlaceholder, resolveListingPhotoSource } from '@/lib/listingPhotos';
 import { getPhotoUrl } from '@/lib/supabase';
 import { useTheme } from '@/lib/theme';
 import type { Listing, ListingPhoto } from '@/types';
@@ -66,8 +66,9 @@ export function FavoriteListingCard({ listing, onPress, unavailable }: FavoriteL
               }
               style={styles.image}
               contentFit="cover"
-              placeholder={LISTING_PHOTO_PLACEHOLDER_SOURCE}
+              placeholder={listingPhotoPlaceholder(photo?.storage_path)}
               transition={220}
+              cachePolicy="memory-disk"
             />
             <View style={styles.imageScrimTop} pointerEvents="none" />
             <View style={styles.imageScrimBottom} pointerEvents="none" />

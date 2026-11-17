@@ -1019,7 +1019,10 @@
       "notConfigured": "Telegram ile giriş henüz ayarlanmadı.",
       "phoneLocked": "Telegram ile doğrulandı — burada değiştirilemez.",
       "waitingHint": "Telegram'da Başlat'a, ardından “📱 Numarayı paylaş”a dokunun. Sonra buraya dönün.",
-      "openTelegramAgain": "Telegram'ı tekrar aç"
+      "openTelegramAgain": "Telegram'ı tekrar aç",
+      "emailConfirmTitle": "E-postanızı onaylayın",
+      "emailConfirmSent": "{{email}} adresine bir onay bağlantısı gönderdik. Bağlantıyı açtıktan sonra e-posta hesabınıza eklenir.",
+      "emailSendFailed": "Onay e-postası gönderilemedi. Lütfen daha sonra tekrar deneyin."
     }
   }
 }

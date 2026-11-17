@@ -24,7 +24,7 @@ import {
 import { hapticMedium } from '@/lib/haptics';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
 import { getListingCategory } from '@/lib/listing';
-import { COMPACT_LISTING_PHOTO_HEIGHT, LISTING_PHOTO_PLACEHOLDER_SOURCE, MAP_LISTING_PHOTO_HEIGHT, resolveListingPhotoSource } from '@/lib/listingPhotos';
+import { COMPACT_LISTING_PHOTO_HEIGHT, LISTING_PHOTO_PLACEHOLDER_SOURCE, MAP_LISTING_PHOTO_HEIGHT, listingPhotoPlaceholder, resolveListingPhotoSource } from '@/lib/listingPhotos';
 import { getOptimizedImageUrl } from '@/lib/network/imagePreloader';
 import { getPhotoUrl } from '@/lib/supabase';
 import { useTheme } from '@/lib/theme';
@@ -158,6 +158,7 @@ function ListingCardComponent({
                 ? listingPhotoSource(photos[0].storage_path, width ?? 300, photoHeight)
                 : LISTING_PHOTO_PLACEHOLDER_SOURCE
             }
+            storagePath={photos[0]?.storage_path}
             style={{ width: width ?? '100%', height: photoHeight }}
           />
         )
@@ -175,6 +176,7 @@ function ListingCardComponent({
               ? listingPhotoSource(photos[0].storage_path, width ?? 400, COMPACT_LISTING_PHOTO_HEIGHT)
               : LISTING_PHOTO_PLACEHOLDER_SOURCE
           }
+          storagePath={photos[0]?.storage_path}
           style={{ width: width ?? '100%', height: COMPACT_LISTING_PHOTO_HEIGHT }}
         />
       ) : (
@@ -184,6 +186,7 @@ function ListingCardComponent({
               ? listingPhotoSource(photos[0].storage_path, 400, 300)
               : LISTING_PHOTO_PLACEHOLDER_SOURCE
           }
+          storagePath={photos[0]?.storage_path}
           fill
         />
       )}
@@ -334,23 +337,27 @@ function listingPhotoSource(storagePath: string, width: number, height: number) 
 
 function ListingCardPhoto({
   source,
+  storagePath,
   style,
   fill = false,
 }: {
   source: import('expo-image').ImageSource;
+  storagePath?: string;
   style?: StyleProp<ImageStyle>;
   fill?: boolean;
 }) {
   const [useFallback, setUseFallback] = useState(false);
-  const resolvedSource = useFallback ? LISTING_PHOTO_PLACEHOLDER_SOURCE : source;
+  const placeholder = listingPhotoPlaceholder(storagePath);
+  const resolvedSource = useFallback ? placeholder : source;
 
   return (
     <Image
       source={resolvedSource}
       style={fill ? StyleSheet.absoluteFillObject : style}
       contentFit="cover"
-      placeholder={LISTING_PHOTO_PLACEHOLDER_SOURCE}
+      placeholder={placeholder}
       transition={200}
+      cachePolicy="memory-disk"
       onError={() => setUseFallback(true)}
     />
   );

@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
+import { installGlobalErrorReporter } from '@/lib/logging/remoteErrors';
 
 /**
  * Sentry configuration for performance monitoring and error tracking
@@ -13,7 +14,8 @@ export const initSentry = () => {
   const DSN = process.env.EXPO_PUBLIC_SENTRY_DSN || '';
 
   if (!DSN) {
-    console.warn('⚠️ Sentry DSN not configured. Monitoring disabled.');
+    // Built-in fallback: crashes and logged errors go to Supabase (app_errors).
+    installGlobalErrorReporter();
     return;
   }
 

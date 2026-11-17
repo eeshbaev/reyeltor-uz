@@ -101,6 +101,8 @@ export const PRIVACY_POLICY_URL = 'https://eeshbaev.github.io/reyeltor-uz/privac
 
 /** Public listing page (docs/listing.html on GitHub Pages) — works for people without the app. */
 export const LISTING_WEB_URL = 'https://eeshbaev.github.io/reyeltor-uz/listing.html';
+/** Where Supabase's "confirm your new email" link lands (docs/email-confirmed.html). */
+export const EMAIL_CONFIRMED_URL = 'https://eeshbaev.github.io/reyeltor-uz/email-confirmed.html';
 
 export const APP_NAME = 'Reyeltor-uz';
 export const APP_SCHEME = 'reyeltor';

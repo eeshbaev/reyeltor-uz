@@ -1019,7 +1019,10 @@
       "notConfigured": "Вход через Telegram ещё не настроен.",
       "phoneLocked": "Подтверждён через Telegram — здесь изменить нельзя.",
       "waitingHint": "В Telegram нажмите «Старт», затем «📱 Поделиться номером». После этого вернитесь сюда.",
-      "openTelegramAgain": "Открыть Telegram снова"
+      "openTelegramAgain": "Открыть Telegram снова",
+      "emailConfirmTitle": "Подтвердите email",
+      "emailConfirmSent": "Мы отправили ссылку для подтверждения на {{email}}. Email будет добавлен в аккаунт после перехода по ссылке.",
+      "emailSendFailed": "Не удалось отправить письмо для подтверждения. Попробуйте позже."
     }
   }
 }

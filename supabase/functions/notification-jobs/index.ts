@@ -131,6 +131,9 @@ Deno.serve(async (req) => {
   const { data: archivedCount, error: archiveError } = await admin.rpc('archive_expired_listings');
   if (archiveError) console.warn('archive_expired_listings failed:', archiveError.message);
 
+  // Error reports older than 30 days (patch-ops-v1.sql). Ignored if the patch is not applied.
+  await admin.rpc('purge_old_app_errors').then(({ error }) => error && console.warn('purge_old_app_errors failed:', error.message));
+
   // Delete listings whose 30-day archive grace period is over, then their photo files.
   let purged = 0;
   const { data: purgedRows, error: purgeError } = await admin.rpc('purge_deleted_listings', { p_limit: 500 });

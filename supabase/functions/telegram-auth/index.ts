@@ -19,7 +19,6 @@ import {
   botText,
   cleanRegistrationInput,
   identityFromContact,
-  isValidEmail,
   parseStartCommand,
   placeholderEmail,
   randomToken,
@@ -55,11 +54,6 @@ function fail(error: string, status = 400): Response {
 }
 
 type Admin = SupabaseClient;
-
-/** Exact, case-insensitive match: "_" and "%" are common in emails but are wildcards in ILIKE. */
-function escapeLike(value: string): string {
-  return value.replace(/[\\%_]/g, (c) => `\\${c}`);
-}
 
 interface FlowRow {
   id: string;
@@ -136,18 +130,36 @@ function say(chatId: number, locale: string | null, key: BotTextKey, keyboard: '
 
 // --- actions ---------------------------------------------------------------------
 
-async function start(admin: Admin, body: Record<string, unknown>): Promise<Response> {
+async function start(admin: Admin, body: Record<string, unknown>, req: Request): Promise<Response> {
   const purpose = body.purpose === 'reset' ? 'reset' : body.purpose === 'register' ? 'register' : null;
   if (!purpose) return fail('invalid_purpose');
   const locale = typeof body.locale === 'string' ? body.locale.slice(0, 5) : 'uz';
 
   await admin.from('telegram_auth_flows').delete().lt('expires_at', new Date(Date.now() - 86_400_000).toISOString());
 
+  // Rate limit: 10 starts per device/IP per 10 minutes, 500 in total.
+  const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim();
+  const ipHash = ip ? await sha256Base64Url(`reyeltor-ip:${ip}`) : null;
+  const since = new Date(Date.now() - 10 * 60_000).toISOString();
+  const { count: total } = await admin
+    .from('telegram_auth_flows')
+    .select('id', { count: 'exact', head: true })
+    .gte('created_at', since);
+  if ((total ?? 0) >= 500) return fail('too_many_attempts', 429);
+  if (ipHash) {
+    const { count: fromIp } = await admin
+      .from('telegram_auth_flows')
+      .select('id', { count: 'exact', head: true })
+      .eq('client_ip_hash', ipHash)
+      .gte('created_at', since);
+    if ((fromIp ?? 0) >= 10) return fail('too_many_attempts', 429);
+  }
+
   const secret = randomToken();
   const startCode = randomToken(24);
   const { data, error } = await admin
     .from('telegram_auth_flows')
-    .insert({ purpose, locale, secret_hash: await sha256Base64Url(secret), start_code: startCode })
+    .insert({ purpose, locale, secret_hash: await sha256Base64Url(secret), start_code: startCode, client_ip_hash: ipHash })
     .select('id')
     .single();
   if (error || !data) return fail('server_error', 500);
@@ -287,14 +299,11 @@ async function register(admin: Admin, body: Record<string, unknown>): Promise<Re
   if ((await findUserByTelegram(admin, flow.telegram_id)) || (await findUserByPhone(admin, flow.phone))) {
     return fail('phone_taken');
   }
-  if (input.email) {
-    const { data: emailOwner } = await admin.from('users').select('id').ilike('email', escapeLike(input.email)).maybeSingle();
-    if (emailOwner) return fail('email_taken');
-  }
-
+  // An email (optional) is added afterwards by the app through Supabase's confirmation link,
+  // so nobody can register with someone else's address.
   const fullName = `${input.firstName} ${input.lastName}`;
   const { data: created, error: createError } = await admin.auth.admin.createUser({
-    email: input.email ?? placeholderEmail(flow.telegram_id),
+    email: placeholderEmail(flow.telegram_id),
     password: input.password,
     email_confirm: true,
     user_metadata: {
@@ -330,7 +339,7 @@ async function register(admin: Admin, body: Record<string, unknown>): Promise<Re
   }
 
   await admin.from('telegram_auth_flows').update({ status: 'consumed', user_id: userId }).eq('id', flow.id);
-  return json({ tokenHash: await sessionToken(admin, userId) });
+  return json({ tokenHash: await sessionToken(admin, userId), pendingEmail: input.email });
 }
 
 async function resetPassword(admin: Admin, body: Record<string, unknown>): Promise<Response> {
@@ -371,27 +380,22 @@ async function login(admin: Admin, body: Record<string, unknown>, req: Request):
   return json({ tokenHash: await sessionToken(admin, row.user_id) });
 }
 
+/** Removes the account email (adding one goes through Supabase's confirmation email). */
 async function syncEmail(admin: Admin, body: Record<string, unknown>, req: Request): Promise<Response> {
   const jwt = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '');
   const { data: auth } = await admin.auth.getUser(jwt);
   const userId = auth?.user?.id;
   if (!userId) return fail('not_signed_in', 401);
-
-  const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
-  if (email && !isValidEmail(email)) return fail('invalid_email');
-
-  if (email) {
-    const { data: owner } = await admin.from('users').select('id').ilike('email', escapeLike(email)).neq('id', userId).maybeSingle();
-    if (owner) return fail('email_taken');
-  }
+  if (typeof body.email === 'string' && body.email.trim()) return fail('confirmation_required');
 
   const { data: profile } = await admin.from('users').select('telegram_id').eq('id', userId).maybeSingle();
-  const signInEmail = email || placeholderEmail(profile?.telegram_id ?? userId);
-  const { error } = await admin.auth.admin.updateUserById(userId, { email: signInEmail, email_confirm: true });
-  if (error) {
-    return fail(error.message.toLowerCase().includes('already') ? 'email_taken' : 'server_error', 400);
-  }
-  await admin.from('users').update({ email: email || null }).eq('id', userId);
+  const { error } = await admin.auth.admin.updateUserById(userId, {
+    email: placeholderEmail(profile?.telegram_id ?? userId),
+    email_confirm: true,
+  });
+  if (error) return fail('server_error', 500);
+  // The profile follows via the sync_profile_email trigger; set it here too for older databases.
+  await admin.from('users').update({ email: null }).eq('id', userId);
   return json({ ok: true });
 }
 
@@ -409,7 +413,7 @@ Deno.serve(async (req) => {
     const body = (await req.json().catch(() => ({}))) as Record<string, unknown>;
     switch (body.action) {
       case 'start':
-        return await start(admin, body);
+        return await start(admin, body, req);
       case 'result':
         return await result(admin, body);
       case 'register':
