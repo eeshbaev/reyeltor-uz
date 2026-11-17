@@ -121,8 +121,6 @@ class ImagePreloader {
           setTimeout(() => reject(new Error('Image load timeout')), this.timeout)
         ),
       ]);
-
-      logger.debug('Image preloaded', { context: 'imagePreloader', extra: { uri } });
     } catch {
       logger.warn('Image preload failed', { context: 'imagePreloader', extra: { uri } });
     } finally {

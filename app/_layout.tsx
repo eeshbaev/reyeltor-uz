@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { Platform, StyleSheet, View } from 'react-native';
+import { LogBox, Platform, StyleSheet, View } from 'react-native';
 import { AuthWelcomeRedirect } from '@/components/auth/AuthWelcomeRedirect';
 import { LaunchMilestoneHost } from '@/components/growth/LaunchMilestoneHost';
 import { ReferralClipboardBootstrap } from '@/components/growth/ReferralClipboardBootstrap';
@@ -38,6 +38,8 @@ installNetworkResilience();
 
 // Initialize Sentry for performance monitoring and error tracking
 initSentry();
+// Comes from @gorhom/bottom-sheet on Reanimated 4: harmless (the dependency lists are ignored).
+LogBox.ignoreLogs(['[Reanimated] Dependencies should only be used on the web']);
 
 export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
