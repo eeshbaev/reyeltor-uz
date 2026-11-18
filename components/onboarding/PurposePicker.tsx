@@ -63,9 +63,6 @@ export function PurposePicker({ onDone }: PurposePickerProps) {
         <AppText variant="h1" style={[styles.title, { color: palette.primary }]}>
           {t('purposes.titleOne')}
         </AppText>
-        <AppText variant="body" style={[styles.subtitle, { color: palette.secondary }]}>
-          {t('purposes.subtitleOne')}
-        </AppText>
       </Animated.View>
 
       <View style={[styles.options, grid && styles.optionsGrid]}>
@@ -113,9 +110,6 @@ export function PurposePicker({ onDone }: PurposePickerProps) {
           {t('purposes.justBrowse')}
         </AppText>
       </Pressable>
-      <AppText variant="caption" style={[styles.note, { color: palette.tertiary }]}>
-        {t('purposes.note')}
-      </AppText>
     </ScrollView>
   );
 }

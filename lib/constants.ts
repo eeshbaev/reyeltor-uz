@@ -76,7 +76,7 @@ export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 export const DEFAULT_LANGUAGE: SupportedLanguage = 'uz';
 
 export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
-  uz: "O'zbek",
+  uz: "Oʻzbek",
   ru: 'Русский',
   en: 'English',
   zh: '中文',
