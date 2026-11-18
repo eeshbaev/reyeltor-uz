@@ -1,6 +1,5 @@
 import { Linking, Platform } from 'react-native';
 import { PLAY_STORE_URL } from '@/lib/constants';
-import { markUserRatedApp } from '@/lib/growth/launchMilestones';
 
 const ANDROID_PACKAGE = 'uz.reyeltor.app';
 
@@ -19,5 +18,4 @@ export async function openAppRating(): Promise<void> {
     await Linking.openURL(webUrl);
   }
 
-  await markUserRatedApp();
 }

@@ -1049,7 +1049,8 @@
       "feedbackBody": "Напишите, что сделать дальше или что должно работать лучше.",
       "feedbackCta": "Отправить отзыв",
       "feedbackSubject": "Отзыв о Reyeltor-uz",
-      "feedbackEmailBody": "Что я хотел(а) бы увидеть или улучшить:\n\n\n—\nВерсия приложения {{version}}"
+      "feedbackEmailBody": "Что я хотел(а) бы увидеть или улучшить:\n\n\n—\nВерсия приложения {{version}}",
+      "rateCta": "Оценить в Google Play"
     }
   }
 }

@@ -6,7 +6,6 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { LogBox, Platform, StyleSheet, View } from 'react-native';
 import { AuthWelcomeRedirect } from '@/components/auth/AuthWelcomeRedirect';
-import { LaunchMilestoneHost } from '@/components/growth/LaunchMilestoneHost';
 import { ReferralClipboardBootstrap } from '@/components/growth/ReferralClipboardBootstrap';
 import { NotificationHandler } from '@/components/NotificationHandler';
 import { NotificationLifecycle } from '@/components/NotificationLifecycle';
@@ -22,6 +21,7 @@ import { GuestFavoriteAuthProvider } from '@/lib/context/GuestFavoriteAuthContex
 import { ListingsProvider } from '@/lib/context/ListingsContext';
 import { MapContextProvider } from '@/lib/context/MapContextProvider';
 import { UIChromeProvider } from '@/lib/context/UIChromeProvider';
+import { initRatingState } from '@/lib/growth/ratingPrompt';
 import i18n from '@/lib/i18n';
 import { queryClient } from '@/lib/queryClient';
 import { initSentry } from '@/lib/sentry';
@@ -69,6 +69,7 @@ export default function RootLayout() {
 
     void Promise.all([
       runAppStartup().catch(() => undefined),
+      initRatingState().catch(() => undefined),
       new Promise<void>((resolve) => setTimeout(resolve, MIN_SPLASH_MS)),
     ]).finally(() => {
       if (!cancelled) {
@@ -90,7 +91,6 @@ export default function RootLayout() {
         <AuthProvider>
           <GuestFavoriteAuthProvider>
           <AuthWelcomeRedirect />
-          {!showSplash ? <LaunchMilestoneHost /> : null}
           {!showSplash ? <ReferralClipboardBootstrap /> : null}
           <PurposesSync />
           <NotificationLifecycle />

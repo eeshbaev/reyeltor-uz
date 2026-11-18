@@ -1049,7 +1049,8 @@
       "feedbackBody": "Sırada ne yapmamızı veya neyin daha iyi çalışması gerektiğini bize yazın.",
       "feedbackCta": "Geri bildirim gönder",
       "feedbackSubject": "Reyeltor-uz geri bildirimi",
-      "feedbackEmailBody": "Görmek veya geliştirilmesini istediğim:\n\n\n—\nUygulama sürümü {{version}}"
+      "feedbackEmailBody": "Görmek veya geliştirilmesini istediğim:\n\n\n—\nUygulama sürümü {{version}}",
+      "rateCta": "Google Play'de değerlendir"
     }
   }
 }

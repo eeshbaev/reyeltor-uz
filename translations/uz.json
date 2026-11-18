@@ -1049,7 +1049,8 @@
       "feedbackBody": "Keyin nima qilishimizni yoki nimani yaxshilash kerakligini yozing.",
       "feedbackCta": "Fikr yuborish",
       "feedbackSubject": "Reyeltor-uz bo‘yicha fikr",
-      "feedbackEmailBody": "Nimani ko'rishni yoki yaxshilashni istayman:\n\n\n—\nIlova versiyasi {{version}}"
+      "feedbackEmailBody": "Nimani ko'rishni yoki yaxshilashni istayman:\n\n\n—\nIlova versiyasi {{version}}",
+      "rateCta": "Google Play'da baholash"
     }
   }
 }

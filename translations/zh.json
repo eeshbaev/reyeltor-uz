@@ -1049,7 +1049,8 @@
       "feedbackBody": "告诉我们接下来该做什么，或哪些地方需要改进。",
       "feedbackCta": "发送反馈",
       "feedbackSubject": "Reyeltor-uz 反馈",
-      "feedbackEmailBody": "我希望看到或改进的内容：\n\n\n—\n应用版本 {{version}}"
+      "feedbackEmailBody": "我希望看到或改进的内容：\n\n\n—\n应用版本 {{version}}",
+      "rateCta": "在 Google Play 评分"
     }
   }
 }

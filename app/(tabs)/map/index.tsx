@@ -29,6 +29,7 @@ import { useListingsCache } from '@/lib/context/ListingsContext';
 import { useMapFocus } from '@/lib/context/MapFocusContext';
 import { spacing } from '@/lib/design/spacing';
 import { countActiveFilters, filtersToRevealListing, resetAreaSearch, resetSearchFiltersPreservingArea, shouldShowDistrictMarketStats } from '@/lib/filters';
+import { onValueMoment } from '@/lib/growth/ratingPrompt';
 import { useLastSearchSync } from '@/lib/hooks/useLastSearchSync';
 import { useSheetOverlay } from '@/lib/hooks/useSheetOverlay';
 import { buildFiltersForMapArea } from '@/lib/map/areaFilter';
@@ -171,6 +172,8 @@ export default function MapScreen() {
 
     setFocusedListingId(listingId);
     setPostSuccessFirst(params.postedFirst === '1');
+    // First listing live = a value moment; ask (maybe) only after the thank-you toast is gone.
+    if (params.postedFirst === '1') void onValueMoment('first_listing_live', 7000);
     setPostSuccessVisible(true);
     mapRef.current?.flyToCoverage({
       latitude: lat,

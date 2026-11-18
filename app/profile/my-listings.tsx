@@ -14,6 +14,7 @@ import { AppText } from '@/components/ui/AppText';
 import { getCoinCost } from '@/lib/coins';
 import { useAuth } from '@/lib/context/AuthContext';
 import { spacing } from '@/lib/design/spacing';
+import { onValueMoment } from '@/lib/growth/ratingPrompt';
 import { hapticSuccess } from '@/lib/haptics';
 import { fetchActiveListingCount } from '@/lib/hooks/useListings';
 import { scheduleListingNotifications } from '@/lib/notifications';
@@ -112,6 +113,8 @@ export default function MyListingsScreen() {
       .eq('id', id);
     await load();
     await refreshProfile();
+    // A deal closed: the app did its job. The rating module decides whether it is the right time.
+    if (reason === 'rented' || reason === 'sold') void onValueMoment('listing_closed');
   };
 
   // ActionMenu, not Alert: Android's system alert shows at most 3 buttons and dropped one of these.

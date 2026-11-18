@@ -1049,7 +1049,8 @@
       "feedbackBody": "Tell us what to build next or what should work better.",
       "feedbackCta": "Send feedback",
       "feedbackSubject": "Reyeltor-uz feedback",
-      "feedbackEmailBody": "What I'd like to see or improve:\n\n\n—\nApp version {{version}}"
+      "feedbackEmailBody": "What I'd like to see or improve:\n\n\n—\nApp version {{version}}",
+      "rateCta": "Rate on Google Play"
     }
   }
 }

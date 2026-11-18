@@ -16,6 +16,7 @@ import { openSupportEmail } from '@/lib/contact/supportEmail';
 import { useAuth } from '@/lib/context/AuthContext';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { rateFromSettings } from '@/lib/growth/ratingPrompt';
 import { useTheme } from '@/lib/theme';
 
 /** About: what the app costs today (nothing), Early Member status, what's next, feedback. */
@@ -87,7 +88,10 @@ export default function AboutScreen() {
           <AppText variant="body" color="secondary">
             {t('access.feedbackBody')}
           </AppText>
-          <Button label={t('access.feedbackCta')} variant="secondary" onPress={sendFeedback} fullWidth={false} />
+          <View style={styles.actions}>
+            <Button label={t('access.feedbackCta')} variant="secondary" onPress={sendFeedback} fullWidth={false} />
+            <Button label={t('access.rateCta')} variant="secondary" onPress={() => void rateFromSettings()} fullWidth={false} />
+          </View>
         </Card>
       </ScrollView>
     </View>
@@ -141,6 +145,7 @@ const styles = StyleSheet.create({
   },
   cardHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   cardTitle: { fontWeight: '700', flex: 1 },
+  actions: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
