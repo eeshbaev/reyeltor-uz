@@ -26,6 +26,7 @@ import { isDemoId } from '@/lib/demo';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { SIDE_PANEL_WIDTH, windowClassFor } from '@/lib/design/windowClass';
 import { formatDate } from '@/lib/format';
 import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
 import { fetchListingEngagement } from '@/lib/growth/listingEngagement';
@@ -73,6 +74,12 @@ export const ListingDetailSheet = forwardRef<ListingDetailSheetRef, ListingDetai
   const { formatPrice } = useFormatPrice();
   const { usdRate, allListings } = useListingsCache();
   const sheetRef = useRef<BottomSheet>(null);
+  // Expanded windows (tablet landscape, unfolded foldable): the listing opens as a panel on
+  // the right and the map stays visible beside it (manual AD-02).
+  const sidePanel =
+    windowClassFor(windowWidth) === 'expanded'
+      ? { marginLeft: windowWidth - SIDE_PANEL_WIDTH - spacing.md, marginRight: spacing.md }
+      : null;
   const shareSheetRef = useRef<ShareSheetRef>(null);
   const [listingId, setListingId] = useState<string | null>(null);
   const [listing, setListing] = useState<ListingWithPhotos | null>(null);
@@ -213,7 +220,7 @@ export const ListingDetailSheet = forwardRef<ListingDetailSheetRef, ListingDetai
       enableHandlePanningGesture={sheetIndex >= 0}
       activeOffsetX={[-999, 999]}
       activeOffsetY={[-5, 5]}
-      style={styles.sheet}
+      style={[styles.sheet, sidePanel]}
       backgroundStyle={{ backgroundColor: theme.colors.surfaceElevated }}
       handleIndicatorStyle={{ backgroundColor: theme.colors.borderStrong }}
     >

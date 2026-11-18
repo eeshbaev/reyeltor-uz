@@ -19,6 +19,7 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { useGuestFavoriteAuth } from '@/lib/context/GuestFavoriteAuthContext';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { useWindowClass } from '@/lib/design/windowClass';
 import { subscribeFavoritesChanged } from '@/lib/favorites/events';
 import { loadFavoriteListings, type FavoriteListing } from '@/lib/favorites/loadFavoriteListings';
 import { useSavedSearches } from '@/lib/hooks/useSavedSearches';
@@ -28,6 +29,7 @@ import { useTheme } from '@/lib/theme';
 
 export default function FavoritesScreen() {
   const { t } = useTranslation();
+  const columns = useWindowClass() === 'compact' ? 1 : 2;
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -160,13 +162,18 @@ export default function FavoritesScreen() {
         }
         contentContainerStyle={{ paddingHorizontal: spacing.md, paddingBottom: listBottom }}
         keyExtractor={(item) => item.id}
+        // Two columns from medium windows up (tablets, unfolded foldables) — manual L-06.
+        key={columns}
+        numColumns={columns}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
-          <FavoriteListingCard
-            listing={item}
-            unavailable={item.unavailable}
-            onPress={() => !item.unavailable && detailRef.current?.open(item.id)}
-          />
+          <View style={columns > 1 ? styles.gridCell : undefined}>
+            <FavoriteListingCard
+              listing={item}
+              unavailable={item.unavailable}
+              onPress={() => !item.unavailable && detailRef.current?.open(item.id)}
+            />
+          </View>
         )}
       />
       <View style={sheetOverlayLayerStyle} pointerEvents="box-none">
@@ -182,6 +189,7 @@ export default function FavoritesScreen() {
 }
 
 const styles = StyleSheet.create({
+  gridCell: { flex: 1, paddingHorizontal: spacing.xs },
   screen: {
     flex: 1,
     overflow: 'hidden',

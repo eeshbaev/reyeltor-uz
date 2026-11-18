@@ -29,6 +29,7 @@ import { useListingsCache } from '@/lib/context/ListingsContext';
 import { usePin } from '@/lib/context/PinContext';
 import { getCategoryColors } from '@/lib/design/categoryColors';
 import { spacing } from '@/lib/design/spacing';
+import { useContentColumn } from '@/lib/design/windowClass';
 import { showActionError } from '@/lib/error/actionError';
 import { hapticSuccess } from '@/lib/haptics';
 import { useCurrentLocation } from '@/lib/hooks/useCurrentLocation';
@@ -82,6 +83,7 @@ export function PostListingForm({ bottomPadding = spacing.xl }: PostListingFormP
     () => getCategoryColors(theme.scheme, 'residential'),
     [theme.scheme],
   );
+  const column = useContentColumn();
   const [cost, setCost] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -487,7 +489,7 @@ export function PostListingForm({ bottomPadding = spacing.xl }: PostListingFormP
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
-      contentContainerStyle={[styles.content, { paddingBottom: bottomPadding }]}
+      contentContainerStyle={[styles.content, { paddingBottom: bottomPadding }, column]}
       keyboardShouldPersistTaps="handled"
     >
       <PostFormHeader />

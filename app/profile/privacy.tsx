@@ -8,12 +8,14 @@ import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { PRIVACY_CONTACT_EMAIL, PRIVACY_POLICY_URL } from '@/lib/constants';
 import { spacing } from '@/lib/design/spacing';
+import { useContentColumn } from '@/lib/design/windowClass';
 import { useTheme } from '@/lib/theme';
 
 export default function PrivacyPolicyScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const column = useContentColumn();
 
   const openEmail = () => {
     void Linking.openURL(`mailto:${PRIVACY_CONTACT_EMAIL}`);
@@ -29,10 +31,10 @@ export default function PrivacyPolicyScreen() {
       <StackScreenHeader title={t('privacy.title')} backHref="/(tabs)/profile" />
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{
+        contentContainerStyle={[{
           padding: spacing.lg,
           paddingBottom: insets.bottom + spacing.xxl,
-        }}
+        }, column]}
       >
         <AppText variant="body" color="secondary" style={styles.intro}>
           {t('privacy.intro')}

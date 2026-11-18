@@ -17,6 +17,7 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { useContentColumn } from '@/lib/design/windowClass';
 import { rateFromSettings } from '@/lib/growth/ratingPrompt';
 import { useTheme } from '@/lib/theme';
 
@@ -29,6 +30,7 @@ export default function AboutScreen() {
   const access = useAccessSettings();
   const version = Constants.expoConfig?.version ?? '';
   const member = isEarlyMember(profile);
+  const column = useContentColumn();
 
   const sendFeedback = () => {
     openSupportEmail(t('access.feedbackSubject'), t('access.feedbackEmailBody', { version }));
@@ -39,7 +41,7 @@ export default function AboutScreen() {
       <Stack.Screen options={{ headerShown: false }} />
       <StackScreenHeader title={t('access.aboutTitle')} backHref="/(tabs)/profile" />
       <ScrollView
-        contentContainerStyle={{ padding: spacing.lg, paddingBottom: insets.bottom + spacing.xxl, gap: spacing.md }}
+        contentContainerStyle={[{ padding: spacing.lg, paddingBottom: insets.bottom + spacing.xxl, gap: spacing.md }, column]}
       >
         <View style={styles.brand}>
           <BrandWordmark variant="compact" />

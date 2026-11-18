@@ -16,6 +16,7 @@ import { ListingCardSkeleton } from '@/components/ui/Skeleton';
 import { getCoinCost } from '@/lib/coins';
 import { useAuth } from '@/lib/context/AuthContext';
 import { spacing } from '@/lib/design/spacing';
+import { useContentColumn } from '@/lib/design/windowClass';
 import { showActionError } from '@/lib/error/actionError';
 import { onValueMoment } from '@/lib/growth/ratingPrompt';
 import { hapticSuccess } from '@/lib/haptics';
@@ -32,6 +33,7 @@ export default function MyListingsScreen() {
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
+  const column = useContentColumn();
   const { session, profile, refreshProfile } = useAuth();
   const [tab, setTab] = useState<MyListingsTab>('active');
   const [active, setActive] = useState<ListingWithPhotos[]>([]);
@@ -198,7 +200,7 @@ export default function MyListingsScreen() {
       <StackScreenHeader title={t('profile.myListings')} backHref="/(tabs)/profile" />
       <ScrollView
         style={styles.screen}
-        contentContainerStyle={{ paddingBottom: insets.bottom + spacing.xxl }}
+        contentContainerStyle={[{ paddingBottom: insets.bottom + spacing.xxl }, column]}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.colors.accent} />}
       >
         <View style={styles.hero}>

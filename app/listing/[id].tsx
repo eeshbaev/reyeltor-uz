@@ -28,6 +28,7 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { useListingsCache } from '@/lib/context/ListingsContext';
 import { isDemoId } from '@/lib/demo';
 import { radius } from '@/lib/design/radius';
+import { useContentColumn } from '@/lib/design/windowClass';
 import { getDeviceId } from '@/lib/device';
 import { formatDate } from '@/lib/format';
 import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
@@ -60,6 +61,7 @@ function ListingDetailScreenContent() {
   const shareSheetRef = useRef<ShareSheetRef>(null);
   const neighborhoodRef = useRef<NeighborhoodSheetRef>(null);
   const insets = useSafeAreaInsets();
+  const column = useContentColumn();
   const [listing, setListing] = useState<ListingWithPhotos | null>(null);
   const [priceHistory, setPriceHistory] = useState<PriceHistoryEntry[]>([]);
   const [saveCount, setSaveCount] = useState<number | null>(null);
@@ -241,7 +243,7 @@ function ListingDetailScreenContent() {
           </FrostedView>
         </View>
       </View>
-      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, spacing.md) + spacing.xl }}>
+      <ScrollView style={styles.container} contentContainerStyle={[{ paddingBottom: Math.max(insets.bottom, spacing.md) + spacing.xl }, column]}>
         <View style={styles.body}>
           <View style={styles.priceRow}>
             <Text style={styles.price}>{formatPrice(listing.price)}</Text>

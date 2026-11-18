@@ -2,6 +2,7 @@ import { ScrollView, type ScrollViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { screenBottomPadding, screenTopPadding } from '@/lib/design/layout';
 import { spacing } from '@/lib/design/spacing';
+import { useContentColumn } from '@/lib/design/windowClass';
 
 interface ScreenScrollProps extends ScrollViewProps {
   reserveTabBar?: boolean;
@@ -22,13 +23,14 @@ export function ScreenScroll({
   ...props
 }: ScreenScrollProps) {
   const insets = useSafeAreaInsets();
+  const column = useContentColumn();
   const bottom = reserveTabBar ? screenBottomPadding(insets.bottom, extraBottom) : insets.bottom + extraBottom;
   const top = reserveTop ? screenTopPadding(insets.top, extraTop) : 0;
 
   return (
     <ScrollView
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={[{ paddingTop: top, paddingBottom: bottom }, contentContainerStyle]}
+      contentContainerStyle={[{ paddingTop: top, paddingBottom: bottom }, column, contentContainerStyle]}
       {...props}
     >
       {children}

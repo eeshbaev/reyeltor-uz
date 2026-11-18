@@ -15,6 +15,7 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { useContentColumn } from '@/lib/design/windowClass';
 import { formatDate } from '@/lib/format';
 import { quickShare } from '@/lib/growth/quickShare';
 import { getOrCreateReferralCode } from '@/lib/growth/referral';
@@ -28,6 +29,7 @@ export default function CoinsScreen() {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const column = useContentColumn();
   const { session, profile, refreshProfile } = useAuth();
   const shareSheetRef = useRef<ShareSheetRef>(null);
   const [transactions, setTransactions] = useState<CoinTransaction[]>([]);
@@ -117,7 +119,7 @@ export default function CoinsScreen() {
       <StackScreenHeader title={t('profile.coins')} backHref="/(tabs)/profile" />
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{ paddingBottom: insets.bottom + spacing.xxl }}
+        contentContainerStyle={[{ paddingBottom: insets.bottom + spacing.xxl }, column]}
         showsVerticalScrollIndicator
       >
         <CoinBalance balance={profile.coin_balance} label={t('coins.balance')} />
