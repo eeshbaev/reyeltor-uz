@@ -125,6 +125,7 @@ export default function RootLayout() {
                     <Stack.Screen name="profile/coins" options={{ headerShown: false }} />
                     <Stack.Screen name="profile/listing-performance" options={{ headerShown: false }} />
                     <Stack.Screen name="profile/privacy" options={{ headerShown: false }} />
+                    <Stack.Screen name="profile/about" options={{ headerShown: false }} />
                     <Stack.Screen
                       name="post/pin-picker"
                       options={{ presentation: 'fullScreenModal', title: 'Pin location', headerShown: true }}

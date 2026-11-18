@@ -63,11 +63,13 @@ await db.exec(fs.readFileSync(`${ROOT}/patch-alerts-v1.sql`, 'utf8'));
 await db.exec(fs.readFileSync(`${ROOT}/patch-alerts-v1.sql`, 'utf8'));
 await db.exec(fs.readFileSync(`${ROOT}/patch-ops-v1.sql`, 'utf8'));
 await db.exec(fs.readFileSync(`${ROOT}/patch-ops-v1.sql`, 'utf8'));
+await db.exec(fs.readFileSync(`${ROOT}/patch-access-v1.sql`, 'utf8'));
+await db.exec(fs.readFileSync(`${ROOT}/patch-access-v1.sql`, 'utf8'));
 console.log('schema + patches applied');
 // Re-run safety
 await db.exec(fs.readFileSync(`${ROOT}/patch-saved-searches-v1.sql`, 'utf8'));
 // Later patches redefine some of its functions: re-apply them too, in bundle order.
-for (const later of ['patch-hardening-v1.sql', 'patch-telegram-auth-v1.sql', 'patch-alerts-v1.sql', 'patch-ops-v1.sql']) {
+for (const later of ['patch-hardening-v1.sql', 'patch-telegram-auth-v1.sql', 'patch-alerts-v1.sql', 'patch-ops-v1.sql', 'patch-access-v1.sql']) {
   await db.exec(fs.readFileSync(`${ROOT}/${later}`, 'utf8'));
 }
 console.log('patch re-applied (idempotent)');
@@ -554,6 +556,26 @@ ok(r[0].t === 'owner@x.uz' && r[0].d === null, 'the confirmed owner of an addres
 await q(`update auth.users set email = 'tg555@telegram.reyeltor.invalid' where id = $1`, [T]);
 r = await q(`select email from users where id = $1`, [T]);
 ok(r[0].email === null, 'removing the email (placeholder sign-in address) clears the profile email');
+
+console.log('\n[20] Access model + Early Member');
+r = await q(`select early_member_since, created_at from users where id = $1`, [A]);
+ok(r[0].early_member_since !== null, 'people who join during early access are Early Members');
+await asUser(A, () => q(`update users set early_member_since = null, bio = 'x' where id = $1`, [A]));
+r = await q(`select early_member_since from users where id = $1`, [A]);
+ok(r[0].early_member_since !== null, 'app users cannot remove (or forge) Early Member status');
+r = await asUser(A, () => q(`select value from app_settings where key = 'access'`));
+ok(r.length === 1 && r[0].value.pricing === 'free' && r[0].value.early_access_open === true, 'the app can read the access settings');
+try { await asUser(A, () => q(`update app_settings set value = '{}' where key = 'access'`)); } catch { /* denied outright is fine too */ }
+r = await q(`select value->>'pricing' p from app_settings where key = 'access'`);
+ok(r[0].p === 'free', 'app users cannot change the access settings');
+await q(`update app_settings set value = value || '{"early_access_open": false}' where key = 'access'`);
+const LATE = '99999999-9999-9999-9999-999999999999';
+await q(`insert into auth.users (id, email, raw_user_meta_data) values ($1, 'late@x.uz', $2)`, [LATE, JSON.stringify({ full_name: 'Late', phone: '+998909999999' })]);
+r = await q(`select (select early_member_since from users where id = $1) late, (select early_member_since from users where id = $2) a`, [LATE, A]);
+ok(r[0].late === null && r[0].a !== null, 'after early access closes, new users are not Early Members; existing ones keep it');
+await db.exec(fs.readFileSync(`${ROOT}/patch-access-v1.sql`, 'utf8'));
+r = await q(`select value->>'early_access_open' v from app_settings where key = 'access'`);
+ok(r[0].v === 'false', 're-running the patch never reopens early access');
 
 console.log(`\n${passes} passed, ${failures} failed`);
 process.exit(failures ? 1 : 0);

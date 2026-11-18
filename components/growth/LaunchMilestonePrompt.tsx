@@ -14,6 +14,8 @@ import { useTheme } from '@/lib/theme';
 
 interface LaunchMilestonePromptProps {
   visible: boolean;
+  /** Early Members get a thank-you for joining early. */
+  earlyMember?: boolean;
   showInvite: boolean;
   onDismiss: () => void;
   onInvite: () => void;
@@ -21,6 +23,7 @@ interface LaunchMilestonePromptProps {
 
 export function LaunchMilestonePrompt({
   visible,
+  earlyMember = false,
   showInvite,
   onDismiss,
   onInvite,
@@ -67,7 +70,7 @@ export function LaunchMilestonePrompt({
             {t('growth.milestoneTitle')}
           </AppText>
           <AppText variant="body" color="secondary" style={styles.message}>
-            {t('growth.milestoneMessage')}
+            {t(earlyMember ? 'growth.milestoneMessageEarly' : 'growth.milestoneMessage')}
           </AppText>
 
           <Button label={t('growth.rateUs')} onPress={handleRate} />

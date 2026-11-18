@@ -17,6 +17,7 @@ export function useOnboardingSlides(): OnboardingSlideData[] {
         subtitle: t(slide.subtitleKey),
         showCta: slide.showCta,
         ctaLabel: slide.ctaLabelKey ? t(slide.ctaLabelKey) : undefined,
+        note: slide.noteKey ? t(slide.noteKey) : undefined,
       })),
     // i18n.language: rebuild the slides when the user switches language.
     // eslint-disable-next-line react-hooks/exhaustive-deps

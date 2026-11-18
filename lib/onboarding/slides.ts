@@ -7,6 +7,8 @@ export interface OnboardingSlideConfig {
   subtitleKey: string;
   showCta?: boolean;
   ctaLabelKey?: string;
+  /** Small line under the subtitle, e.g. free access on the last slide. */
+  noteKey?: string;
 }
 
 export const ONBOARDING_SLIDE_CONFIG: OnboardingSlideConfig[] = [
@@ -35,6 +37,7 @@ export const ONBOARDING_SLIDE_CONFIG: OnboardingSlideConfig[] = [
     subtitleKey: 'onboarding.trust.subtitle',
     showCta: true,
     ctaLabelKey: 'onboarding.trust.cta',
+    noteKey: 'onboarding.trust.note',
   },
 ];
 
@@ -45,4 +48,5 @@ export interface OnboardingSlideData {
   subtitle: string;
   showCta?: boolean;
   ctaLabel?: string;
+  note?: string;
 }

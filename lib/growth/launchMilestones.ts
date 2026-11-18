@@ -3,10 +3,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const APP_LAUNCH_COUNT_KEY = '@reyeltor/app_launch_count';
 export const USER_RATED_APP_KEY = '@reyeltor/user_rated_app';
 
-/** Show rate / referral prompt on these cumulative app launch numbers. */
-export const LAUNCH_MILESTONE_COUNTS = [
-  3, 9, 12, 15, 20, 23, 26, 30, 36, 40, 45, 48, 50, 60, 70, 80,
-] as const;
+/**
+ * Show the rate / invite prompt on these cumulative app launches only — a few times over
+ * months of real use, never early and never repeatedly (it used to ask 16 times).
+ */
+export const LAUNCH_MILESTONE_COUNTS = [5, 20, 50] as const;
 
 const LAUNCH_MILESTONE_SET = new Set<number>(LAUNCH_MILESTONE_COUNTS);
 

@@ -119,6 +119,9 @@ export default function CoinsScreen() {
         showsVerticalScrollIndicator
       >
         <CoinBalance balance={profile.coin_balance} label={t('coins.balance')} />
+        <AppText variant="caption" color="secondary" style={styles.earnedNote}>
+          {t('coins.earnedNote')}
+        </AppText>
         <CheckinButton canCheckIn={canCheckIn} checkedInToday={checkedInToday} onCheckIn={handleCheckIn} />
 
         {referralCode ? (
@@ -193,6 +196,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
   container: { flex: 1 },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  earnedNote: { textAlign: 'center', paddingHorizontal: spacing.lg, marginBottom: spacing.md },
   inviteCard: {
     marginHorizontal: spacing.md,
     marginBottom: spacing.lg,

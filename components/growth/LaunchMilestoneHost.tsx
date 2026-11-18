@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LaunchMilestonePrompt } from '@/components/growth/LaunchMilestonePrompt';
 import { ShareSheet, type ShareSheetRef } from '@/components/growth/ShareSheet';
+import { isEarlyMember } from '@/lib/access/accessModel';
 import { useAuth } from '@/lib/context/AuthContext';
 import { recordAppLaunch } from '@/lib/growth/launchMilestones';
 import { quickShare } from '@/lib/growth/quickShare';
@@ -76,6 +77,7 @@ export function LaunchMilestoneHost() {
     <>
       <LaunchMilestonePrompt
         visible={visible}
+        earlyMember={isEarlyMember(profile)}
         showInvite={showInvite}
         onDismiss={handleDismiss}
         onInvite={handleInvite}

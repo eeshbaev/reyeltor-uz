@@ -158,17 +158,30 @@ async function main() {
 
   pois.sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
 
+  // Compact rows: thousands of object literals make TypeScript give up (TS2590).
   const lines = pois.map(
     (p) =>
-      `  { id: '${p.id}', name: '${esc(p.name)}', nameUz: '${esc(p.nameUz)}', category: '${p.category}', kind: '${p.kind ?? ''}', lat: ${p.lat}, lng: ${p.lng} },`,
+      `  ['${p.id}', '${esc(p.name)}', '${esc(p.nameUz)}', '${p.category}', '${p.kind ?? ''}', ${p.lat}, ${p.lng}],`,
   );
 
-  const body = `import type { NeighborhoodPoi } from '@/lib/neighborhood/amenities';
+  const body = `import type { AmenityCategory, NeighborhoodPoi } from '@/lib/neighborhood/amenities';
 
-/** OpenStreetMap POIs across Tashkent city (generated — run npm run build:tashkent-pois). */
-export const TASHKENT_POIS: NeighborhoodPoi[] = [
+/** OpenStreetMap POIs across greater Tashkent (generated — run npm run build:tashkent-pois). */
+type PoiRow = [id: string, name: string, nameUz: string, category: AmenityCategory, kind: string, lat: number, lng: number];
+
+const ROWS: PoiRow[] = [
 ${lines.join('\n')}
 ];
+
+export const TASHKENT_POIS: NeighborhoodPoi[] = ROWS.map(([id, name, nameUz, category, kind, lat, lng]) => ({
+  id,
+  name,
+  nameUz,
+  category,
+  kind: kind || undefined,
+  lat,
+  lng,
+}));
 `;
 
   writeFileSync(OUT, body, 'utf8');

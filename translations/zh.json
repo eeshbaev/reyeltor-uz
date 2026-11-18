@@ -213,7 +213,9 @@
       "welcomeBackSubtitle": "准备好再次探索 Tashkent 了吗？",
       "continueCta": "继续 →",
       "coinsLabel": "免费金币助您起步",
-      "exploreCta": "探索 Tashkent →"
+      "exploreCta": "探索 Tashkent →",
+      "earlyMember": "您是我们的首批会员之一。Reyeltor-uz 的全部功能均可免费使用。",
+      "freeAccess": "Reyeltor-uz 的全部功能均可免费使用。"
     },
     "onboarding": {
       "welcome": {
@@ -231,7 +233,8 @@
       "trust": {
         "heading": "真实房源。真实经纪人。真实价格。",
         "subtitle": "每个房源都显示经纪人统计、价格历史和社区详情。",
-        "cta": "探索地图 →"
+        "cta": "探索地图 →",
+        "note": "高端体验，免费使用。"
       }
     },
     "listing": {
@@ -344,7 +347,8 @@
       "duplicateUpdated": "您的现有房源已更新。",
       "photosPartialFailed": "{{total}} 张照片中有 {{failed}} 张上传失败。请检查网络，然后重新发布该房源并选择“更新现有房源”以添加这些照片。",
       "locationError": "无法获取您的位置，请在地图上选择位置。",
-      "invalidLink": "此房源链接无效。"
+      "invalidLink": "此房源链接无效。",
+      "postSuccessFirst": "您的第一个房源已上线。感谢您与我们一起打造 Reyeltor-uz！"
     },
     "agent": {
       "trustNew": "新代理",
@@ -473,7 +477,8 @@
       "typeReferralBonus": "推荐奖励",
       "typeReferralFirstPost": "首次发布推荐",
       "typeReferralFirstFavorite": "首次收藏推荐",
-      "checkInFailed": "签到失败，请重试。"
+      "checkInFailed": "签到失败，请重试。",
+      "earnedNote": "金币通过使用应用获得——无需购买任何东西。"
     },
     "favorites": {
       "add": "添加到收藏",
@@ -562,7 +567,8 @@
       "rateUs": "给我们评分",
       "milestoneInvite": "邀请好友",
       "milestoneLater": "以后再说",
-      "milestoneInviteFallback": "Reyeltor — Tashkent 地图找房。下载应用：\nhttps://play.google.com/store/apps/details?id=uz.reyeltor.app"
+      "milestoneInviteFallback": "Reyeltor — Tashkent 地图找房。下载应用：\nhttps://play.google.com/store/apps/details?id=uz.reyeltor.app",
+      "milestoneMessageEarly": "感谢您的早期加入。如果 Reyeltor-uz 对您有帮助，评分或邀请能让塔什干更多人发现它——邀请好友双方均可获得金币。"
     },
     "days": {
       "sunday": "星期日",
@@ -1023,6 +1029,27 @@
       "emailConfirmTitle": "确认您的邮箱",
       "emailConfirmSent": "我们已向 {{email}} 发送确认链接。打开链接后，该邮箱将添加到您的账户。",
       "emailSendFailed": "无法发送确认邮件，请稍后再试。"
+    },
+    "access": {
+      "aboutTitle": "关于 Reyeltor-uz",
+      "tagline": "塔什干房产实时地图——住宅与商业物业，真实价格。",
+      "version": "版本 {{version}}",
+      "earlyMemberSince": "早期会员 · 自 {{date}}",
+      "accessTitle": "高端体验，免费使用。",
+      "accessBody": "应用内一切功能免费：地图、全部房源、发布、收藏、提醒、房产工具和卖家数据。应用内没有订阅，也没有付费。",
+      "priceLabel": "当前价格",
+      "priceValue": "免费",
+      "earlyTitle": "您是早期会员",
+      "earlyBody": "您于 {{date}} 在早期体验阶段加入 Reyeltor-uz。早期会员徽章会一直显示在您的个人资料中。感谢您帮助我们完善应用。",
+      "earlyOpenTitle": "早期体验进行中",
+      "earlyOpenBody": "创建账户后，您的个人资料将显示“早期会员”身份——这是我们对首批加入者的感谢。",
+      "futureTitle": "未来计划",
+      "futureBody": "我们会持续改进 Reyeltor-uz，以后可能会增加可选的附加功能；目前尚无任何决定。如果价格有任何变化，我们会提前在应用内通知您——您的房源、收藏和已保存的搜索始终属于您。",
+      "feedbackTitle": "一起打造 Reyeltor-uz",
+      "feedbackBody": "告诉我们接下来该做什么，或哪些地方需要改进。",
+      "feedbackCta": "发送反馈",
+      "feedbackSubject": "Reyeltor-uz 反馈",
+      "feedbackEmailBody": "我希望看到或改进的内容：\n\n\n—\n应用版本 {{version}}"
     }
   }
 }

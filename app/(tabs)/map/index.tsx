@@ -46,6 +46,7 @@ export default function MapScreen() {
     postedCategory?: ListingCategory;
     postedType?: ListingType;
     postedDistrict?: string;
+    postedFirst?: string;
   }>();
   const insets = useSafeAreaInsets();
   const controlsTop = mapOverlayTop(insets);
@@ -72,6 +73,7 @@ export default function MapScreen() {
   const [neighborhoodOpen, setNeighborhoodOpen] = useState(false);
   const [focusedListingId, setFocusedListingId] = useState<string | null>(null);
   const [postSuccessVisible, setPostSuccessVisible] = useState(false);
+  const [postSuccessFirst, setPostSuccessFirst] = useState(false);
   const postSuccessHandledRef = useRef<string | null>(null);
   // OPTIMIZATION #7: Debounce filter changes to avoid excessive re-renders during slider drags
   const filterChangeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -168,6 +170,7 @@ export default function MapScreen() {
     }
 
     setFocusedListingId(listingId);
+    setPostSuccessFirst(params.postedFirst === '1');
     setPostSuccessVisible(true);
     mapRef.current?.flyToCoverage({
       latitude: lat,
@@ -182,16 +185,19 @@ export default function MapScreen() {
       postedCategory: undefined,
       postedType: undefined,
       postedDistrict: undefined,
+      postedFirst: undefined,
       posted: undefined,
     });
 
-    const timer = setTimeout(() => setPostSuccessVisible(false), 4500);
+    // The first listing gets a short thank-you, so it stays a little longer. Never blocks the map.
+    const timer = setTimeout(() => setPostSuccessVisible(false), params.postedFirst === '1' ? 6000 : 4500);
     return () => clearTimeout(timer);
   }, [
     allListings,
     filters,
     params.postedCategory,
     params.postedDistrict,
+    params.postedFirst,
     params.postedLat,
     params.postedListingId,
     params.postedLng,
@@ -412,7 +418,7 @@ export default function MapScreen() {
         <View style={[styles.postSuccess, { top: controlsTop + 52 }]} pointerEvents="none">
           <FrostedView style={styles.postSuccessInner}>
             <AppText variant="caption" color="accent" style={styles.postSuccessText}>
-              {t('listing.postSuccess')}
+              {t(postSuccessFirst ? 'listing.postSuccessFirst' : 'listing.postSuccess')}
             </AppText>
           </FrostedView>
         </View>

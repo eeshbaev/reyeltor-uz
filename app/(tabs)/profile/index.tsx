@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { EarlyMemberBadge } from '@/components/access/EarlyMemberBadge';
 import { GuestPrompt } from '@/components/auth/GuestPrompt';
 import { LanguageTopBar } from '@/components/i18n/LanguageTopBar';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
@@ -107,14 +108,18 @@ function ProfileScreenContent() {
     return (
       <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
         <GuestPrompt title={t('profile.guestTitle')} subtitle={t('profile.guestSubtitle')} />
-        <Pressable
-          style={[styles.privacyLink, { paddingBottom: screenBottomPadding(insets.bottom) }]}
-          onPress={() => router.push('/profile/privacy')}
-        >
-          <AppText variant="caption" color="accent" style={styles.privacyLinkText}>
-            {t('profile.privacyPolicy')}
-          </AppText>
-        </Pressable>
+        <View style={[styles.guestLinks, { paddingBottom: screenBottomPadding(insets.bottom) }]}>
+          <Pressable style={styles.privacyLink} onPress={() => router.push('/profile/about')}>
+            <AppText variant="caption" color="accent" style={styles.privacyLinkText}>
+              {t('access.aboutTitle')}
+            </AppText>
+          </Pressable>
+          <Pressable style={styles.privacyLink} onPress={() => router.push('/profile/privacy')}>
+            <AppText variant="caption" color="accent" style={styles.privacyLinkText}>
+              {t('profile.privacyPolicy')}
+            </AppText>
+          </Pressable>
+        </View>
       </View>
     );
   }
@@ -185,6 +190,9 @@ function ProfileScreenContent() {
           <AppText variant="h3" style={styles.name}>
             {profileName}
           </AppText>
+          {profile.early_member_since ? (
+            <EarlyMemberBadge since={profile.early_member_since} onPress={() => router.push('/profile/about')} />
+          ) : null}
         </View>
 
         <ProfileCoinCard balance={profile.coin_balance} label={t('profile.coins')} />
@@ -228,6 +236,11 @@ function ProfileScreenContent() {
           onPress={() => router.push('/profile/privacy')}
         />
         <ProfileMenuRow
+          label={t('access.aboutTitle')}
+          icon="information-circle-outline"
+          onPress={() => router.push('/profile/about')}
+        />
+        <ProfileMenuRow
           label={t('profile.reportIssue')}
           icon="mail-outline"
           onPress={handleReportIssue}
@@ -269,6 +282,7 @@ const styles = StyleSheet.create({
   bioInput: { minHeight: 100, textAlignVertical: 'top' },
   logout: { marginTop: spacing.lg, alignItems: 'center' },
   deleteData: { marginTop: spacing.md, alignItems: 'center', paddingVertical: spacing.sm },
+  guestLinks: { flexDirection: 'row', justifyContent: 'center', gap: spacing.lg },
   privacyLink: { alignItems: 'center', paddingTop: spacing.md },
   privacyLinkText: { fontWeight: '600' },
   setup: { flex: 1, justifyContent: 'center', paddingHorizontal: spacing.lg, paddingBottom: spacing.xl },

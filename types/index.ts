@@ -37,6 +37,8 @@ export interface User {
   coin_balance: number;
   /** Why the user is here (personalization only — never restricts features). */
   purposes?: UserPurpose[];
+  /** Set by the server for people who joined during early access (patch-access-v1.sql). */
+  early_member_since?: string | null;
   last_active_at: string;
   created_at: string;
 }

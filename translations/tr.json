@@ -213,7 +213,9 @@
       "welcomeBackSubtitle": "Tashkent'i yeniden keşfetmeye hazır mısınız?",
       "continueCta": "Devam et →",
       "coinsLabel": "başlangıç için ücretsiz coin",
-      "exploreCta": "Tashkent'i keşfet →"
+      "exploreCta": "Tashkent'i keşfet →",
+      "earlyMember": "İlk üyelerimizden birisiniz. Reyeltor-uz’daki her şey sizin için ücretsiz.",
+      "freeAccess": "Reyeltor-uz’daki her şey sizin için ücretsiz."
     },
     "onboarding": {
       "welcome": {
@@ -231,7 +233,8 @@
       "trust": {
         "heading": "Gerçek Listeler. Gerçek Acenteler. Gerçek Fiyatlar.",
         "subtitle": "Her liste, acente istatistiklerini, fiyat geçmişini ve mahalle ayrıntılarını gösterir.",
-        "cta": "Haritayı Keşfet →"
+        "cta": "Haritayı Keşfet →",
+        "note": "Premium deneyim. Ücretsiz erişim."
       }
     },
     "listing": {
@@ -344,7 +347,8 @@
       "duplicateUpdated": "Mevcut ilanınız güncellendi.",
       "photosPartialFailed": "{{total}} fotoğraftan {{failed}} tanesi yüklenemedi. Bağlantınızı kontrol edin, ardından ilanı tekrar yayınlayıp eklemek için “Mevcut ilanı güncelle”yi seçin.",
       "locationError": "Konumunuz alınamadı. Lütfen yeri haritada seçin.",
-      "invalidLink": "Bu ilan bağlantısı geçersiz."
+      "invalidLink": "Bu ilan bağlantısı geçersiz.",
+      "postSuccessFirst": "İlk ilanınız yayında. Reyeltor-uz’u bizimle birlikte büyüttüğünüz için teşekkürler!"
     },
     "agent": {
       "trustNew": "Yeni Acenta",
@@ -473,7 +477,8 @@
       "typeReferralBonus": "Referral Bonusu",
       "typeReferralFirstPost": "İlk İlan Referralı",
       "typeReferralFirstFavorite": "İlk Favori Referralı",
-      "checkInFailed": "Giriş kaydı yapılamadı. Lütfen tekrar deneyin."
+      "checkInFailed": "Giriş kaydı yapılamadı. Lütfen tekrar deneyin.",
+      "earnedNote": "Coin’ler uygulamada kazanılır — satın almanız gereken hiçbir şey yok."
     },
     "favorites": {
       "add": "Favorilere Ekle",
@@ -562,7 +567,8 @@
       "rateUs": "Bizi Değerlendir",
       "milestoneInvite": "Arkadaş davet et",
       "milestoneLater": "Belki sonra",
-      "milestoneInviteFallback": "Reyeltor — Tashkent'te haritada emlak. Uygulamayı indir:\nhttps://play.google.com/store/apps/details?id=uz.reyeltor.app"
+      "milestoneInviteFallback": "Reyeltor — Tashkent'te haritada emlak. Uygulamayı indir:\nhttps://play.google.com/store/apps/details?id=uz.reyeltor.app",
+      "milestoneMessageEarly": "Erken katıldığınız için teşekkürler. Reyeltor-uz işinize yarıyorsa, bir değerlendirme ya da davet Taşkent’te başkalarının da onu bulmasına yardım eder — davetlerde ikiniz de coin kazanırsınız."
     },
     "days": {
       "sunday": "Pazar",
@@ -1023,6 +1029,27 @@
       "emailConfirmTitle": "E-postanızı onaylayın",
       "emailConfirmSent": "{{email}} adresine bir onay bağlantısı gönderdik. Bağlantıyı açtıktan sonra e-posta hesabınıza eklenir.",
       "emailSendFailed": "Onay e-postası gönderilemedi. Lütfen daha sonra tekrar deneyin."
+    },
+    "access": {
+      "aboutTitle": "Reyeltor-uz hakkında",
+      "tagline": "Taşkent emlakı canlı haritada — konut ve ticari alanlar, gerçek fiyatlarla.",
+      "version": "Sürüm {{version}}",
+      "earlyMemberSince": "Erken Üye · {{date}} tarihinden beri",
+      "accessTitle": "Premium deneyim. Ücretsiz erişim.",
+      "accessBody": "Uygulamadaki her şey ücretsiz: harita, tüm ilanlar, ilan verme, favoriler, bildirimler, emlak araçları ve satıcı istatistikleri. Uygulamada abonelik ve ödeme yok.",
+      "priceLabel": "Bugünkü fiyatınız",
+      "priceValue": "Ücretsiz",
+      "earlyTitle": "Erken Üyesiniz",
+      "earlyBody": "Reyeltor-uz’a erken erişim döneminde, {{date}} tarihinde katıldınız. Erken Üye rozeti profilinizde kalır. Uygulamayı şekillendirmemize yardım ettiğiniz için teşekkürler.",
+      "earlyOpenTitle": "Erken erişim açık",
+      "earlyOpenBody": "Hesap oluşturun; profilinizde “Erken Üye” durumu görünsün — ilk katılanlara teşekkürümüz.",
+      "futureTitle": "Sırada ne var",
+      "futureBody": "Reyeltor-uz’u sürekli geliştiriyoruz ve ileride isteğe bağlı ek özellikler ekleyebiliriz; henüz hiçbir şey kararlaştırılmadı. Fiyatlandırma değişirse bunu önceden uygulamada bildiririz — ilanlarınız, favorileriniz ve kayıtlı aramalarınız sizin kalır.",
+      "feedbackTitle": "Reyeltor-uz’u birlikte şekillendirelim",
+      "feedbackBody": "Sırada ne yapmamızı veya neyin daha iyi çalışması gerektiğini bize yazın.",
+      "feedbackCta": "Geri bildirim gönder",
+      "feedbackSubject": "Reyeltor-uz geri bildirimi",
+      "feedbackEmailBody": "Görmek veya geliştirilmesini istediğim:\n\n\n—\nUygulama sürümü {{version}}"
     }
   }
 }

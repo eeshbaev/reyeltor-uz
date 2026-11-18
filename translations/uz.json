@@ -213,7 +213,9 @@
       "welcomeBackSubtitle": "Toshkentni yana ko'rishga tayyormisiz?",
       "continueCta": "Davom etish →",
       "coinsLabel": "boshlash uchun bepul tangalar",
-      "exploreCta": "Tashkentni tadqiq eting →"
+      "exploreCta": "Tashkentni tadqiq eting →",
+      "earlyMember": "Siz ilk a'zolarimizdan birisiz. Reyeltor-uz'dagi hamma narsadan bepul foydalaning.",
+      "freeAccess": "Reyeltor-uz'dagi hamma narsadan bepul foydalaning."
     },
     "onboarding": {
       "welcome": {
@@ -231,7 +233,8 @@
       "trust": {
         "heading": "Haqiqiy E'lonlar. Haqiqiy Agentlar. Haqiqiy Narxlar.",
         "subtitle": "Har bir e'lon agent statistikasini, narx tarixini va mahallaning tafsilotlarini ko'rsatadi.",
-        "cta": "Xaritani O'zgartir →"
+        "cta": "Xaritani ochish →",
+        "note": "Premium tajriba. Bepul foydalanish."
       }
     },
     "listing": {
@@ -344,7 +347,8 @@
       "duplicateUpdated": "Mavjud e'loningiz yangilandi.",
       "photosPartialFailed": "{{total}} ta rasmdan {{failed}} tasi yuklanmadi. Internetni tekshiring, so'ng e'lonni qayta joylab, ularni qo'shish uchun «Mavjudini yangilash»ni tanlang.",
       "locationError": "Joylashuvingiz aniqlanmadi. Nuqtani xaritada belgilang.",
-      "invalidLink": "E'lon havolasi noto'g'ri."
+      "invalidLink": "E'lon havolasi noto'g'ri.",
+      "postSuccessFirst": "Birinchi e'loningiz xaritada! Reyeltor-uz'ni biz bilan birga qurayotganingiz uchun rahmat!"
     },
     "agent": {
       "trustNew": "Yangi agent",
@@ -473,7 +477,8 @@
       "typeReferralBonus": "Referral bonusi",
       "typeReferralFirstPost": "Do'stingizning birinchi e'loni",
       "typeReferralFirstFavorite": "Do'stingizning birinchi sevimlisi",
-      "checkInFailed": "Belgilanish amalga oshmadi. Qayta urinib ko'ring."
+      "checkInFailed": "Belgilanish amalga oshmadi. Qayta urinib ko'ring.",
+      "earnedNote": "Tangalar ilovada ishlab topiladi — hech narsa sotib olish shart emas."
     },
     "favorites": {
       "add": "Sevimlilarga qo'shish",
@@ -562,7 +567,8 @@
       "rateUs": "Google Play'da baholash",
       "milestoneInvite": "Do'stni taklif qilish",
       "milestoneLater": "Keyinroq",
-      "milestoneInviteFallback": "Reyeltor — Toshkent kvartiralari xaritada. Ilovani yuklab oling:\nhttps://play.google.com/store/apps/details?id=uz.reyeltor.app"
+      "milestoneInviteFallback": "Reyeltor — Toshkent kvartiralari xaritada. Ilovani yuklab oling:\nhttps://play.google.com/store/apps/details?id=uz.reyeltor.app",
+      "milestoneMessageEarly": "Erta qo'shilganingiz uchun rahmat. Reyeltor-uz sizga foydali bo'lsa, baho yoki taklif boshqalarga ham uni topishga yordam beradi — taklif uchun ikkalangiz ham tanga olasiz."
     },
     "days": {
       "sunday": "Yakshanba",
@@ -1023,6 +1029,27 @@
       "emailConfirmTitle": "Emailni tasdiqlang",
       "emailConfirmSent": "{{email}} manziliga tasdiqlash havolasini yubordik. Havolani ochganingizdan so'ng email hisobingizga qo'shiladi.",
       "emailSendFailed": "Tasdiqlash xatini yuborib bo'lmadi. Keyinroq qayta urinib ko'ring."
+    },
+    "access": {
+      "aboutTitle": "Reyeltor-uz haqida",
+      "tagline": "Toshkent ko'chmas mulki jonli xaritada — uylar va tijorat binolari, haqiqiy narxlar bilan.",
+      "version": "Versiya {{version}}",
+      "earlyMemberSince": "Ilk a'zo · {{date}} dan",
+      "accessTitle": "Premium tajriba. Bepul foydalanish.",
+      "accessBody": "Ilovadagi hamma narsa bepul: xarita, barcha e'lonlar, e'lon joylash, sevimlilar, bildirishnomalar, vositalar va sotuvchi statistikasi. Ilovada obuna ham, to'lov ham yo'q.",
+      "priceLabel": "Bugungi narx",
+      "priceValue": "Bepul",
+      "earlyTitle": "Siz ilk a'zosiz",
+      "earlyBody": "Siz Reyeltor-uz'ga erta kirish davrida, {{date}} da qo'shildingiz. Ilk a'zo belgisi profilingizda qoladi. Ilovani shakllantirishga yordam berayotganingiz uchun rahmat.",
+      "earlyOpenTitle": "Erta kirish ochiq",
+      "earlyOpenBody": "Hisob yarating — profilingizda «Ilk a'zo» belgisi paydo bo'ladi. Bu birinchi qo'shilganlarga bizning minnatdorchiligimiz.",
+      "futureTitle": "Keyingi qadamlar",
+      "futureBody": "Biz Reyeltor-uz'ni doimo yaxshilaymiz va keyinchalik ixtiyoriy qo'shimchalar qo'shishimiz mumkin; hozircha hech narsa hal qilinmagan. Narxlar o'zgarsa, oldindan ilovada xabar beramiz — e'lonlaringiz, sevimlilaringiz va saqlangan qidiruvlaringiz sizniki bo'lib qoladi.",
+      "feedbackTitle": "Reyeltor-uz'ni birga shakllantiring",
+      "feedbackBody": "Keyin nima qilishimizni yoki nimani yaxshilash kerakligini yozing.",
+      "feedbackCta": "Fikr yuborish",
+      "feedbackSubject": "Reyeltor-uz bo‘yicha fikr",
+      "feedbackEmailBody": "Nimani ko'rishni yoki yaxshilashni istayman:\n\n\n—\nIlova versiyasi {{version}}"
     }
   }
 }

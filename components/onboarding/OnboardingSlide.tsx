@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { Animated, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -109,6 +110,14 @@ export function OnboardingSlide({ slide, active, onComplete }: OnboardingSlidePr
         <AppText variant="body" color="onAccent" style={styles.subtitle}>
           {slide.subtitle}
         </AppText>
+        {slide.note ? (
+          <View style={styles.note}>
+            <Ionicons name="sparkles" size={14} color="#E8C872" />
+            <AppText variant="caption" style={styles.noteText}>
+              {slide.note}
+            </AppText>
+          </View>
+        ) : null}
         {slide.showCta && slide.ctaLabel ? (
           <Pressable style={styles.cta} onPress={onComplete} accessibilityRole="button">
             <AppText variant="label" style={styles.ctaLabel}>
@@ -149,6 +158,24 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.78)',
     maxWidth: 340,
     marginBottom: spacing.md,
+  },
+  note: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 6,
+    paddingHorizontal: spacing.sm + 2,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(232, 200, 114, 0.55)',
+    backgroundColor: 'rgba(232, 200, 114, 0.12)',
+    marginTop: -spacing.xs,
+  },
+  noteText: {
+    color: '#F3DFA2',
+    fontWeight: '600',
+    letterSpacing: 0.2,
   },
   cta: {
     alignSelf: 'flex-start',

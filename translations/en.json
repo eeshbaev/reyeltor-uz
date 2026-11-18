@@ -213,7 +213,9 @@
       "welcomeBackSubtitle": "Ready to explore Tashkent again?",
       "continueCta": "Continue →",
       "coinsLabel": "free coins to get started",
-      "exploreCta": "Explore Tashkent →"
+      "exploreCta": "Explore Tashkent →",
+      "earlyMember": "You're one of our early members. Everything in Reyeltor-uz is yours to use — free.",
+      "freeAccess": "Everything in Reyeltor-uz is yours to use — free."
     },
     "onboarding": {
       "welcome": {
@@ -231,7 +233,8 @@
       "trust": {
         "heading": "Real listings. Real agents. Real prices.",
         "subtitle": "Every listing shows agent stats, price history, and neighborhood details.",
-        "cta": "Explore the map →"
+        "cta": "Explore the map →",
+        "note": "Premium experience. Free access."
       }
     },
     "listing": {
@@ -344,7 +347,8 @@
       "duplicateUpdated": "Your existing listing was updated.",
       "photosPartialFailed": "{{failed}} of {{total}} photos could not be uploaded. Check your connection, then post the listing again and choose “Update existing” to add them.",
       "locationError": "Couldn't get your location. Pick the spot on the map instead.",
-      "invalidLink": "This listing link is invalid."
+      "invalidLink": "This listing link is invalid.",
+      "postSuccessFirst": "Your first listing is live. Thank you for building Reyeltor-uz with us!"
     },
     "agent": {
       "trustNew": "New agent",
@@ -473,7 +477,8 @@
       "typeReferralBonus": "Referral bonus",
       "typeReferralFirstPost": "Friend's first listing",
       "typeReferralFirstFavorite": "Friend's first favorite",
-      "checkInFailed": "Check-in failed. Please try again."
+      "checkInFailed": "Check-in failed. Please try again.",
+      "earnedNote": "Coins are earned in the app — there's nothing to buy."
     },
     "favorites": {
       "add": "Add to favorites",
@@ -562,7 +567,8 @@
       "rateUs": "Rate on Google Play",
       "milestoneInvite": "Invite a friend",
       "milestoneLater": "Maybe later",
-      "milestoneInviteFallback": "Reyeltor — Tashkent property on the map. Get the app:\nhttps://play.google.com/store/apps/details?id=uz.reyeltor.app"
+      "milestoneInviteFallback": "Reyeltor — Tashkent property on the map. Get the app:\nhttps://play.google.com/store/apps/details?id=uz.reyeltor.app",
+      "milestoneMessageEarly": "Thank you for joining early. If Reyeltor-uz helps you, a rating or an invite helps others in Tashkent find it — and invites earn you both coins."
     },
     "days": {
       "sunday": "Sunday",
@@ -1023,6 +1029,27 @@
       "emailConfirmTitle": "Confirm your email",
       "emailConfirmSent": "We sent a confirmation link to {{email}}. The email is added to your account after you open the link.",
       "emailSendFailed": "Couldn't send the confirmation email. Please try again later."
+    },
+    "access": {
+      "aboutTitle": "About Reyeltor-uz",
+      "tagline": "Tashkent property on a live map — homes and commercial space, with real prices.",
+      "version": "Version {{version}}",
+      "earlyMemberSince": "Early Member · since {{date}}",
+      "accessTitle": "Premium experience. Free access.",
+      "accessBody": "Everything in the app is free to use: the map, every listing, posting, favorites, alerts, property tools and seller insights. There are no subscriptions and no payments in the app.",
+      "priceLabel": "Your price today",
+      "priceValue": "Free",
+      "earlyTitle": "You're an Early Member",
+      "earlyBody": "You joined Reyeltor-uz during early access, in {{date}}. The Early Member badge stays on your profile. Thank you for helping shape the app.",
+      "earlyOpenTitle": "Early access is open",
+      "earlyOpenBody": "Create an account and your profile will show Early Member status — our thank-you to the people who join first.",
+      "futureTitle": "What's next",
+      "futureBody": "We keep improving Reyeltor-uz and may add optional extras later; nothing is decided yet. If pricing ever changes, we'll tell you in the app beforehand — and your listings, favorites and saved searches stay yours.",
+      "feedbackTitle": "Help shape Reyeltor-uz",
+      "feedbackBody": "Tell us what to build next or what should work better.",
+      "feedbackCta": "Send feedback",
+      "feedbackSubject": "Reyeltor-uz feedback",
+      "feedbackEmailBody": "What I'd like to see or improve:\n\n\n—\nApp version {{version}}"
     }
   }
 }

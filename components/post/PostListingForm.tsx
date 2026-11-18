@@ -325,6 +325,7 @@ export function PostListingForm({ bottomPadding = spacing.xl }: PostListingFormP
         postedCategory: listing.category,
         postedType: listing.type,
         postedDistrict: listing.district,
+        postedFirst: isFirstListing ? '1' : undefined,
       },
     });
   };

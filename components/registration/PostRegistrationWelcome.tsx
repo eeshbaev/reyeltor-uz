@@ -8,7 +8,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WelcomeCoin } from './WelcomeCoin';
 import { BrandWordmark } from '@/components/brand/BrandWordmark';
 import { AppText } from '@/components/ui/AppText';
+import { isEarlyMember, useAccessSettings } from '@/lib/access/accessModel';
 import { WELCOME_COINS } from '@/lib/constants';
+import { useAuth } from '@/lib/context/AuthContext';
 import { motion } from '@/lib/design/motion';
 import { spacing } from '@/lib/design/spacing';
 import { markWelcomeShown } from '@/lib/onboarding/storage';
@@ -22,6 +24,10 @@ export function PostRegistrationWelcome({ fullName, returnTo }: PostRegistration
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { profile } = useAuth();
+  const access = useAccessSettings();
+  // The profile may still be loading right after sign-up: fall back to whether early access is open.
+  const earlyMember = profile ? isEarlyMember(profile) : access.earlyAccessOpen;
   const [count, setCount] = useState(0);
   const hapticsFired = useRef({ five: false, ten: false, fifteen: false });
 
@@ -77,6 +83,7 @@ export function PostRegistrationWelcome({ fullName, returnTo }: PostRegistration
 
         <Animated.View entering={FadeInDown.delay(320).duration(motion.gentle)}>
           <Text style={styles.welcomeName}>{t('welcome.greeting', { name: fullName })}</Text>
+          <Text style={styles.earlyLine}>{t(earlyMember ? 'welcome.earlyMember' : 'welcome.freeAccess')}</Text>
         </Animated.View>
       </View>
 
@@ -126,6 +133,15 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginTop: spacing.md,
     textAlign: 'center',
+  },
+  earlyLine: {
+    color: 'rgba(255, 255, 255, 0.62)',
+    fontSize: 15,
+    lineHeight: 22,
+    marginTop: spacing.sm,
+    textAlign: 'center',
+    maxWidth: 320,
+    alignSelf: 'center',
   },
   cta: {
     backgroundColor: '#FFFFFF',
