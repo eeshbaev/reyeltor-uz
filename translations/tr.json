@@ -1054,6 +1054,64 @@
       "feedbackSubject": "Reyeltor-uz geri bildirimi",
       "feedbackEmailBody": "Görmek veya geliştirilmesini istediğim:\n\n\n—\nUygulama sürümü {{version}}",
       "rateCta": "Google Play'de değerlendir"
+    },
+    "actionErrors": {
+      "offlineNext": "Çevrimdışı görünüyorsunuz — bağlandığınızda tekrar deneyin.",
+      "serverNext": "Lütfen tekrar deneyin. Sürerse Profil → Sorun bildir.",
+      "saveBio": {
+        "title": "Biyografi kaydedilemedi",
+        "safe": "Metniniz alanda duruyor."
+      },
+      "saveProfile": {
+        "title": "Profil kaydedilemedi",
+        "safe": "Hiçbir şey değişmedi."
+      },
+      "saveAvatar": {
+        "title": "Fotoğraf güncellenemedi",
+        "safe": "Mevcut fotoğrafınız korundu."
+      },
+      "savePurposes": {
+        "title": "Seçim kaydedilemedi",
+        "safe": "Önceki seçiminiz korundu."
+      },
+      "publishListing": {
+        "title": "İlan yayınlanamadı",
+        "safe": "Hiçbir şey yayınlanmadı ve coin düşülmedi. Bilgileriniz ve fotoğraflarınız formda duruyor."
+      },
+      "updateListing": {
+        "title": "İlan güncellenemedi",
+        "safe": "İlan değişmedi, düzenlemeleriniz formda duruyor."
+      },
+      "updatePrice": {
+        "title": "Fiyat değiştirilemedi",
+        "safe": "İlan eski fiyatıyla kalıyor."
+      },
+      "confirmListing": {
+        "title": "İlan onaylanamadı",
+        "safe": "Haritada eskisi gibi kalıyor."
+      },
+      "reactivateListing": {
+        "title": "İlan yeniden yayınlanamadı",
+        "safe": "Hâlâ arşivde ve coin düşülmedi."
+      },
+      "savedSearch": {
+        "title": "Kayıtlı arama güncellenemedi",
+        "safe": "Kayıtlı aramalarınız değişmedi."
+      },
+      "shareImage": {
+        "title": "Paylaşım görseli oluşturulamadı",
+        "safe": "İlanınız etkilenmedi — bağlantıyı yine de paylaşabilirsiniz."
+      },
+      "agentMissing": {
+        "title": "Satıcı bulunamadı",
+        "body": "Bu bağlantı bir satıcıya ait değil. Gezinmeye devam etmek için haritaya dönün."
+      },
+      "agentLoad": {
+        "title": "Bu satıcı yüklenemedi"
+      },
+      "listingMissing": {
+        "title": "İlan bulunamadı"
+      }
     }
   }
 }

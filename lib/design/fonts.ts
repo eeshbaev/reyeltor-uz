@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react';
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -5,7 +6,6 @@ import {
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import * as Font from 'expo-font';
-import { useSyncExternalStore } from 'react';
 import type { TextStyle } from 'react-native';
 
 /** Inter, one file per weight (Android can't synthesise weights for custom fonts). */

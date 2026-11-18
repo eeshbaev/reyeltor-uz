@@ -196,10 +196,10 @@ function ListingDetailScreenContent() {
     return (
       <SafeScreen edges={['left', 'right']}>
         <Stack.Screen options={{ headerShown: false }} />
-        <StackScreenHeader title={t('common.error')} backFallbackHref="/(tabs)/map" />
+        <StackScreenHeader title={t('actionErrors.listingMissing.title')} backFallbackHref="/(tabs)/map" />
         <View style={styles.centered}>
           <Text style={{ fontSize: fontSize.lg, fontWeight: 'bold', marginBottom: spacing.md }}>
-            {t('common.error')}
+            {t('actionErrors.listingMissing.title')}
           </Text>
           <Text style={{ fontSize: fontSize.md, color: colors.textSecondary, marginBottom: spacing.xl }}>
             {t('listing.invalidLink')}

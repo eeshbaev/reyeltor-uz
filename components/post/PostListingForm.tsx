@@ -28,6 +28,7 @@ import { useListingsCache } from '@/lib/context/ListingsContext';
 import { usePin } from '@/lib/context/PinContext';
 import { getCategoryColors } from '@/lib/design/categoryColors';
 import { spacing } from '@/lib/design/spacing';
+import { showActionError } from '@/lib/error/actionError';
 import { hapticSuccess } from '@/lib/haptics';
 import { useCurrentLocation } from '@/lib/hooks/useCurrentLocation';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
@@ -341,7 +342,7 @@ export function PostListingForm({ bottomPadding = spacing.xl }: PostListingFormP
 
     if (error || !updated) {
       setSubmitting(false);
-      Alert.alert(t('common.error'));
+      showActionError(t, 'updateListing', error);
       return;
     }
 
@@ -391,9 +392,9 @@ export function PostListingForm({ bottomPadding = spacing.xl }: PostListingFormP
         await refreshProfile();
         Alert.alert(t('listing.notEnoughCoins'), t('listing.earnMore'));
       } else if (code === 'listing_rate_limited') {
-        Alert.alert(t('common.error'), t('listing.rateLimited'));
+        Alert.alert(t('actionErrors.publishListing.title'), t('listing.rateLimited'));
       } else {
-        Alert.alert(t('common.error'));
+        showActionError(t, 'publishListing', error);
       }
       return;
     }

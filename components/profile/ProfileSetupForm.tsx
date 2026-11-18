@@ -11,6 +11,7 @@ import { ScreenAmbientBackground } from '@/components/ui/ScreenAmbientBackground
 import { TextField } from '@/components/ui/TextField';
 import { screenBottomPadding } from '@/lib/design/layout';
 import { spacing } from '@/lib/design/spacing';
+import { showActionError } from '@/lib/error/actionError';
 import { TAB_BAR_CLEARANCE } from '@/lib/navigation/tabBarMetrics';
 import { setRegisteredFullName } from '@/lib/onboarding/storage';
 import { combineFullName, splitFullName } from '@/lib/profile/name';
@@ -81,7 +82,7 @@ export function ProfileSetupForm({
         Alert.alert(t('auth.phoneAlreadyRegistered'));
         return;
       }
-      Alert.alert(t('common.error'));
+      showActionError(t, 'saveProfile', error);
       return;
     }
 

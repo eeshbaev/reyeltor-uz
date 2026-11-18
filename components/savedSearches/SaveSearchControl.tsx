@@ -11,6 +11,7 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { useGuestFavoriteAuth } from '@/lib/context/GuestFavoriteAuthContext';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { showActionError } from '@/lib/error/actionError';
 import { hapticSuccess } from '@/lib/haptics';
 import { useSavedSearches } from '@/lib/hooks/useSavedSearches';
 import { requestSavedSearchNotificationPermission } from '@/lib/notifications';
@@ -84,11 +85,11 @@ export function SaveSearchControl({ filters }: SaveSearchControlProps) {
       try {
         await create.mutateAsync({ name, filters, notifyEnabled });
       } catch (error) {
-        const limit = error instanceof SavedSearchError && error.kind === 'limit';
-        Alert.alert(
-          limit ? t('savedSearches.limitTitle') : t('common.error'),
-          limit ? t('savedSearches.limitBody', { max: MAX_SAVED_SEARCHES }) : undefined,
-        );
+        if (error instanceof SavedSearchError && error.kind === 'limit') {
+          Alert.alert(t('savedSearches.limitTitle'), t('savedSearches.limitBody', { max: MAX_SAVED_SEARCHES }));
+        } else {
+          showActionError(t, 'savedSearch', error);
+        }
         return;
       }
 

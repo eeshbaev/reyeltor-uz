@@ -1054,6 +1054,64 @@
       "feedbackSubject": "Reyeltor-uz bo‘yicha fikr",
       "feedbackEmailBody": "Nimani ko'rishni yoki yaxshilashni istayman:\n\n\n—\nIlova versiyasi {{version}}",
       "rateCta": "Google Play'da baholash"
+    },
+    "actionErrors": {
+      "offlineNext": "Internet yo'qqa o'xshaydi — ulanganingizdan keyin qayta urinib ko'ring.",
+      "serverNext": "Qayta urinib ko'ring. Takrorlansa, Profil → Muammo haqida xabar berish.",
+      "saveBio": {
+        "title": "Bio saqlanmadi",
+        "safe": "Matningiz maydonda qoldi."
+      },
+      "saveProfile": {
+        "title": "Profil saqlanmadi",
+        "safe": "Hech narsa o'zgarmadi."
+      },
+      "saveAvatar": {
+        "title": "Rasm yangilanmadi",
+        "safe": "Joriy rasmingiz saqlanib qoldi."
+      },
+      "savePurposes": {
+        "title": "Tanlov saqlanmadi",
+        "safe": "Avvalgi tanlovingiz saqlanib qoldi."
+      },
+      "publishListing": {
+        "title": "E'lon joylanmadi",
+        "safe": "Hech narsa joylanmadi va tanga yechilmadi. Ma'lumotlar va rasmlar formada qoldi."
+      },
+      "updateListing": {
+        "title": "E'lon yangilanmadi",
+        "safe": "E'lon o'zgarmadi, tahrirlaringiz formada qoldi."
+      },
+      "updatePrice": {
+        "title": "Narx o'zgarmadi",
+        "safe": "E'lon eski narxda qoladi."
+      },
+      "confirmListing": {
+        "title": "E'lon tasdiqlanmadi",
+        "safe": "U avvalgidek xaritada qoladi."
+      },
+      "reactivateListing": {
+        "title": "E'lon qayta faollashtirilmadi",
+        "safe": "U arxivda qoldi va tanga yechilmadi."
+      },
+      "savedSearch": {
+        "title": "Saqlangan qidiruv yangilanmadi",
+        "safe": "Saqlangan qidiruvlaringiz o'zgarmadi."
+      },
+      "shareImage": {
+        "title": "Ulashish rasmi yaratilmadi",
+        "safe": "E'loningizga ta'sir qilmadi — havolani ulashishingiz mumkin."
+      },
+      "agentMissing": {
+        "title": "Sotuvchi topilmadi",
+        "body": "Bu havola sotuvchiga olib bormaydi. Ko'rishni davom ettirish uchun xaritaga qayting."
+      },
+      "agentLoad": {
+        "title": "Sotuvchi ma'lumotlari yuklanmadi"
+      },
+      "listingMissing": {
+        "title": "E'lon topilmadi"
+      }
     }
   }
 }

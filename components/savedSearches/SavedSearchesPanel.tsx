@@ -12,6 +12,7 @@ import { ScrollView } from '@/components/ui/GestureScrollView';
 import { useListingsCache } from '@/lib/context/ListingsContext';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { showActionError } from '@/lib/error/actionError';
 import { useSavedSearches } from '@/lib/hooks/useSavedSearches';
 import { requestSavedSearchNotificationPermission } from '@/lib/notifications';
 import { MAX_SAVED_SEARCHES, SavedSearchError, savedFiltersKey, type SavedSearch } from '@/lib/savedSearches';
@@ -44,7 +45,7 @@ export function SavedSearchesPanel({ header, bottomPadding }: SavedSearchesPanel
     (search: SavedSearch, enabled: boolean) => {
       update.mutate(
         { id: search.id, notifyEnabled: enabled },
-        { onError: () => Alert.alert(t('common.error')) },
+        { onError: (error) => showActionError(t, 'savedSearch', error) },
       );
       if (enabled && userId) void requestSavedSearchNotificationPermission(userId);
     },
@@ -62,7 +63,7 @@ export function SavedSearchesPanel({ header, bottomPadding }: SavedSearchesPanel
         {
           text: t('savedSearches.updateFiltersConfirm'),
           onPress: () =>
-            update.mutate({ id: search.id, filters: mapFilters }, { onError: () => Alert.alert(t('common.error')) }),
+            update.mutate({ id: search.id, filters: mapFilters }, { onError: (error) => showActionError(t, 'savedSearch', error) }),
         },
       ]);
     },
@@ -76,7 +77,7 @@ export function SavedSearchesPanel({ header, bottomPadding }: SavedSearchesPanel
         {
           text: t('savedSearches.delete'),
           style: 'destructive',
-          onPress: () => remove.mutate(search.id, { onError: () => Alert.alert(t('common.error')) }),
+          onPress: () => remove.mutate(search.id, { onError: (error) => showActionError(t, 'savedSearch', error) }),
         },
       ]);
     },
@@ -107,11 +108,12 @@ export function SavedSearchesPanel({ header, bottomPadding }: SavedSearchesPanel
               { id: lastSearch.id, name: lastSearch.name },
               {
                 onError: (error) =>
-                  Alert.alert(
-                    error instanceof SavedSearchError && error.kind === 'limit'
-                      ? t('savedSearches.limitTitle', { max: MAX_SAVED_SEARCHES })
-                      : t('common.error'),
-                  ),
+                  error instanceof SavedSearchError && error.kind === 'limit'
+                    ? Alert.alert(
+                        t('savedSearches.limitTitle', { max: MAX_SAVED_SEARCHES }),
+                        t('savedSearches.limitBody', { max: MAX_SAVED_SEARCHES }),
+                      )
+                    : showActionError(t, 'savedSearch', error),
               },
             ),
         },
@@ -120,7 +122,7 @@ export function SavedSearchesPanel({ header, bottomPadding }: SavedSearchesPanel
           icon: 'trash-outline',
           label: t('savedSearches.delete'),
           destructive: true,
-          onPress: () => remove.mutate(lastSearch.id, { onError: () => Alert.alert(t('common.error')) }),
+          onPress: () => remove.mutate(lastSearch.id, { onError: (error) => showActionError(t, 'savedSearch', error) }),
         },
       ]
     : [];
@@ -208,7 +210,7 @@ export function SavedSearchesPanel({ header, bottomPadding }: SavedSearchesPanel
           if (!renaming) return;
           update.mutate(
             { id: renaming.id, name },
-            { onSuccess: () => setRenaming(null), onError: () => Alert.alert(t('common.error')) },
+            { onSuccess: () => setRenaming(null), onError: (error) => showActionError(t, 'savedSearch', error) },
           );
         }}
       />

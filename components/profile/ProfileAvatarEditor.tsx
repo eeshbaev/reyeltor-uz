@@ -7,6 +7,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { showActionError } from '@/lib/error/actionError';
 import {
   pickProfilePhotoFromLibrary,
   removeProfileAvatar,
@@ -64,7 +65,7 @@ export function ProfileAvatarEditor({
     setUploading(false);
 
     if (!ok) {
-      Alert.alert(t('common.error'));
+      showActionError(t, 'saveAvatar');
       return;
     }
 

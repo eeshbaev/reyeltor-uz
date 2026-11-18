@@ -8,6 +8,7 @@ import { TextField } from '@/components/ui/TextField';
 import { clearAccountEmail, requestEmailChange } from '@/lib/auth/telegramAuth';
 import { telegramErrorMessage } from '@/lib/auth/telegramMessages';
 import { spacing } from '@/lib/design/spacing';
+import { showActionError } from '@/lib/error/actionError';
 import { setRegisteredFullName } from '@/lib/onboarding/storage';
 import { combineFullName, splitFullName } from '@/lib/profile/name';
 import { supabase } from '@/lib/supabase';
@@ -132,7 +133,7 @@ export function ProfileIdentitySection({
         Alert.alert(t('auth.emailAlreadyRegistered'));
         return;
       }
-      Alert.alert(t('common.error'));
+      showActionError(t, 'saveProfile', error);
       return;
     }
 

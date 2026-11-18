@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Chip } from '@/components/ui/Chip';
 import { ScreenSection } from '@/components/ui/ScreenSection';
 import { spacing } from '@/lib/design/spacing';
+import { showActionError } from '@/lib/error/actionError';
 import { sanitizePurposes, saveUserPurposes, USER_PURPOSES } from '@/lib/purposes';
 import type { UserPurpose } from '@/types';
 
@@ -30,7 +31,7 @@ export function ProfilePurposesSection({ userId, purposes, onSaved }: ProfilePur
       await onSaved();
     } else {
       setSelected(previous);
-      Alert.alert(t('common.error'));
+      showActionError(t, 'savePurposes');
     }
   };
 

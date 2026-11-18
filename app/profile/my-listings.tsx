@@ -14,6 +14,7 @@ import { AppText } from '@/components/ui/AppText';
 import { getCoinCost } from '@/lib/coins';
 import { useAuth } from '@/lib/context/AuthContext';
 import { spacing } from '@/lib/design/spacing';
+import { showActionError } from '@/lib/error/actionError';
 import { onValueMoment } from '@/lib/growth/ratingPrompt';
 import { hapticSuccess } from '@/lib/haptics';
 import { fetchActiveListingCount } from '@/lib/hooks/useListings';
@@ -50,7 +51,7 @@ export default function MyListingsScreen() {
     }
     setSavingPrice(false);
     if (error) {
-      Alert.alert(t('common.error'));
+      showActionError(t, 'updatePrice', error);
       return;
     }
     setPriceListing(null);
@@ -64,7 +65,7 @@ export default function MyListingsScreen() {
     const { error } = await supabase.rpc('confirm_listing_available', { p_listing_id: listing.id });
     setConfirmingId(null);
     if (error) {
-      Alert.alert(t('common.error'));
+      showActionError(t, 'confirmListing', error);
       return;
     }
     hapticSuccess();
@@ -149,7 +150,7 @@ export default function MyListingsScreen() {
       if (serverErrorCode(error) === 'insufficient_coins') {
         Alert.alert(t('listing.notEnoughCoins'), t('listing.earnMore'));
       } else {
-        Alert.alert(t('common.error'));
+        showActionError(t, 'reactivateListing', error);
       }
       await load();
       return;

@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { showActionError } from '@/lib/error/actionError';
 import { hapticSuccess } from '@/lib/haptics';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
 import { getListingWebUrl } from '@/lib/listingLinks';
@@ -60,7 +61,7 @@ export function ShareCardModal({ listing, onClose, onShared }: ShareCardModalPro
       // The image carries the QR code; the link is copied too so it can be pasted as a caption.
       await Clipboard.setStringAsync(url);
       if (!(await Sharing.isAvailableAsync())) {
-        Alert.alert(t('common.error'));
+        showActionError(t, 'shareImage');
         return;
       }
       await Sharing.shareAsync(uri, { mimeType: 'image/png', dialogTitle: t('sellerTools.shareCardTitle') });
@@ -68,7 +69,7 @@ export function ShareCardModal({ listing, onClose, onShared }: ShareCardModalPro
       onShared?.();
     } catch (error) {
       console.warn('Share card failed:', error);
-      Alert.alert(t('common.error'));
+      showActionError(t, 'shareImage', error);
     } finally {
       setBusy(false);
     }

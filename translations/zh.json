@@ -1054,6 +1054,64 @@
       "feedbackSubject": "Reyeltor-uz 反馈",
       "feedbackEmailBody": "我希望看到或改进的内容：\n\n\n—\n应用版本 {{version}}",
       "rateCta": "在 Google Play 评分"
+    },
+    "actionErrors": {
+      "offlineNext": "您似乎处于离线状态——联网后请重试。",
+      "serverNext": "请重试。如果问题持续，请前往 个人资料 → 报告问题。",
+      "saveBio": {
+        "title": "简介未保存",
+        "safe": "您的文字仍在输入框中。"
+      },
+      "saveProfile": {
+        "title": "个人资料未保存",
+        "safe": "没有任何更改。"
+      },
+      "saveAvatar": {
+        "title": "头像未更新",
+        "safe": "当前头像已保留。"
+      },
+      "savePurposes": {
+        "title": "选择未保存",
+        "safe": "已保留您之前的选择。"
+      },
+      "publishListing": {
+        "title": "房源未发布",
+        "safe": "未发布任何内容，也未扣除金币。您填写的信息和照片仍在表单中。"
+      },
+      "updateListing": {
+        "title": "房源未更新",
+        "safe": "房源未改变，您的修改仍在表单中。"
+      },
+      "updatePrice": {
+        "title": "价格未修改",
+        "safe": "房源保持原价。"
+      },
+      "confirmListing": {
+        "title": "房源未确认",
+        "safe": "它仍像之前一样显示在地图上。"
+      },
+      "reactivateListing": {
+        "title": "房源未重新上架",
+        "safe": "它仍在存档中，未扣除金币。"
+      },
+      "savedSearch": {
+        "title": "已保存的搜索未更新",
+        "safe": "您已保存的搜索没有变化。"
+      },
+      "shareImage": {
+        "title": "分享图片未生成",
+        "safe": "您的房源不受影响——您仍可分享链接。"
+      },
+      "agentMissing": {
+        "title": "未找到卖家",
+        "body": "此链接没有指向任何卖家。返回地图继续浏览。"
+      },
+      "agentLoad": {
+        "title": "无法加载此卖家"
+      },
+      "listingMissing": {
+        "title": "未找到房源"
+      }
     }
   }
 }

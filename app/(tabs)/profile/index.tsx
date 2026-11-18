@@ -26,6 +26,7 @@ import { openSupportEmail } from '@/lib/contact/supportEmail';
 import { useAuth } from '@/lib/context/AuthContext';
 import { screenBottomPadding } from '@/lib/design/layout';
 import { spacing } from '@/lib/design/spacing';
+import { showActionError } from '@/lib/error/actionError';
 import { useUserDisplayName } from '@/lib/hooks/useUserDisplayName';
 import { normalizeBio, PROFILE_BIO_MAX_LENGTH } from '@/lib/profile/bio';
 import { isProfileComplete } from '@/lib/profile/complete';
@@ -60,7 +61,7 @@ function ProfileScreenContent() {
     const { error } = await supabase.from('users').update({ bio }).eq('id', session.user.id);
     setSavingBio(false);
     if (error) {
-      Alert.alert(t('common.error'));
+      showActionError(t, 'saveBio', error);
       return;
     }
     await refreshProfile();

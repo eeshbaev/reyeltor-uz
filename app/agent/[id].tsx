@@ -142,10 +142,10 @@ function AgentProfileScreenContent() {
         <StackScreenHeader title={t('listing.agent')} />
         <View style={styles.centered}>
           <Text style={{ fontSize: fontSize.lg, fontWeight: 'bold', marginBottom: spacing.md }}>
-            {t('common.error')}
+            {t('actionErrors.agentMissing.title')}
           </Text>
           <Text style={{ fontSize: fontSize.md, color: theme.colors.textSecondary, marginBottom: spacing.xl }}>
-            Invalid agent ID
+            {t('actionErrors.agentMissing.body')}
           </Text>
         </View>
       </SafeScreen>
@@ -171,7 +171,7 @@ function AgentProfileScreenContent() {
         <StackScreenHeader title={t('listing.agent')} />
         <View style={styles.centered}>
           <AppText variant="h3" style={{ marginBottom: spacing.sm }}>
-            {t('common.error')}
+            {t('actionErrors.agentLoad.title')}
           </AppText>
           <AppText variant="body" color="secondary" style={{ marginBottom: spacing.lg, textAlign: 'center' }}>
             {t('profile.profileLoadFailed')}

@@ -1054,6 +1054,64 @@
       "feedbackSubject": "Reyeltor-uz feedback",
       "feedbackEmailBody": "What I'd like to see or improve:\n\n\n—\nApp version {{version}}",
       "rateCta": "Rate on Google Play"
+    },
+    "actionErrors": {
+      "offlineNext": "You seem to be offline — try again when you're connected.",
+      "serverNext": "Please try again. If it keeps happening, use Profile → Report an issue.",
+      "saveBio": {
+        "title": "Couldn't save your bio",
+        "safe": "Your text is still in the field."
+      },
+      "saveProfile": {
+        "title": "Couldn't save your profile",
+        "safe": "Nothing was changed."
+      },
+      "saveAvatar": {
+        "title": "Couldn't update your photo",
+        "safe": "Your current photo is kept."
+      },
+      "savePurposes": {
+        "title": "Couldn't save your choice",
+        "safe": "Your previous choice is kept."
+      },
+      "publishListing": {
+        "title": "Couldn't publish the listing",
+        "safe": "Nothing was published and no coins were charged. Your details and photos are still in the form."
+      },
+      "updateListing": {
+        "title": "Couldn't update the listing",
+        "safe": "The listing is unchanged and your edits are still in the form."
+      },
+      "updatePrice": {
+        "title": "Couldn't change the price",
+        "safe": "The listing keeps its old price."
+      },
+      "confirmListing": {
+        "title": "Couldn't confirm the listing",
+        "safe": "It stays on the map as before."
+      },
+      "reactivateListing": {
+        "title": "Couldn't reactivate the listing",
+        "safe": "It is still archived and no coins were charged."
+      },
+      "savedSearch": {
+        "title": "Couldn't update the saved search",
+        "safe": "Your saved searches are unchanged."
+      },
+      "shareImage": {
+        "title": "Couldn't create the share image",
+        "safe": "Your listing isn't affected — you can still share the link instead."
+      },
+      "agentMissing": {
+        "title": "Seller not found",
+        "body": "This link doesn't point to a seller. Go back to the map to keep browsing."
+      },
+      "agentLoad": {
+        "title": "Couldn't load this seller"
+      },
+      "listingMissing": {
+        "title": "Listing not found"
+      }
     }
   }
 }
