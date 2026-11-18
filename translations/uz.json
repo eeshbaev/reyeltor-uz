@@ -204,7 +204,9 @@
     },
     "post": {
       "guestTitle": "E'lon joylash",
-      "guestSubtitle": "E'lon joylash uchun ro'yxatdan o'ting yoki kiring."
+      "guestSubtitle": "E'lon joylash uchun ro'yxatdan o'ting yoki kiring.",
+      "draftRestored": "Qoralama tiklandi",
+      "draftStartOver": "Boshidan boshlash"
     },
     "welcome": {
       "title": "Reyeltor-uz ga xush kelibsiz!",
@@ -442,7 +444,10 @@
       "deleteDataSuccessMessage": "Ma'lumotlaringiz o'chirildi. Siz tizimdan chiqarildingiz.",
       "deleteDataError": "Ma'lumotlarni o'chirib bo'lmadi. Qayta urinib ko'ring.",
       "showEmailPublicly": "Emailni xaridorlarga ko'rsatish",
-      "showEmailPubliclyHint": "O'chirilganda email hisobingizda qoladi, lekin e'lonlar va ommaviy profilda ko'rinmaydi."
+      "showEmailPubliclyHint": "O'chirilganda email hisobingizda qoladi, lekin e'lonlar va ommaviy profilda ko'rinmaydi.",
+      "exportData": "Ma'lumotlarimni yuklab olish",
+      "exporting": "Fayl tayyorlanmoqda…",
+      "exportUnavailable": "Bu qurilmada ulashish mavjud emas."
     },
     "privacy": {
       "title": "Maxfiylik siyosati",
@@ -1120,15 +1125,20 @@
       },
       "listingMissing": {
         "title": "E'lon topilmadi"
+      },
+      "exportData": {
+        "title": "Ma'lumotlar eksport qilinmadi",
+        "safe": "Hisobingizda hech narsa o'zgarmadi."
       }
     },
     "dealClosed": {
       "rentedIn": "{{days}} kunda ijaraga berildi",
       "soldIn": "{{days}} kunda sotildi",
-      "stats": "Reyeltor-uz'da {{views}} marta ko'rildi",
       "reactivateHint": "30 kun ichida «Mening e'lonlarim»dan qayta faollashtirishingiz mumkin.",
       "postAnother": "Yana e'lon joylash",
-      "done": "Tayyor"
+      "done": "Tayyor",
+      "stats_one": "Reyeltor-uz'da {{count}} marta ko'rildi",
+      "stats_other": "Reyeltor-uz'da {{count}} marta ko'rildi"
     }
   }
 }

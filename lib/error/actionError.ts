@@ -18,7 +18,8 @@ export type FailedAction =
   | 'confirmListing'
   | 'reactivateListing'
   | 'savedSearch'
-  | 'shareImage';
+  | 'shareImage'
+  | 'exportData';
 
 const NETWORK_HINTS = ['network request failed', 'failed to fetch', 'network', 'timeout', 'timed out', 'aborted'];
 

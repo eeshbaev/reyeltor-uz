@@ -204,7 +204,9 @@
     },
     "post": {
       "guestTitle": "发布房源",
-      "guestSubtitle": "登录或注册后即可发布。"
+      "guestSubtitle": "登录或注册后即可发布。",
+      "draftRestored": "已恢复草稿",
+      "draftStartOver": "重新开始"
     },
     "welcome": {
       "title": "欢迎使用 Reyeltor-uz！",
@@ -442,7 +444,10 @@
       "deleteDataSuccessMessage": "您的所有数据已从我们的服务器中删除",
       "deleteDataError": "删除数据失败",
       "showEmailPublicly": "向买家显示邮箱",
-      "showEmailPubliclyHint": "关闭后，邮箱仍保留在账户中，但不会在房源和公开资料中显示。"
+      "showEmailPubliclyHint": "关闭后，邮箱仍保留在账户中，但不会在房源和公开资料中显示。",
+      "exportData": "导出我的数据",
+      "exporting": "正在准备文件…",
+      "exportUnavailable": "此设备不支持分享。"
     },
     "privacy": {
       "title": "隐私政策",
@@ -1120,15 +1125,19 @@
       },
       "listingMissing": {
         "title": "未找到房源"
+      },
+      "exportData": {
+        "title": "无法导出数据",
+        "safe": "您的账户没有任何更改。"
       }
     },
     "dealClosed": {
       "rentedIn": "{{days}} 天内租出",
       "soldIn": "{{days}} 天内售出",
-      "stats": "在 Reyeltor-uz 上被浏览 {{views}} 次",
       "reactivateHint": "30 天内可在“我的房源”中重新上架。",
       "postAnother": "再发布一个房源",
-      "done": "完成"
+      "done": "完成",
+      "stats_other": "在 Reyeltor-uz 上被浏览 {{count}} 次"
     }
   }
 }

@@ -11,7 +11,6 @@ export function Text({ style, ...props }: TextProps) {
   const family = flat?.fontFamily ? undefined : fontFamilyFor(flat?.fontWeight, fontsReady);
   return (
     <RNText
-      maxFontSizeMultiplier={1.3}
       {...props}
       style={family ? [style, { fontFamily: family, fontWeight: 'normal' }] : style}
     />

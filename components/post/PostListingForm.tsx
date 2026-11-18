@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +15,7 @@ import { PostPhotoPicker } from '@/components/post/PostPhotoPicker';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { ScrollView } from '@/components/ui/GestureScrollView';
+import { showToast } from '@/components/ui/Toast';
 import { getCoinCost } from '@/lib/coins';
 import { TASHKENT_DISTRICTS } from '@/lib/constants';
 import {
@@ -40,6 +41,7 @@ import { enrichListing } from '@/lib/listing';
 import { findDistrictAtPoint, getDistrictCenter } from '@/lib/map/districtBoundaries';
 import { reverseGeocode } from '@/lib/map/reverseGeocode';
 import { requestNotificationPermission, scheduleListingNotifications } from '@/lib/notifications';
+import { clearPostDraft, loadPostDraft, savePostDraft } from '@/lib/post/postDraft';
 import { serverErrorCode } from '@/lib/serverErrors';
 import { uploadLocalImage } from '@/lib/storage/uploadLocalImage';
 import { supabase } from '@/lib/supabase';
@@ -113,6 +115,59 @@ export function PostListingForm({ bottomPadding = spacing.xl }: PostListingFormP
   });
 
   const activeCategoryColors = getCategoryColors(theme.scheme, form.category);
+
+  // Draft: restore once, then save a moment after each change (manual S-06).
+  const userId = session?.user?.id;
+  const [draftReady, setDraftReady] = useState(false);
+  const blankFormRef = useRef(form);
+  useEffect(() => {
+    if (!userId) return;
+    let alive = true;
+    void loadPostDraft<PostFormState>(userId).then((draft) => {
+      if (!alive) return;
+      if (draft) {
+        setForm(draft.form);
+        setPhotos(draft.photos as ImagePicker.ImagePickerAsset[]);
+        setLocationQuery(draft.locationQuery);
+        setPinExact(draft.pinExact);
+        setPin(draft.form.lat, draft.form.lng);
+        showToast({
+          tone: 'info',
+          message: t('post.draftRestored'),
+          actionLabel: t('post.draftStartOver'),
+          onAction: () => {
+            void clearPostDraft(userId);
+            setForm(blankFormRef.current);
+            setPhotos([]);
+            setLocationQuery(TASHKENT_DISTRICTS[0]);
+            setPinExact(false);
+            setPin(blankFormRef.current.lat, blankFormRef.current.lng);
+          },
+        });
+      }
+      setDraftReady(true);
+    });
+    return () => {
+      alive = false;
+    };
+    // Restore once per signed-in user.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
+  const hasDraftContent =
+    photos.length > 0 || form.price.trim() !== '' || form.area_m2.trim() !== '' || form.description.trim() !== '';
+  useEffect(() => {
+    if (!userId || !draftReady || !hasDraftContent) return;
+    const timer = setTimeout(() => {
+      void savePostDraft(userId, {
+        form,
+        photos: photos.map(({ uri, width, height, mimeType, fileName }) => ({ uri, width, height, mimeType, fileName })),
+        locationQuery,
+        pinExact,
+      });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [draftReady, form, hasDraftContent, locationQuery, photos, pinExact, userId]);
 
   const updateFormCoords = useCallback((nextLat: number, nextLng: number, nextDistrict?: string) => {
     setForm((prev) => ({
@@ -297,6 +352,7 @@ export function PostListingForm({ bottomPadding = spacing.xl }: PostListingFormP
     isFirstListing: boolean,
   ) => {
     if (!session?.user?.id) return;
+    await clearPostDraft(session.user.id);
     await refreshProfile();
     if (isFirstListing) {
       await requestNotificationPermission(session.user.id);

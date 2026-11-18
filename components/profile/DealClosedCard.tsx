@@ -51,7 +51,7 @@ export function DealClosedCard({
             {t(deal.reason === 'rented' ? 'dealClosed.rentedIn' : 'dealClosed.soldIn', { count: days, days })}
           </AppText>
           <AppText variant="body" color="secondary" tabular style={styles.centerText}>
-            {t('dealClosed.stats', { views })}
+            {t('dealClosed.stats', { count: views })}
           </AppText>
           <AppText variant="caption" color="tertiary" style={styles.centerText}>
             {t('dealClosed.reactivateHint')}

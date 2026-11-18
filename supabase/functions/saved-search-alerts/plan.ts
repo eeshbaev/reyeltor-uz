@@ -119,6 +119,15 @@ export function planDigest(
   return { pushes, skip };
 }
 
+/**
+ * Quiet hours 22:00–08:00 Tashkent (manual ND-02): instant alerts wait and go out in the
+ * first run after 08:00. Matching still happens; only sending pauses.
+ */
+export function isQuietHours(now: Date): boolean {
+  const hour = (now.getUTCHours() + 5) % 24;
+  return hour >= 22 || hour < 8;
+}
+
 /** Start of the current day in Asia/Tashkent (UTC+5, no DST), as a UTC Date. */
 export function tashkentDayStartUtc(now: Date): Date {
   const offsetMs = 5 * 60 * 60 * 1000;

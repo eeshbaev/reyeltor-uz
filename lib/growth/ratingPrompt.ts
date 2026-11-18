@@ -20,7 +20,8 @@ export type ValueMoment =
 const STATE_KEY = '@reyeltor/rating_state_v1';
 const COOLDOWN_DAYS = 90;
 const MAX_ASKS = 3;
-const MIN_DAYS_SINCE_INSTALL = 2;
+/** Store guidance (manual FB-05): at least 7 days after install. */
+const MIN_DAYS_SINCE_INSTALL = 7;
 const DAY_MS = 86_400_000;
 
 export interface RatingState {

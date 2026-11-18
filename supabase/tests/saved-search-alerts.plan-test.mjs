@@ -1,5 +1,5 @@
 // node --experimental-strip-types supabase/tests/saved-search-alerts.plan-test.mjs
-import { planInstant, planDigest, tashkentDayStartUtc, pushData } from '../functions/saved-search-alerts/plan.ts';
+import { planInstant, planDigest, tashkentDayStartUtc, pushData, isQuietHours } from '../functions/saved-search-alerts/plan.ts';
 import { getSearchPushCopy } from '../functions/_shared/searchPush.ts';
 
 let fail = 0;
@@ -16,6 +16,9 @@ ok(u1[1].kind === 'single' && u1[1].listingId === 'L3', 'single match push opens
 ok(plan.deferToDigest.join() === '4', 'over-cap match deferred to digest (not dropped)');
 ok(plan.skip.join() === '6', 'user without devices skipped');
 ok(plan.pushes.some((p) => p.userId === 'U2'), 'other user unaffected by U1 cap');
+
+ok(isQuietHours(new Date('2026-11-18T17:00:00Z')) && isQuietHours(new Date('2026-11-18T02:59:00Z')), 'quiet hours: 22:00 and 07:59 Tashkent');
+ok(!isQuietHours(new Date('2026-11-18T03:00:00Z')) && !isQuietHours(new Date('2026-11-18T16:59:00Z')), 'not quiet: 08:00 and 21:59 Tashkent');
 
 const digest = planDigest([row('7', 'U1', 'a', 'X'), row('8', 'U1', 'b', 'X'), row('9', 'U1', 'b', 'Y'), row('10', 'U4', 'z')], new Set(['U1']));
 ok(digest.pushes.length === 1 && digest.pushes[0].count === 2 && digest.pushes[0].matchIds.length === 3, 'digest: one push per user, counts distinct listings');

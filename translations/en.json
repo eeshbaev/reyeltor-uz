@@ -204,7 +204,9 @@
     },
     "post": {
       "guestTitle": "Post a listing",
-      "guestSubtitle": "Sign in or register to publish."
+      "guestSubtitle": "Sign in or register to publish.",
+      "draftRestored": "Draft restored",
+      "draftStartOver": "Start over"
     },
     "welcome": {
       "title": "Welcome to Reyeltor-uz!",
@@ -442,7 +444,10 @@
       "deleteDataSuccessMessage": "Your data has been deleted. You will be logged out.",
       "deleteDataError": "Failed to delete data. Please try again.",
       "showEmailPublicly": "Show email to buyers",
-      "showEmailPubliclyHint": "When off, your email stays on your account but is hidden on listings and your public profile."
+      "showEmailPubliclyHint": "When off, your email stays on your account but is hidden on listings and your public profile.",
+      "exportData": "Export my data",
+      "exporting": "Preparing your file…",
+      "exportUnavailable": "Sharing isn't available on this device."
     },
     "privacy": {
       "title": "Privacy Policy",
@@ -1120,15 +1125,20 @@
       },
       "listingMissing": {
         "title": "Listing not found"
+      },
+      "exportData": {
+        "title": "Couldn't export your data",
+        "safe": "Nothing was changed in your account."
       }
     },
     "dealClosed": {
       "rentedIn": "Rented in {{days}} days",
       "soldIn": "Sold in {{days}} days",
-      "stats": "{{views}} views on Reyeltor-uz",
       "reactivateHint": "You can reactivate it from My listings within 30 days.",
       "postAnother": "Post another listing",
-      "done": "Done"
+      "done": "Done",
+      "stats_one": "{{count}} view on Reyeltor-uz",
+      "stats_other": "{{count}} views on Reyeltor-uz"
     }
   }
 }

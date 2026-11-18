@@ -2,7 +2,8 @@ export const colorTokens = {
   light: {
     primary: '#1A1A1A',
     secondary: '#6B6B6B',
-    tertiary: '#ADADAD',
+    // ≥ 4.5:1 on the background (manual C-02); was #ADADAD (2.3:1).
+    tertiary: '#737373',
     background: '#FFFFFF',
     surface: '#F5F5F5',
     surfaceElevated: '#FFFFFF',
@@ -10,13 +11,13 @@ export const colorTokens = {
     borderStrong: 'rgba(0,0,0,0.15)',
     accent: '#2563EB',
     accentSurface: '#EFF6FF',
-    success: '#16A34A',
+    success: '#15803D',
     successSurface: '#F0FDF4',
-    warning: '#D97706',
+    warning: '#B45309',
     warningSurface: '#FFFBEB',
     danger: '#DC2626',
     dangerSurface: '#FEF2F2',
-    coin: '#D97706',
+    coin: '#B45309',
     coinSurface: '#FFFBEB',
     mapBubble: '#1A1A1A',
     mapBubbleText: '#FFFFFF',
@@ -35,7 +36,8 @@ export const colorTokens = {
   dark: {
     primary: '#F5F5F5',
     secondary: '#A3A3A3',
-    tertiary: '#525252',
+    // ≥ 4.5:1 on the dark background; was #525252 (2.6:1).
+    tertiary: '#8A8A8A',
     background: '#0A0A0A',
     surface: '#1A1A1A',
     surfaceElevated: '#262626',

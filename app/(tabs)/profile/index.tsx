@@ -22,6 +22,7 @@ import { ScreenAmbientBackground } from '@/components/ui/ScreenAmbientBackground
 import { ScreenScroll } from '@/components/ui/ScreenScroll';
 import { ScreenSection } from '@/components/ui/ScreenSection';
 import { TextField } from '@/components/ui/TextField';
+import { showToast } from '@/components/ui/Toast';
 import { openSupportEmail } from '@/lib/contact/supportEmail';
 import { useAuth } from '@/lib/context/AuthContext';
 import { screenBottomPadding } from '@/lib/design/layout';
@@ -30,6 +31,7 @@ import { showActionError } from '@/lib/error/actionError';
 import { useUserDisplayName } from '@/lib/hooks/useUserDisplayName';
 import { normalizeBio, PROFILE_BIO_MAX_LENGTH } from '@/lib/profile/bio';
 import { isProfileComplete } from '@/lib/profile/complete';
+import { exportMyData } from '@/lib/profile/exportData';
 import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/lib/theme';
 
@@ -87,6 +89,20 @@ function ProfileScreenContent() {
         style: 'destructive',
       },
     ]);
+  };
+
+  const [exporting, setExporting] = useState(false);
+  const handleExport = async () => {
+    if (!session?.user?.id || exporting) return;
+    setExporting(true);
+    try {
+      const result = await exportMyData(session.user.id);
+      if (result === 'unavailable') showToast({ tone: 'error', message: t('profile.exportUnavailable') });
+    } catch (error) {
+      showActionError(t, 'exportData', error);
+    } finally {
+      setExporting(false);
+    }
   };
 
   const handleReportIssue = () => {
@@ -235,6 +251,11 @@ function ProfileScreenContent() {
           label={t('profile.privacyPolicy')}
           icon="shield-checkmark-outline"
           onPress={() => router.push('/profile/privacy')}
+        />
+        <ProfileMenuRow
+          label={exporting ? t('profile.exporting') : t('profile.exportData')}
+          icon="download-outline"
+          onPress={() => void handleExport()}
         />
         <ProfileMenuRow
           label={t('access.aboutTitle')}

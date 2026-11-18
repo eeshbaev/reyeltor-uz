@@ -42,7 +42,6 @@ export function AppText({ variant = 'body', color = 'primary', tabular = false, 
   return (
     <Text
       allowFontScaling
-      maxFontSizeMultiplier={1.3}
       style={[textStyle, style, fontStyle, tabular ? styles.tabular : null]}
       {...props}
     />

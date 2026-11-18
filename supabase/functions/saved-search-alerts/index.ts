@@ -16,6 +16,7 @@ import { sendExpoPush, type ExpoPushMessage } from '../_shared/push.ts';
 import { getPriceDropCopy, priceDropPushData, type PriceDropRow } from '../_shared/priceDropPush.ts';
 import { getSearchPushCopy } from '../_shared/searchPush.ts';
 import {
+  isQuietHours,
   type ClaimedMatch,
   type PlannedPush,
   planDigest,
@@ -141,6 +142,10 @@ async function runInstant(admin: Admin) {
 
   const { data: matched, error: enqueueError } = await admin.rpc('enqueue_saved_search_matches', { p_limit: 200 });
   if (enqueueError) throw enqueueError;
+
+  // Night: keep matching, but don't wake anyone. Pending matches and price drops are sent
+  // by the first run after 08:00.
+  if (isQuietHours(new Date())) return { matched: matched ?? 0, quietHours: true };
 
   const { data: claimed, error: claimError } = await admin.rpc('claim_saved_search_matches', {
     p_mode: 'instant',

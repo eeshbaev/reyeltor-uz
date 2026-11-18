@@ -204,7 +204,9 @@
     },
     "post": {
       "guestTitle": "İlan ver",
-      "guestSubtitle": "Yayınlamak için giriş yapın veya kaydolun."
+      "guestSubtitle": "Yayınlamak için giriş yapın veya kaydolun.",
+      "draftRestored": "Taslak geri yüklendi",
+      "draftStartOver": "Baştan başla"
     },
     "welcome": {
       "title": "Reyeltor-uz'a hoş geldiniz!",
@@ -442,7 +444,10 @@
       "deleteDataSuccessMessage": "Tüm verileriniz sunucumuzdan silindi",
       "deleteDataError": "Veriler Silinirken Hata",
       "showEmailPublicly": "E-postayı alıcılara göster",
-      "showEmailPubliclyHint": "Kapalıyken e-postanız hesabınızda kalır ancak ilanlarda ve herkese açık profilinizde gizlenir."
+      "showEmailPubliclyHint": "Kapalıyken e-postanız hesabınızda kalır ancak ilanlarda ve herkese açık profilinizde gizlenir.",
+      "exportData": "Verilerimi dışa aktar",
+      "exporting": "Dosyanız hazırlanıyor…",
+      "exportUnavailable": "Bu cihazda paylaşım kullanılamıyor."
     },
     "privacy": {
       "title": "Gizlilik Politikası",
@@ -1120,15 +1125,20 @@
       },
       "listingMissing": {
         "title": "İlan bulunamadı"
+      },
+      "exportData": {
+        "title": "Verileriniz dışa aktarılamadı",
+        "safe": "Hesabınızda hiçbir şey değişmedi."
       }
     },
     "dealClosed": {
       "rentedIn": "{{days}} günde kiralandı",
       "soldIn": "{{days}} günde satıldı",
-      "stats": "Reyeltor-uz'da {{views}} görüntülenme",
       "reactivateHint": "30 gün içinde İlanlarım bölümünden yeniden yayınlayabilirsiniz.",
       "postAnother": "Yeni ilan ver",
-      "done": "Tamam"
+      "done": "Tamam",
+      "stats_one": "Reyeltor-uz'da {{count}} görüntülenme",
+      "stats_other": "Reyeltor-uz'da {{count}} görüntülenme"
     }
   }
 }

@@ -204,7 +204,9 @@
     },
     "post": {
       "guestTitle": "Разместить объявление",
-      "guestSubtitle": "Войдите или зарегистрируйтесь, чтобы опубликовать."
+      "guestSubtitle": "Войдите или зарегистрируйтесь, чтобы опубликовать.",
+      "draftRestored": "Черновик восстановлен",
+      "draftStartOver": "Начать заново"
     },
     "welcome": {
       "title": "Добро пожаловать в Reyeltor-uz!",
@@ -442,7 +444,10 @@
       "deleteDataSuccessMessage": "Все ваши данные удалены с нашего сервера",
       "deleteDataError": "Не удалось удалить данные",
       "showEmailPublicly": "Показывать email покупателям",
-      "showEmailPubliclyHint": "Если выключено, email остаётся в аккаунте, но скрыт в объявлениях и публичном профиле."
+      "showEmailPubliclyHint": "Если выключено, email остаётся в аккаунте, но скрыт в объявлениях и публичном профиле.",
+      "exportData": "Скачать мои данные",
+      "exporting": "Готовим файл…",
+      "exportUnavailable": "На этом устройстве нельзя поделиться файлом."
     },
     "privacy": {
       "title": "Политика конфиденциальности",
@@ -1120,15 +1125,22 @@
       },
       "listingMissing": {
         "title": "Объявление не найдено"
+      },
+      "exportData": {
+        "title": "Не удалось выгрузить данные",
+        "safe": "В вашем аккаунте ничего не изменилось."
       }
     },
     "dealClosed": {
       "rentedIn": "Сдано за {{days}} дн.",
       "soldIn": "Продано за {{days}} дн.",
-      "stats": "{{views}} просмотров на Reyeltor-uz",
       "reactivateHint": "В течение 30 дней его можно вернуть в «Мои объявления».",
       "postAnother": "Разместить ещё",
-      "done": "Готово"
+      "done": "Готово",
+      "stats_one": "{{count}} просмотр на Reyeltor-uz",
+      "stats_few": "{{count}} просмотра на Reyeltor-uz",
+      "stats_many": "{{count}} просмотров на Reyeltor-uz",
+      "stats_other": "{{count}} просмотра на Reyeltor-uz"
     }
   }
 }
