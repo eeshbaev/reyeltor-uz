@@ -45,9 +45,6 @@ export function OnboardingPromise({ onStart, onSignIn }: OnboardingPromiseProps)
           <AppText variant="body" style={styles.body}>
             {t('onboarding.promise.body')}
           </AppText>
-          <AppText variant="label" style={styles.note}>
-            {t('onboarding.trust.note')}
-          </AppText>
         </Animated.View>
 
 
@@ -86,7 +83,6 @@ const styles = StyleSheet.create({
   copyWide: { alignSelf: 'center', width: '100%', maxWidth: 520 },
   wordmark: { alignItems: 'flex-start' },
   heading: { color: fixedColors.white, letterSpacing: -0.4 },
-  note: { color: fixedColors.goldSoft, marginTop: spacing.sm },
   body: { color: 'rgba(255,255,255,0.85)', marginTop: spacing.sm },
   actions: { gap: spacing.xs },
   cta: {
