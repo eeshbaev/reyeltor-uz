@@ -73,7 +73,8 @@
         "airport": "Havaalanı",
         "museum": "Müze",
         "stadium": "Stadyum"
-      }
+      },
+      "resultCount": "Haritada eşleşen: {{count}}"
     },
     "filters": {
       "title": "Filtreler",
@@ -353,7 +354,9 @@
       "photosPartialFailed": "{{total}} fotoğraftan {{failed}} tanesi yüklenemedi. Bağlantınızı kontrol edin, ardından ilanı tekrar yayınlayıp eklemek için “Mevcut ilanı güncelle”yi seçin.",
       "locationError": "Konumunuz alınamadı. Lütfen yeri haritada seçin.",
       "invalidLink": "Bu ilan bağlantısı geçersiz.",
-      "postSuccessFirst": "İlk ilanınız yayında. Reyeltor-uz’u bizimle birlikte büyüttüğünüz için teşekkürler!"
+      "postSuccessFirst": "İlk ilanınız yayında. Reyeltor-uz’u bizimle birlikte büyüttüğünüz için teşekkürler!",
+      "priceDropBadge": "{{date}} tarihinden beri −%{{percent}}",
+      "priceDropA11y": "Fiyat %{{percent}} düştü, önceki {{old}}"
     },
     "agent": {
       "trustNew": "Yeni Acenta",
@@ -1118,6 +1121,14 @@
       "listingMissing": {
         "title": "İlan bulunamadı"
       }
+    },
+    "dealClosed": {
+      "rentedIn": "{{days}} günde kiralandı",
+      "soldIn": "{{days}} günde satıldı",
+      "stats": "Reyeltor-uz'da {{views}} görüntülenme",
+      "reactivateHint": "30 gün içinde İlanlarım bölümünden yeniden yayınlayabilirsiniz.",
+      "postAnother": "Yeni ilan ver",
+      "done": "Tamam"
     }
   }
 }

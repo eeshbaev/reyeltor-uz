@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Alert, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StackScreenHeader } from '@/components/navigation/StackScreenHeader';
+import { DealClosedCard, type DealClosed } from '@/components/profile/DealClosedCard';
 import { MyListingCard } from '@/components/profile/MyListingCard';
 import { MyListingsEmptyState } from '@/components/profile/MyListingsEmptyState';
 import { MyListingsSegment, type MyListingsTab } from '@/components/profile/MyListingsSegment';
@@ -103,8 +104,11 @@ export default function MyListingsScreen() {
     void load();
   };
 
-  const archiveListing = async (id: string, reason: ArchivedReason) => {
-    await supabase
+  const [closedDeal, setClosedDeal] = useState<DealClosed | null>(null);
+
+  const archiveListing = async (listing: ListingWithPhotos, reason: ArchivedReason) => {
+    const id = listing.id;
+    const { error } = await supabase
       .from('listings')
       .update({
         status: 'archived',
@@ -113,10 +117,22 @@ export default function MyListingsScreen() {
         deletes_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
       })
       .eq('id', id);
+    if (error) {
+      showActionError(t, 'updateListing', error);
+      return;
+    }
     await load();
     await refreshProfile();
-    // A deal closed: the app did its job. The rating module decides whether it is the right time.
-    if (reason === 'rented' || reason === 'sold') void onValueMoment('listing_closed');
+    if (reason === 'rented' || reason === 'sold') {
+      hapticSuccess();
+      setClosedDeal({ listing, reason });
+    }
+  };
+
+  const closeDealCard = () => {
+    setClosedDeal(null);
+    // A deal closed: the app did its job. Asked (maybe) only after the summary is dismissed.
+    void onValueMoment('listing_closed', 800);
   };
 
   // ActionMenu, not Alert: Android's system alert shows at most 3 buttons and dropped one of these.
@@ -124,10 +140,10 @@ export default function MyListingsScreen() {
   const confirmArchive = (listing: ListingWithPhotos) => setManageListing(listing);
   const manageItems: ActionMenuItem[] = manageListing
     ? [
-        { key: 'rented', icon: 'key-outline', label: t('listing.markRented'), onPress: () => void archiveListing(manageListing.id, 'rented') },
-        { key: 'sold', icon: 'checkmark-done-outline', label: t('listing.markSold'), onPress: () => void archiveListing(manageListing.id, 'sold') },
+        { key: 'rented', icon: 'key-outline', label: t('listing.markRented'), onPress: () => void archiveListing(manageListing, 'rented') },
+        { key: 'sold', icon: 'checkmark-done-outline', label: t('listing.markSold'), onPress: () => void archiveListing(manageListing, 'sold') },
         { key: 'price', icon: 'pricetag-outline', label: t('priceUpdate.title'), onPress: () => setPriceListing(manageListing) },
-        { key: 'archive', icon: 'archive-outline', label: t('listing.archive'), destructive: true, onPress: () => void archiveListing(manageListing.id, 'manually_archived') },
+        { key: 'archive', icon: 'archive-outline', label: t('listing.archive'), destructive: true, onPress: () => void archiveListing(manageListing, 'manually_archived') },
       ]
     : [];
 
@@ -232,6 +248,14 @@ export default function MyListingsScreen() {
         title={t('profile.manageListing')}
         items={manageItems}
         onClose={() => setManageListing(null)}
+      />
+      <DealClosedCard
+        deal={closedDeal}
+        onClose={closeDealCard}
+        onPostAnother={() => {
+          closeDealCard();
+          router.push('/(tabs)/post');
+        }}
       />
       <PriceUpdateModal
         listing={priceListing}

@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { JumpingEmblem } from '@/components/brand/JumpingEmblem';
 import { ListingDetailSheet, type ListingDetailSheetRef } from '@/components/listing/ListingDetailSheet';
@@ -81,6 +82,9 @@ export default function MapScreen() {
   const [postSuccessFirst, setPostSuccessFirst] = useState(false);
   const [welcomeGoal, setWelcomeGoal] = useState<string | null>(null);
   const welcomeHandledRef = useRef(false);
+  // After a filter change, show the real number of matches for a moment (design doc: Motion).
+  const [countFlash, setCountFlash] = useState<number | null>(null);
+  const lastFiltersKeyRef = useRef<string | null>(null);
   const postSuccessHandledRef = useRef<string | null>(null);
   // OPTIMIZATION #7: Debounce filter changes to avoid excessive re-renders during slider drags
   const filterChangeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -108,8 +112,9 @@ export default function MapScreen() {
       lng: listing.lng,
       price: listing.price,
       featured: listing.is_featured,
+      celebrate: postSuccessFirst && postSuccessVisible,
     };
-  }, [focusedListingId, allListings]);
+  }, [focusedListingId, allListings, postSuccessFirst, postSuccessVisible]);
 
   const openListingDetail = useCallback(
     (id: string) => {
@@ -150,6 +155,19 @@ export default function MapScreen() {
       zoom: LISTING_MAP_FOCUS_ZOOM,
     });
   }, [focusVersion, consumeFocus]);
+
+  useEffect(() => {
+    const key = JSON.stringify(filters);
+    if (lastFiltersKeyRef.current === null || loading) {
+      lastFiltersKeyRef.current = key;
+      return;
+    }
+    if (lastFiltersKeyRef.current === key) return;
+    lastFiltersKeyRef.current = key;
+    setCountFlash(filteredListings.length);
+    const timer = setTimeout(() => setCountFlash(null), 2500);
+    return () => clearTimeout(timer);
+  }, [filters, filteredListings.length, loading]);
 
   // First arrival from onboarding: say how many listings match their goal (real count),
   // or offer agents/owners their first listing. Shown once, never blocks the map.
@@ -442,6 +460,18 @@ export default function MapScreen() {
               {t(postSuccessFirst ? 'listing.postSuccessFirst' : 'listing.postSuccess')}
             </AppText>
           </FrostedView>
+        </View>
+      ) : null}
+
+      {countFlash !== null && !welcomeGoal && !postSuccessVisible && !mapChromeHidden && !drawMode ? (
+        <View style={[styles.postSuccess, { top: controlsTop + 52 }]} pointerEvents="none">
+          <Animated.View key={countFlash} entering={FadeInDown.duration(220)} exiting={FadeOut.duration(150)}>
+            <FrostedView style={styles.postSuccessInner}>
+              <AppText variant="label" tabular style={styles.postSuccessText}>
+                {countFlash > 0 ? t('map.resultCount', { count: countFlash }) : t('onboarding.mapWelcome.none')}
+              </AppText>
+            </FrostedView>
+          </Animated.View>
         </View>
       ) : null}
 

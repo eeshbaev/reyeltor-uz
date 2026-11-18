@@ -73,7 +73,8 @@
         "airport": "机场",
         "museum": "博物馆",
         "stadium": "体育场"
-      }
+      },
+      "resultCount": "地图上符合条件：{{count}} 个"
     },
     "filters": {
       "title": "筛选",
@@ -353,7 +354,9 @@
       "photosPartialFailed": "{{total}} 张照片中有 {{failed}} 张上传失败。请检查网络，然后重新发布该房源并选择“更新现有房源”以添加这些照片。",
       "locationError": "无法获取您的位置，请在地图上选择位置。",
       "invalidLink": "此房源链接无效。",
-      "postSuccessFirst": "您的第一个房源已上线。感谢您与我们一起打造 Reyeltor-uz！"
+      "postSuccessFirst": "您的第一个房源已上线。感谢您与我们一起打造 Reyeltor-uz！",
+      "priceDropBadge": "自 {{date}} 起 −{{percent}}%",
+      "priceDropA11y": "价格下降 {{percent}}%，原价 {{old}}"
     },
     "agent": {
       "trustNew": "新代理",
@@ -1118,6 +1121,14 @@
       "listingMissing": {
         "title": "未找到房源"
       }
+    },
+    "dealClosed": {
+      "rentedIn": "{{days}} 天内租出",
+      "soldIn": "{{days}} 天内售出",
+      "stats": "在 Reyeltor-uz 上被浏览 {{views}} 次",
+      "reactivateHint": "30 天内可在“我的房源”中重新上架。",
+      "postAnother": "再发布一个房源",
+      "done": "完成"
     }
   }
 }

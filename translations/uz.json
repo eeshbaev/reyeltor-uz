@@ -73,7 +73,8 @@
         "airport": "Aeroport",
         "museum": "Muzey",
         "stadium": "Stadion"
-      }
+      },
+      "resultCount": "Xaritada mos e’lonlar: {{count}}"
     },
     "filters": {
       "title": "Filtrlar",
@@ -353,7 +354,9 @@
       "photosPartialFailed": "{{total}} ta rasmdan {{failed}} tasi yuklanmadi. Internetni tekshiring, so'ng e'lonni qayta joylab, ularni qo'shish uchun «Mavjudini yangilash»ni tanlang.",
       "locationError": "Joylashuvingiz aniqlanmadi. Nuqtani xaritada belgilang.",
       "invalidLink": "E'lon havolasi noto'g'ri.",
-      "postSuccessFirst": "Birinchi e'loningiz xaritada! Reyeltor-uz'ni biz bilan birga qurayotganingiz uchun rahmat!"
+      "postSuccessFirst": "Birinchi e'loningiz xaritada! Reyeltor-uz'ni biz bilan birga qurayotganingiz uchun rahmat!",
+      "priceDropBadge": "{{date}} dan beri −{{percent}}%",
+      "priceDropA11y": "Narx {{percent}}% tushdi, avval {{old}} edi"
     },
     "agent": {
       "trustNew": "Yangi agent",
@@ -1118,6 +1121,14 @@
       "listingMissing": {
         "title": "E'lon topilmadi"
       }
+    },
+    "dealClosed": {
+      "rentedIn": "{{days}} kunda ijaraga berildi",
+      "soldIn": "{{days}} kunda sotildi",
+      "stats": "Reyeltor-uz'da {{views}} marta ko'rildi",
+      "reactivateHint": "30 kun ichida «Mening e'lonlarim»dan qayta faollashtirishingiz mumkin.",
+      "postAnother": "Yana e'lon joylash",
+      "done": "Tayyor"
     }
   }
 }

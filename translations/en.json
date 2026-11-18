@@ -73,7 +73,8 @@
         "airport": "Airport",
         "museum": "Museum",
         "stadium": "Stadium"
-      }
+      },
+      "resultCount": "Matches on the map: {{count}}"
     },
     "filters": {
       "title": "Filters",
@@ -353,7 +354,9 @@
       "photosPartialFailed": "{{failed}} of {{total}} photos could not be uploaded. Check your connection, then post the listing again and choose “Update existing” to add them.",
       "locationError": "Couldn't get your location. Pick the spot on the map instead.",
       "invalidLink": "This listing link is invalid.",
-      "postSuccessFirst": "Your first listing is live. Thank you for building Reyeltor-uz with us!"
+      "postSuccessFirst": "Your first listing is live. Thank you for building Reyeltor-uz with us!",
+      "priceDropBadge": "−{{percent}}% since {{date}}",
+      "priceDropA11y": "Price dropped {{percent}}%, from {{old}}"
     },
     "agent": {
       "trustNew": "New agent",
@@ -1118,6 +1121,14 @@
       "listingMissing": {
         "title": "Listing not found"
       }
+    },
+    "dealClosed": {
+      "rentedIn": "Rented in {{days}} days",
+      "soldIn": "Sold in {{days}} days",
+      "stats": "{{views}} views on Reyeltor-uz",
+      "reactivateHint": "You can reactivate it from My listings within 30 days.",
+      "postAnother": "Post another listing",
+      "done": "Done"
     }
   }
 }

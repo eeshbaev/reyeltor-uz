@@ -714,6 +714,8 @@ export const InteractiveTileMap = forwardRef<MapViewRef, MapViewProps>((
                 <ListingBubble
                   price={focusedListing.price}
                   featured={focusedListing.featured}
+                  selected
+                  celebrate={focusedListing.celebrate}
                   accentColor={categoryColors.main}
                   onPress={() => onListingPress(focusedListing.id)}
                 />

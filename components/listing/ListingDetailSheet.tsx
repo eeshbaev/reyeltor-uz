@@ -15,6 +15,7 @@ import { ListingFavoriteButton } from '@/components/listing/ListingFavoriteButto
 import { ListingStatusOverlay } from '@/components/listing/ListingStatusOverlay';
 import { ListingToolLinks } from '@/components/listing/ListingToolLinks';
 import { PriceBadge } from '@/components/listing/PriceBadge';
+import { PriceDropReveal } from '@/components/listing/PriceDropReveal';
 import { PropertyInfoSection } from '@/components/listing/PropertyInfoSection';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -277,6 +278,7 @@ export const ListingDetailSheet = forwardRef<ListingDetailSheetRef, ListingDetai
                 <ListingStatusOverlay listing={listing} inline />
                 <PriceBadge price={listing.price} medianPrice={medianPrice} />
               </View>
+              <PriceDropReveal price={listing.price} history={priceHistory} />
               <FreshnessLabel listing={listing} />
 
               {listing.description ? (

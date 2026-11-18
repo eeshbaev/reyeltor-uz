@@ -9,6 +9,8 @@ export interface FocusedListingPin {
   lng: number;
   price: number;
   featured?: boolean;
+  /** First listing just published: celebrate it once on the map. */
+  celebrate?: boolean;
 }
 
 export interface MapViewport {
