@@ -14,8 +14,8 @@ const MESSAGES: Record<PushMessageKey, Record<PushLocale, PushCopy>> = {
       body: 'Your listing expires in 15 days — edit any detail to keep it active.',
     },
     uz: {
-      title: "E'lon muddati tugamoqda",
-      body: "E'loningiz 15 kun ichida tugaydi — faol saqlash uchun tahrirlang.",
+      title: "Eʼlon muddati tugamoqda",
+      body: "Eʼloningiz 15 kun ichida tugaydi — faol saqlash uchun tahrirlang.",
     },
     ru: {
       title: 'Объявление скоро истекает',
@@ -28,8 +28,8 @@ const MESSAGES: Record<PushMessageKey, Record<PushLocale, PushCopy>> = {
       body: '5 days until your listing archives. A small edit resets the timer.',
     },
     uz: {
-      title: "E'lon muddati tugamoqda",
-      body: "5 kundan keyin e'lon arxivlanadi. Kichik tahrir muddatni yangilaydi.",
+      title: "Eʼlon muddati tugamoqda",
+      body: "5 kundan keyin eʼlon arxivlanadi. Kichik tahrir muddatni yangilaydi.",
     },
     ru: {
       title: 'Объявление скоро истекает',
@@ -42,8 +42,8 @@ const MESSAGES: Record<PushMessageKey, Record<PushLocale, PushCopy>> = {
       body: "Your archived listing disappears in 10 days. Reactivate it or it's gone.",
     },
     uz: {
-      title: "E'lon o'chiriladi",
-      body: "Arxivdagi e'lon 10 kundan keyin yo'qoladi. Qayta faollashtiring.",
+      title: "Eʼlon oʻchiriladi",
+      body: "Arxivdagi eʼlon 10 kundan keyin yoʻqoladi. Qayta faollashtiring.",
     },
     ru: {
       title: 'Объявление будет удалено',
@@ -71,7 +71,7 @@ const MESSAGES: Record<PushMessageKey, Record<PushLocale, PushCopy>> = {
     },
     uz: {
       title: 'Obyektingiz hali ham mavjudmi?',
-      body: "Bir bosishda tasdiqlang. Xaridorlar e'lon qachon tasdiqlanganini ko'radi.",
+      body: "Bir bosishda tasdiqlang. Xaridorlar eʼlon qachon tasdiqlanganini koʻradi.",
     },
     ru: {
       title: 'Объект ещё актуален?',

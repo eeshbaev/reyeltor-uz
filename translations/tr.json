@@ -465,7 +465,8 @@
       "viewOnline": "Tam politikayı çevrimiçi görüntüle",
       "lastUpdated": "Son güncelleme: Kasım 2026",
       "collectTelegram": "Telegram bilgileri — kayıt sırasında botumuz @Reyeltor_uz_bot paylaştığınız telefon numarasını ve adı, ayrıca Telegram kimliğinizi ve kullanıcı adınızı alır; numaranızı doğrulamak ve şifrenizi kurtarmak için",
-      "collectAlerts": "Haritadaki son aramanız ve kaydettiğiniz ilanların fiyatı — uyan yeni ilanlar ve %3 veya daha fazla fiyat düşüşleri hakkında bildirim için (kapatılabilir)"
+      "collectAlerts": "Haritadaki son aramanız ve kaydettiğiniz ilanların fiyatı — uyan yeni ilanlar ve %3 veya daha fazla fiyat düşüşleri hakkında bildirim için (kapatılabilir)",
+      "collectServices": "Harita ve adres hizmetleri — MapTiler, CARTO ve OpenStreetMap haritayı çizmek için baktığınız alanı, aradığınız adresleri ve IP adresinizi alır (adınızı veya telefonunuzu değil)"
     },
     "coins": {
       "balance": "Madeni Para Bakiyesi",
@@ -740,8 +741,8 @@
           "registrationPct": "Mülk değerinin ~%0,3'ü",
           "agencyBuy": "Mülk değerinin %1–3'ü",
           "inspectionOptional": "İsteğe bağlı ama önerilir",
-          "ratePerM2": "{{rate}} so'm/m²",
-          "ratePerM2Estimated": "{{rate}} so'm/m² · {{rooms}} odadan ~{{area}} m² tahmin",
+          "ratePerM2": "{{rate}} soʻm/m²",
+          "ratePerM2Estimated": "{{rate}} soʻm/m² · {{rooms}} odadan ~{{area}} m² tahmin",
           "roomsCount": "{{count}} oda",
           "roomsCount_one": "{{count}} oda",
           "movingService": "Tashkent içi tahmin"

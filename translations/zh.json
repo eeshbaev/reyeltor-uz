@@ -465,7 +465,8 @@
       "viewOnline": "在线查看完整政策",
       "lastUpdated": "更新于：2026 年 11 月",
       "collectTelegram": "Telegram 信息——注册时，我们的机器人 @Reyeltor_uz_bot 会收到您分享的手机号和姓名，以及您的 Telegram ID 和用户名，用于确认手机号和找回密码",
-      "collectAlerts": "您最近的地图搜索和收藏房源的价格——用于通知符合条件的新房源及降价 3% 以上（可关闭）"
+      "collectAlerts": "您最近的地图搜索和收藏房源的价格——用于通知符合条件的新房源及降价 3% 以上（可关闭）",
+      "collectServices": "地图与地址服务——MapTiler、CARTO 和 OpenStreetMap 会收到您查看的地图区域、搜索的地址和 IP 地址（不包括姓名或电话），用于绘制地图"
     },
     "coins": {
       "balance": "硬币余额",

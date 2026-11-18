@@ -10,6 +10,7 @@ import { useMapChrome } from '@/lib/context/MapChromeContext';
 import { useOverlayChrome } from '@/lib/context/OverlayChromeContext';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { useWindowClass } from '@/lib/design/windowClass';
 import { hapticLight } from '@/lib/haptics';
 
 import { TAB_BAR_CLEARANCE } from '@/lib/navigation/tabBarMetrics';
@@ -53,14 +54,23 @@ export function FloatingTabBar({ state, descriptors, emitter, navigateToTab }: B
   const theme = useTheme();
   const { isSuppressed } = useOverlayChrome();
   const { dismissMapOverlays } = useMapChrome();
+  // Wide windows (tablet landscape, unfolded foldable): a navigation rail on the left (manual L-06).
+  const rail = useWindowClass() === 'expanded';
 
   if (isSuppressed) return null;
 
   return (
-    <View style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, spacing.sm) }]} pointerEvents="box-none">
+    <View
+      style={
+        rail
+          ? [styles.railWrapper, { left: insets.left + spacing.md, top: insets.top, bottom: insets.bottom }]
+          : [styles.wrapper, { paddingBottom: Math.max(insets.bottom, spacing.sm) }]
+      }
+      pointerEvents="box-none"
+    >
       <FrostedView
         style={StyleSheet.flatten([
-          styles.bar,
+          rail ? styles.rail : styles.bar,
           { borderColor: theme.isDark ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.7)' },
         ])}
         intensity={90}
@@ -97,7 +107,10 @@ export function FloatingTabBar({ state, descriptors, emitter, navigateToTab }: B
             <Pressable
               key={route.key}
               onPress={onPress}
-              style={styles.tab}
+              style={rail ? styles.railTab : styles.tab}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: isFocused }}
+              accessibilityLabel={label}
               android_ripple={{ color: theme.colors.borderStrong, borderless: true }}
               hitSlop={8}
             >
@@ -132,6 +145,26 @@ const styles = StyleSheet.create({
     right: spacing.md,
     bottom: 0,
     zIndex: 1000,
+  },
+  railWrapper: {
+    position: 'absolute',
+    justifyContent: 'center',
+    zIndex: 1000,
+  },
+  rail: {
+    flexDirection: 'column',
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
+    gap: spacing.xs,
+  },
+  railTab: {
+    width: 72,
+    minHeight: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 3,
   },
   bar: {
     flexDirection: 'row',

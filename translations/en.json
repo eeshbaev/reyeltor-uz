@@ -465,7 +465,8 @@
       "viewOnline": "View full policy online",
       "lastUpdated": "Last updated: November 2026",
       "collectTelegram": "Telegram details — when you register, our bot @Reyeltor_uz_bot receives the phone number and name you share, plus your Telegram ID and username, to confirm your number and recover your password",
-      "collectAlerts": "Your last map search and the price of listings you save — to alert you about new matching listings and price drops of 3% or more (you can switch these off)"
+      "collectAlerts": "Your last map search and the price of listings you save — to alert you about new matching listings and price drops of 3% or more (you can switch these off)",
+      "collectServices": "Map and address services — MapTiler, CARTO and OpenStreetMap receive the map area you view, addresses you search and your IP address (not your name or phone) to draw the map"
     },
     "coins": {
       "balance": "Coin balance",
@@ -1005,7 +1006,7 @@
       "title": "Update price",
       "short": "New price",
       "current": "Current price: {{price}}",
-      "hint": "In so'm. Buyers who saved this listing are told about the change, and it also confirms the property is available."
+      "hint": "In soʻm. Buyers who saved this listing are told about the change, and it also confirms the property is available."
     },
     "listingTools": {
       "title": "Calculate for this property",

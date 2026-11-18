@@ -88,7 +88,7 @@ Status: ✅ pass · 🔧 fixed today · ⏳ open · 📱 needs a device test · 
 | L-03 radius scale | 🔧 | 4 radii, lint-enforced |
 | L-04 safe areas | ✅ | safe-area insets on screen roots |
 | L-05 / AD-06 keyboard | 📱 | Check post form and login on a small phone |
-| L-06 / AD-01/02 window classes | 🔧 | `useWindowClass`; 640 column; 2-col favorites; side panel on expanded. Navigation rail ⏳ |
+| L-06 / AD-01/02 window classes | 🔧 | `useWindowClass`; 640 column; 2-col favorites; side panel and navigation rail on expanded windows |
 | L-07 line length | 🔧 | 640 max column on wide windows |
 | L-08 / AD-03 live resize keeps state | 📱 | Test split screen on the emulator |
 | T-01 minimum sizes | ✅ | body 15, micro 11 |
@@ -101,7 +101,7 @@ Status: ✅ pass · 🔧 fixed today · ⏳ open · 📱 needs a device test · 
 | N-01 target size | ⏳ | hitSlop on small icons; run Layout Inspector 📱 |
 | N-03 gesture alternatives | ✅ | Menus for listing actions |
 | N-05 bottom navigation 3–5 | ✅ | 5 tabs |
-| N-07 predictive back | ⏳ | `enableOnBackInvokedCallback="false"` in the manifest. Turn on only after testing back on the device (risk: React Navigation back handling) |
+| N-07 predictive back | 🔧 📱 | Enabled (manifest + app.json). React Native routes back through OnBackPressedDispatcher, so in-app back keeps working — confirm on the device |
 | N-08 tabs keep their stack | ✅ | expo-router tabs |
 | N-11 deep links | ✅ | Listings, notifications |
 | K-01 verb + object labels | ✅ | Mostly; "Start" on onboarding is acceptable |
@@ -126,11 +126,11 @@ Status: ✅ pass · 🔧 fixed today · ⏳ open · 📱 needs a device test · 
 | O-10 export + delete-all | 🔧 | Export my data added; delete-all existed |
 | LG-01 no artificial splash delay | 🔧 | Minimum cut from 1.5 s to 0.4 s (anti-flash); the splash ends when startup work is done |
 | LG-02 no logo on warm start | ✅ | Splash only on cold start |
-| SP-02 platform security | ⏳ | The Supabase session token is stored in AsyncStorage (`lib/supabase.ts`); move it to expo-secure-store (chunked) for Keystore protection |
+| SP-02 platform security | 🔧 | Session token in expo-secure-store (Keystore), chunked; old AsyncStorage session migrated on first read |
 | SP-05 leak paths | 🔧 | Console stripped in release; ⏳ push text on lock screen shows district+price (Medium: acceptable) |
 | SP-06 decision records | 🔧 | Section 5 |
-| SP-08 network proof | ⏳ | Run the core loop through a proxy before release |
-| SP-09 store disclosures | ⏳ | Fill Play Data safety from section 5 |
+| SP-08 network proof | 📱 | Host list and steps in `docs/PLAY_DATA_SAFETY.md` |
+| SP-09 store disclosures | 🔧 | Answers in `docs/PLAY_DATA_SAFETY.md`; privacy policy now names map/address services and Pexels |
 | R-04 notification 3 questions | ✅ | Only own searches/favorites |
 | R-05 frequency cap | ✅ | Daily cap + digest |
 | R-07 copy formula | ✅ | Specific district/price |
@@ -142,16 +142,10 @@ Status: ✅ pass · 🔧 fixed today · ⏳ open · 📱 needs a device test · 
 | A-08 plurals | 🔧 | i18next v4 plurals; new Russian strings use one/few/many |
 | A-09 +40% text | 📱 | Check Russian/Uzbek on small phone |
 | A-10 locale formats | ✅ | Intl date/number formatting |
-| A-11 Uzbek ʻ (U+02BB) | ⏳ | Some strings use ' instead of ʻ — run a replace pass with a native speaker |
+| A-11 Uzbek ʻ (U+02BB) | 🔧 | oʻ/gʻ use U+02BB, tutuq belgisi U+02BC, in uz.json and server push/bot texts; have a native speaker skim |
 | A-12 RTL | N/A | No RTL language shipped |
 | A-13 in-app language | ✅ | Language switcher |
 | PR-14 no layout shift | ✅ | Tabular numbers on prices/counts |
 | PR-15 truthful success | ✅ | Success only after the server confirms |
 
-**Open MUST items, in priority order:**
-1. SP-02: session token to expo-secure-store.
-2. N-07: enable predictive back after a device test.
-3. SP-08/SP-09: network proof and Play Data safety form.
-4. A-11: Uzbek ʻ pass.
-5. Navigation rail on medium/expanded windows (L-06).
-6. Device checks marked 📱 (Part 14 tests 4, 6, 7, 8, 9, 16, 17, 21, 22, 24, 26).
+**Open MUST items:** only device checks remain (📱): Part 14 tests 4, 6, 7, 8, 9, 16, 17, 21, 22, 24, 26 and the network proof (SP-08).

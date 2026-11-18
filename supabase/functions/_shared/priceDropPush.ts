@@ -12,7 +12,7 @@ export interface PriceDropRow {
   favorites_enabled: boolean | null;
 }
 
-const CURRENCY: Record<PriceDropLocale, string> = { uz: "so'm", ru: 'сум', en: 'UZS', zh: '苏姆', tr: 'UZS' };
+const CURRENCY: Record<PriceDropLocale, string> = { uz: "soʻm", ru: 'сум', en: 'UZS', zh: '苏姆', tr: 'UZS' };
 
 /** 41400000 → "41 400 000" (thin, non-breaking grouping like the app). */
 export function formatUzs(value: number): string {
@@ -43,7 +43,7 @@ export function getPriceDropCopy(row: PriceDropRow): { title: string; body: stri
     case 'tr':
       return { title: `Fiyat %${pct} düştü`, body: `${place}${prices}. Kaydettiğiniz ilan ucuzladı — görmek için dokunun.` };
     default:
-      return { title: `Narx ${pct}% ga tushdi`, body: `${place}${prices}. Sevimli e'loningiz arzonladi — ko'rish uchun bosing.` };
+      return { title: `Narx ${pct}% ga tushdi`, body: `${place}${prices}. Sevimli eʼloningiz arzonladi — koʻrish uchun bosing.` };
   }
 }
 

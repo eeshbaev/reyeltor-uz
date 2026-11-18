@@ -11,16 +11,16 @@ type Vars = { name: string; count: number; district: string };
 const COPY: Record<SearchPushLocale, Record<'single' | 'multiple' | 'digest', (v: Vars) => SearchPushCopy>> = {
   uz: {
     single: (v) => ({
-      title: `Yangi e'lon: «${v.name}»`,
-      body: `${v.district}da saqlangan qidiruvingizga mos e'lon chiqdi. Ko'rish uchun bosing.`,
+      title: `Yangi eʼlon: «${v.name}»`,
+      body: `${v.district}da saqlangan qidiruvingizga mos eʼlon chiqdi. Koʻrish uchun bosing.`,
     }),
     multiple: (v) => ({
-      title: `«${v.name}» bo'yicha yangi e'lonlar`,
-      body: `Saqlangan qidiruvingizga ${v.count} ta yangi e'lon mos keldi.`,
+      title: `«${v.name}» boʻyicha yangi eʼlonlar`,
+      body: `Saqlangan qidiruvingizga ${v.count} ta yangi eʼlon mos keldi.`,
     }),
     digest: (v) => ({
       title: 'Bugungi yangi mos e\'lonlar',
-      body: `Saqlangan qidiruvlaringizga yana ${v.count} ta e'lon mos keldi.`,
+      body: `Saqlangan qidiruvlaringizga yana ${v.count} ta eʼlon mos keldi.`,
     }),
   },
   ru: {
@@ -84,8 +84,8 @@ const COPY: Record<SearchPushLocale, Record<'single' | 'multiple' | 'digest', (v
 /** Alerts for the user's most recent map search (not explicitly saved). */
 const LAST_COPY: Record<SearchPushLocale, Record<'single' | 'multiple', (v: Vars) => SearchPushCopy>> = {
   uz: {
-    single: (v) => ({ title: 'Oxirgi qidiruvingiz bo\'yicha yangi e\'lon', body: `${v.district}: ${v.name}. Ko'rish uchun bosing.` }),
-    multiple: (v) => ({ title: 'Oxirgi qidiruvingiz bo\'yicha yangi e\'lonlar', body: `${v.name}: ${v.count} ta yangi e'lon.` }),
+    single: (v) => ({ title: 'Oxirgi qidiruvingiz bo\'yicha yangi e\'lon', body: `${v.district}: ${v.name}. Koʻrish uchun bosing.` }),
+    multiple: (v) => ({ title: 'Oxirgi qidiruvingiz bo\'yicha yangi e\'lonlar', body: `${v.name}: ${v.count} ta yangi eʼlon.` }),
   },
   ru: {
     single: (v) => ({ title: 'Новое по вашему последнему поиску', body: `${v.district}: ${v.name}. Нажмите, чтобы открыть.` }),

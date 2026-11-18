@@ -56,6 +56,7 @@ export default function PrivacyPolicyScreen() {
           <Bullet text={t('privacy.collectListings')} />
           <Bullet text={t('privacy.collectPhotos')} />
           <Bullet text={t('privacy.collectAlerts')} />
+          <Bullet text={t('privacy.collectServices')} />
         </Section>
 
         <Section title={t('privacy.noSellTitle')}>
