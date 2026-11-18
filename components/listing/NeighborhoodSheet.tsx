@@ -41,7 +41,7 @@ const CATEGORY_ORDER = POI_CATEGORY_ORDER;
 const screenHeight = Dimensions.get('window').height;
 
 export const NeighborhoodSheet = forwardRef<NeighborhoodSheetRef, NeighborhoodSheetProps>(
-  ({ onIndexChange, reserveTabBar = false }, ref) => {
+  ({ onIndexChange, reserveTabBar = true }, ref) => {
     const { t, i18n } = useTranslation();
     const theme = useTheme();
     const insets = useSafeAreaInsets();

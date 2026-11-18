@@ -63,7 +63,7 @@ interface ListingDetailSheetProps {
 }
 
 export const ListingDetailSheet = forwardRef<ListingDetailSheetRef, ListingDetailSheetProps>((
-  { onIndexChange, onDismiss, onExploreNeighborhood, initialListingId = null, initialIndex = -1, reserveTabBar = false },
+  { onIndexChange, onDismiss, onExploreNeighborhood, initialListingId = null, initialIndex = -1, reserveTabBar = true },
   ref,
 ) => {
   const { t, i18n } = useTranslation();
