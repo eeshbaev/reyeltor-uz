@@ -178,7 +178,7 @@ const BOT_TEXT: Record<string, Record<BotTextKey, string>> = {
     shareButton: '📱 Raqamni ulashish',
     done: "✅ Raqamingiz tasdiqlandi. Reyeltor-uz ilovasiga qayting.",
     taken: "Bu raqam allaqachon roʻyxatdan oʻtgan. Ilovaga qaytib, raqam va parol bilan kiring.",
-    notRegistered: "Bu raqam bilan hisob topilmadi. Ilovaga qaytib, roʻyxatdan oʻting.",
+    notRegistered: "Bu raqam bilan akkaunt topilmadi. Ilovaga qaytib, roʻyxatdan oʻting.",
     expired: "Bu havola eskirgan. Ilovada qaytadan «Telegram bilan davom etish» tugmasini bosing.",
     noFlow: "Roʻyxatdan oʻtish yoki parolni tiklash uchun Reyeltor-uz ilovasini oching va «Telegram bilan davom etish» tugmasini bosing.",
     notOwn: "Iltimos, oʻzingizning raqamingizni pastdagi tugma orqali ulashing.",
