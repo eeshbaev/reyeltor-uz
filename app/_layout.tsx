@@ -30,8 +30,11 @@ import { queryClient } from '@/lib/queryClient';
 import { initSentry } from '@/lib/sentry';
 
 const SPLASH_BG = fixedColors.splash;
-/** Keep branded splash visible briefly so cold start never flashes a blank frame. */
-const MIN_SPLASH_MS = 1_500;
+/**
+ * Shortest splash: just long enough to avoid a one-frame flash. The splash otherwise ends as
+ * soon as startup work is done — no artificial delay (manual LG-01).
+ */
+const MIN_SPLASH_MS = 400;
 // Upper bound if startup hangs on slow devices (API 28–30)
 const SPLASH_FORCE_HIDE_MS = 8_000;
 
