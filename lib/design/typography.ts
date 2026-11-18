@@ -15,6 +15,21 @@ export const typography = {
   micro: { fontSize: 11, fontWeight: '500' as const, lineHeight: 14 },
 } as const;
 
+/** Sizes for the few places that style text directly (inputs, headers, hero numbers). */
+export const typeSize = {
+  micro: 11,
+  caption: 13,
+  body: 15,
+  /** Text inputs: 16 keeps fields readable and avoids zoom-on-focus on iOS. */
+  input: 16,
+  h3: 17,
+  h2: 22,
+  h1: 28,
+  display: 34,
+  /** Welcome coin count only. */
+  hero: 72,
+} as const;
+
 export type TypographyVariant = keyof typeof typography;
 
 /** Arabic needs extra line height for readability */

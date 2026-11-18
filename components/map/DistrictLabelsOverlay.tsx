@@ -4,6 +4,7 @@ import { AppText } from '@/components/ui/AppText';
 import type { MapCoverage } from '@/lib/constants';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
+import { typeSize } from '@/lib/design/typography';
 import {
   BOUNDARY_LABEL_FRAME,
   getBoundaryLabelOpacity,
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     lineHeight: 16,
-    fontSize: 11,
+    fontSize: typeSize.micro,
     letterSpacing: 0.1,
   },
 });

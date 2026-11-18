@@ -46,7 +46,8 @@
       "showLess": "Show less",
       "showMore": "Show more",
       "networkError": "No connection. Check your internet and try again.",
-      "ok": "OK"
+      "ok": "OK",
+      "undo": "Undo"
     },
     "map": {
       "filters": "Filters",
@@ -503,7 +504,12 @@
       "signInRequired": "Favorites",
       "signInHint": "Sign in or register to save listings.",
       "guestCard": "Saved on this device",
-      "guestBannerHint": "Sign in to sync favorites across all your devices."
+      "guestBannerHint": "Sign in to sync favorites across all your devices.",
+      "toastSaved": "Saved · you'll get an alert if the price drops",
+      "toastRemoved": "Removed from saved homes",
+      "toastSaveFailed": "Couldn't save this home — check your connection. Nothing changed.",
+      "toastRemoveFailed": "Couldn't remove this home — check your connection. It's still saved.",
+      "toastSavedPlain": "Saved to your homes"
     },
     "flags": {
       "title": "Report listing",

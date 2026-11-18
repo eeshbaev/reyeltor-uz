@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StackScreenHeader } from '@/components/navigation/StackScreenHeader';
 import { MyListingCard } from '@/components/profile/MyListingCard';
@@ -11,6 +11,7 @@ import { PriceUpdateModal } from '@/components/profile/PriceUpdateModal';
 import { ShareCardModal } from '@/components/share/ShareCardModal';
 import { ActionMenu, type ActionMenuItem } from '@/components/ui/ActionMenu';
 import { AppText } from '@/components/ui/AppText';
+import { ListingCardSkeleton } from '@/components/ui/Skeleton';
 import { getCoinCost } from '@/lib/coins';
 import { useAuth } from '@/lib/context/AuthContext';
 import { spacing } from '@/lib/design/spacing';
@@ -167,8 +168,9 @@ export default function MyListingsScreen() {
       <View style={[styles.screen, { backgroundColor: theme.colors.background }]}>
         <Stack.Screen options={{ headerShown: false }} />
         <StackScreenHeader title={t('profile.myListings')} backHref="/(tabs)/profile" />
-        <View style={styles.centered}>
-          <ActivityIndicator size="large" color={theme.colors.accent} />
+        <View style={styles.skeletonList}>
+          <ListingCardSkeleton />
+          <ListingCardSkeleton />
         </View>
       </View>
     );
@@ -243,6 +245,7 @@ export default function MyListingsScreen() {
 
 function createStyles(theme: ReturnType<typeof useTheme>) {
   return StyleSheet.create({
+    skeletonList: { padding: spacing.md, gap: spacing.md },
     screen: { flex: 1 },
     centered: {
       flex: 1,

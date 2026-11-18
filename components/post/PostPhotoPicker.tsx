@@ -5,6 +5,7 @@ import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import { useTheme } from '@/lib/theme';
 
 const MAX_PHOTOS = 10;
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   coverText: {
-    fontSize: 10,
+    fontSize: typeSize.micro,
     fontWeight: '700',
   },
   removeBtn: {

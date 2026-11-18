@@ -16,6 +16,7 @@ import { fixedColors } from '@/lib/design/colors';
 import { mapElevatedShadow } from '@/lib/design/mapChrome';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import { daysSince } from '@/lib/format';
 import { createHorizontalSwipeGesture } from '@/lib/gestures';
 import {
@@ -427,13 +428,13 @@ function createStyles(
     mapPrice: {
       color: fixedColors.white,
       fontWeight: '700',
-      fontSize: 16,
+      fontSize: typeSize.input,
       letterSpacing: -0.3,
     },
     mapMeta: {
       color: 'rgba(255,255,255,0.88)',
       fontWeight: '500',
-      fontSize: 12,
+      fontSize: typeSize.caption,
     },
     featuredBadgeInline: {
       paddingHorizontal: spacing.sm,
@@ -459,7 +460,7 @@ function createStyles(
       maxWidth: '58%',
     },
     featuredBadgeText: {
-      fontSize: 10,
+      fontSize: typeSize.micro,
       fontWeight: '700',
     },
     socialBadge: {
@@ -469,7 +470,7 @@ function createStyles(
     },
     saveBadgeText: {
       color: fixedColors.white,
-      fontSize: 10,
+      fontSize: typeSize.micro,
       fontWeight: '700',
     },
     content: {
@@ -477,7 +478,7 @@ function createStyles(
       gap: compact ? spacing.xs + 2 : spacing.sm,
       backgroundColor: theme.isDark ? theme.colors.surfaceElevated : theme.colors.surfaceElevated,
     },
-    compactPrice: { fontWeight: '700', fontSize: 18, letterSpacing: -0.4 },
+    compactPrice: { fontWeight: '700', fontSize: typeSize.h3, letterSpacing: -0.4 },
     pills: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
     swipeHint: {
       paddingVertical: spacing.xs + 2,

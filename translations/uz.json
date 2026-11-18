@@ -46,7 +46,8 @@
       "showLess": "Kamroq Ko'rsatish",
       "showMore": "Ko'proq Ko'rsatish",
       "networkError": "Ulanish Yo'q. Internetni Tekshiring va Qayta Urinib Ko'ring.",
-      "ok": "OK"
+      "ok": "OK",
+      "undo": "Bekor qilish"
     },
     "map": {
       "filters": "Filtrlar",
@@ -503,7 +504,12 @@
       "signInRequired": "Sevimlilar",
       "signInHint": "E'lonlarni saqlash uchun ro'yxatdan o'ting yoki kiring.",
       "guestCard": "Bu qurilmada saqlangan",
-      "guestBannerHint": "Barcha qurilmalarda sinxronlash uchun kiring."
+      "guestBannerHint": "Barcha qurilmalarda sinxronlash uchun kiring.",
+      "toastSaved": "Saqlandi · narx tushsa xabar beramiz",
+      "toastRemoved": "Saqlanganlardan olib tashlandi",
+      "toastSaveFailed": "Uy saqlanmadi — internetni tekshiring. Hech narsa o'zgarmadi.",
+      "toastRemoveFailed": "Uy olib tashlanmadi — internetni tekshiring. U saqlangan holda qoldi.",
+      "toastSavedPlain": "Saqlanganlarga qo‘shildi"
     },
     "flags": {
       "title": "E'lon haqida shikoyat",

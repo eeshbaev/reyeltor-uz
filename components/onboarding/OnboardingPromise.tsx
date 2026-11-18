@@ -20,6 +20,7 @@ import { useListingsCache } from '@/lib/context/ListingsContext';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import { hapticLight } from '@/lib/haptics';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
 import { useReduceMotion } from '@/lib/hooks/useReduceMotion';
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
-  ctaLabel: { color: fixedColors.ink, fontSize: 15, fontWeight: '600' },
+  ctaLabel: { color: fixedColors.ink, fontSize: typeSize.body, fontWeight: '600' },
   signIn: { alignSelf: 'center', paddingVertical: spacing.sm },
   signInText: { color: 'rgba(255,255,255,0.7)', fontWeight: '600' },
 });

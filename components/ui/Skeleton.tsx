@@ -13,15 +13,16 @@ interface SkeletonProps {
 
 export function Skeleton({ width, height, borderRadius = 8, style }: SkeletonProps) {
   const theme = useTheme();
-  const opacity = useRef(new Animated.Value(0.3)).current;
+  const opacity = useRef(new Animated.Value(0.45)).current;
   const reduceMotion = useReduceMotion();
 
   useEffect(() => {
     if (reduceMotion) return;
     const loop = Animated.loop(
       Animated.sequence([
-        Animated.timing(opacity, { toValue: 0.7, duration: 800, useNativeDriver: true }),
-        Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: true }),
+        // Calm pulse, ~1.2 s per cycle (design doc: States — loading).
+        Animated.timing(opacity, { toValue: 0.75, duration: 600, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.45, duration: 600, useNativeDriver: true }),
       ]),
     );
     loop.start();
@@ -41,6 +42,25 @@ export function Skeleton({ width, height, borderRadius = 8, style }: SkeletonPro
         style,
       ]}
     />
+  );
+}
+
+/** Listing detail while it loads: photo, price, meta and facts in their real places. */
+export function ListingDetailSkeleton() {
+  return (
+    <View style={skeletonStyles.detail} accessibilityLabel="Loading" accessibilityRole="progressbar">
+      <Skeleton width="100%" height={240} borderRadius={radius.lg} />
+      <Skeleton width="45%" height={32} style={{ marginTop: 20 }} />
+      <Skeleton width="70%" height={16} style={{ marginTop: 10 }} />
+      <View style={skeletonStyles.pills}>
+        <Skeleton width={72} height={28} borderRadius={radius.pill} />
+        <Skeleton width={64} height={28} borderRadius={radius.pill} />
+        <Skeleton width={80} height={28} borderRadius={radius.pill} />
+      </View>
+      <Skeleton width="100%" height={14} style={{ marginTop: 24 }} />
+      <Skeleton width="92%" height={14} style={{ marginTop: 8 }} />
+      <Skeleton width="60%" height={14} style={{ marginTop: 8 }} />
+    </View>
   );
 }
 
@@ -82,6 +102,7 @@ export function FavoriteListingCardSkeleton() {
 }
 
 const skeletonStyles = StyleSheet.create({
+  detail: { padding: 16 },
   card: { borderRadius: radius.md, borderWidth: 1, overflow: 'hidden', marginBottom: 16 },
   image: { borderTopLeftRadius: 12, borderTopRightRadius: 12 },
   content: { padding: 16 },

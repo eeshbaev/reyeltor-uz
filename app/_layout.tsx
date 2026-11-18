@@ -13,6 +13,7 @@ import { PurposesSync } from '@/components/onboarding/PurposesSync';
 import { SplashScreen as CustomSplashScreen } from '@/components/SplashScreen';
 import { AppSystemBars } from '@/components/ui/AppSystemBars';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { ToastHost } from '@/components/ui/Toast';
 import { runAppStartup } from '@/lib/bootstrap/appStartup';
 import { installNetworkResilience } from '@/lib/bootstrap/networkResilience';
 import { AuthProvider } from '@/lib/context/AuthContext';
@@ -134,6 +135,7 @@ export default function RootLayout() {
                       options={{ presentation: 'fullScreenModal', title: 'Pin location', headerShown: true }}
                     />
                   </Stack>
+                  <ToastHost />
                 </View>
               </MapContextProvider>
               </ListingsProvider>

@@ -6,6 +6,7 @@ import { getCategoryColors } from '@/lib/design/categoryColors';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import { getListingStatusBadge } from '@/lib/listing';
 import { useTheme } from '@/lib/theme';
 import type { ListingCategory } from '@/types';
@@ -113,5 +114,5 @@ const styles = StyleSheet.create({
     }),
   },
   label: { fontWeight: '700', letterSpacing: 0.15 },
-  labelCompact: { fontSize: 10, letterSpacing: 0.1 },
+  labelCompact: { fontSize: typeSize.micro, letterSpacing: 0.1 },
 });

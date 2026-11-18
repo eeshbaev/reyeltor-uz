@@ -3,7 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Linking, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ShareSheet, type ShareSheetRef } from '@/components/growth/ShareSheet';
 import { AgentCard } from '@/components/listing/AgentCard';
@@ -22,6 +22,7 @@ import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { SafeScreen } from '@/components/ui/SafeScreen';
+import { ListingDetailSkeleton } from '@/components/ui/Skeleton';
 import { Text } from '@/components/ui/Text';
 import { useAuth } from '@/lib/context/AuthContext';
 import { useListingsCache } from '@/lib/context/ListingsContext';
@@ -214,9 +215,7 @@ function ListingDetailScreenContent() {
       <SafeScreen edges={['left', 'right']}>
         <Stack.Screen options={{ headerShown: false }} />
         <StackScreenHeader title={t('common.loading')} backFallbackHref="/(tabs)/map" />
-        <View style={styles.centered}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
+        <ListingDetailSkeleton />
       </SafeScreen>
     );
   }

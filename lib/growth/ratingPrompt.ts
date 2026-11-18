@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as StoreReview from 'expo-store-review';
 import { AppState } from 'react-native';
 import { openAppRating } from '@/lib/growth/rateApp';
 
@@ -84,6 +83,8 @@ export async function onValueMoment(moment: ValueMoment, pauseMs = 1500): Promis
   await writeState(state);
 
   try {
+    // Loaded lazily: an app build made before this native module was added must not crash.
+    const StoreReview = await import('expo-store-review');
     if (await StoreReview.isAvailableAsync()) {
       await StoreReview.requestReview();
     }

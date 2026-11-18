@@ -46,7 +46,8 @@
       "showLess": "Daha Az Göster",
       "showMore": "Daha Fazla Göster",
       "networkError": "Ağ Hatası",
-      "ok": "Tamam"
+      "ok": "Tamam",
+      "undo": "Geri al"
     },
     "map": {
       "filters": "Filtreler",
@@ -503,7 +504,12 @@
       "signInRequired": "Favoriler",
       "signInHint": "İlanları kaydetmek için giriş yapın veya kaydolun.",
       "guestCard": "Bu cihazda kaydedildi",
-      "guestBannerHint": "Tüm cihazlarda senkronize etmek için giriş yapın."
+      "guestBannerHint": "Tüm cihazlarda senkronize etmek için giriş yapın.",
+      "toastSaved": "Kaydedildi · fiyat düşerse haber vereceğiz",
+      "toastRemoved": "Kaydedilenlerden kaldırıldı",
+      "toastSaveFailed": "Kaydedilemedi — bağlantınızı kontrol edin. Hiçbir şey değişmedi.",
+      "toastRemoveFailed": "Kaldırılamadı — bağlantınızı kontrol edin. Hâlâ kayıtlı.",
+      "toastSavedPlain": "Kaydedilenlere eklendi"
     },
     "flags": {
       "title": "Bildir",

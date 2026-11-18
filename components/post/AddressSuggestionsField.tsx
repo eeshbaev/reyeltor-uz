@@ -4,6 +4,7 @@ import { ActivityIndicator, Pressable, StyleSheet, TextInput, View } from 'react
 import { AppText } from '@/components/ui/AppText';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import type { LocationSuggestion, LocationSuggestionKind } from '@/lib/map/locationSuggestions';
 import { useTheme } from '@/lib/theme';
 
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: typeSize.input,
     paddingVertical: spacing.sm + 2,
   },
   loader: {

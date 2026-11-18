@@ -11,6 +11,7 @@ import { getCategoryColors } from '@/lib/design/categoryColors';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import { daysSince } from '@/lib/format';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
@@ -216,7 +217,7 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
     },
     featuredText: {
       fontWeight: '700',
-      fontSize: 10,
+      fontSize: typeSize.micro,
       letterSpacing: 0.2,
     },
     savedBadge: {
@@ -248,7 +249,7 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
       color: fixedColors.white,
       fontWeight: '700',
       letterSpacing: -0.6,
-      fontSize: 24,
+      fontSize: typeSize.h2,
     },
     locationRow: {
       flexDirection: 'row',

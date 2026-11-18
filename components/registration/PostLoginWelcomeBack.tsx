@@ -12,6 +12,7 @@ import { fixedColors } from '@/lib/design/colors';
 import { motion } from '@/lib/design/motion';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 
 interface PostLoginWelcomeBackProps {
   fullName: string;
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
   },
   greeting: {
     color: fixedColors.white,
-    fontSize: 24,
+    fontSize: typeSize.h2,
     fontWeight: '600',
     textAlign: 'center',
     letterSpacing: -0.3,
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
   },
   ctaLabel: {
     color: fixedColors.ink,
-    fontSize: 15,
+    fontSize: typeSize.body,
     fontWeight: '600',
   },
 });

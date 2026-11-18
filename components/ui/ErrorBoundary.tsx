@@ -9,6 +9,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { fixedColors } from '@/lib/design/colors';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import { logger } from '@/lib/logging/logger';
 
 interface Props {
@@ -131,7 +132,8 @@ const styles = StyleSheet.create({
     maxWidth: 300,
   },
   errorIcon: {
-    fontSize: 48,
+    fontSize: typeSize.display * 1.4,
+    lineHeight: typeSize.display * 1.6,
     marginBottom: spacing.md,
   },
   title: {

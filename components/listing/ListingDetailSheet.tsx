@@ -3,7 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Linking, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ShareSheet, type ShareSheetRef } from '@/components/growth/ShareSheet';
@@ -18,6 +18,7 @@ import { PriceBadge } from '@/components/listing/PriceBadge';
 import { PropertyInfoSection } from '@/components/listing/PropertyInfoSection';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
+import { ListingDetailSkeleton } from '@/components/ui/Skeleton';
 import { requestCacheMedium } from '@/lib/cache/requestCache';
 import { useListingsCache } from '@/lib/context/ListingsContext';
 import { isDemoId } from '@/lib/demo';
@@ -216,9 +217,7 @@ export const ListingDetailSheet = forwardRef<ListingDetailSheetRef, ListingDetai
       handleIndicatorStyle={{ backgroundColor: theme.colors.borderStrong }}
     >
       {!listing ? (
-        <View style={styles.loading}>
-          <ActivityIndicator size="large" color={theme.colors.accent} />
-        </View>
+        <ListingDetailSkeleton />
       ) : (
         <BottomSheetScrollView
           keyboardShouldPersistTaps="handled"

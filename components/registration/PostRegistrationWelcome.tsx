@@ -16,6 +16,7 @@ import { fixedColors } from '@/lib/design/colors';
 import { motion } from '@/lib/design/motion';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import { markWelcomeShown } from '@/lib/onboarding/storage';
 
 interface PostRegistrationWelcomeProps {
@@ -121,25 +122,25 @@ const styles = StyleSheet.create({
   },
   count: {
     color: fixedColors.white,
-    fontSize: 72,
+    fontSize: typeSize.hero,
     fontWeight: '500',
     lineHeight: 80,
     marginTop: spacing.md,
   },
   coinsLabel: {
     color: 'rgba(255, 255, 255, 0.55)',
-    fontSize: 16,
+    fontSize: typeSize.input,
   },
   welcomeName: {
     color: fixedColors.white,
-    fontSize: 20,
+    fontSize: typeSize.h2,
     fontWeight: '500',
     marginTop: spacing.md,
     textAlign: 'center',
   },
   earlyLine: {
     color: 'rgba(255, 255, 255, 0.62)',
-    fontSize: 15,
+    fontSize: typeSize.body,
     lineHeight: 22,
     marginTop: spacing.sm,
     textAlign: 'center',
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   },
   ctaLabel: {
     color: fixedColors.ink,
-    fontSize: 15,
+    fontSize: typeSize.body,
     fontWeight: '600',
   },
 });

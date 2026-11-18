@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackButton } from '@/components/navigation/BackButton';
 import { AppText } from '@/components/ui/AppText';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import { useTheme } from '@/lib/theme';
 
 interface StackScreenHeaderProps {
@@ -67,6 +68,6 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontWeight: '700',
-    fontSize: 18,
+    fontSize: typeSize.h3,
   },
 });

@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import { useTheme } from '@/lib/theme';
 
 interface TextFieldProps extends TextInputProps {
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 4,
-    fontSize: 16,
+    fontSize: typeSize.input,
   },
   helper: { marginTop: spacing.xs },
 });

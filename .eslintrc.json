@@ -113,7 +113,10 @@
         "components/**/*.{ts,tsx}"
       ],
       "excludedFiles": [
-        "components/brand/**"
+        "components/brand/**",
+        "components/SplashScreen.tsx",
+        "components/share/ListingShareCard.tsx",
+        "**/*.web.tsx"
       ],
       "rules": {
         "no-restricted-syntax": [
@@ -125,6 +128,10 @@
           {
             "selector": "Property[key.name='borderRadius'] > Literal[value>4]",
             "message": "Use radius.sm / md / lg / pill from lib/design/radius."
+          },
+          {
+            "selector": "Property[key.name='fontSize'] > Literal",
+            "message": "Use AppText variants or typeSize from lib/design/typography."
           }
         ]
       }

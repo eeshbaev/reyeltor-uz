@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { LanguageHeaderButton } from '@/components/i18n/LanguageHeaderButton';
 import { BackButton } from '@/components/navigation/BackButton';
+import { typeSize } from '@/lib/design/typography';
 import { useTheme } from '@/lib/theme';
 
 export default function ProfileLayout() {
@@ -13,7 +14,7 @@ export default function ProfileLayout() {
       screenOptions={{
         animation: 'slide_from_right',
         headerStyle: { backgroundColor: theme.colors.background },
-        headerTitleStyle: { fontSize: 18, fontWeight: '700' },
+        headerTitleStyle: { fontSize: typeSize.h3, fontWeight: '700' },
         headerTintColor: theme.colors.text,
         headerShadowVisible: false,
         headerBackVisible: false,

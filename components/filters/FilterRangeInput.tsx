@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { radius } from '@/lib/design/radius';
+import { typeSize } from '@/lib/design/typography';
 import { spacing, useTheme } from '@/lib/theme';
 
 interface FilterRangeInputProps {
@@ -45,7 +46,7 @@ export function FilterRangeInput({
           borderColor: theme.colors.border,
           paddingHorizontal: spacing.md,
           paddingVertical: spacing.sm,
-          fontSize: 16,
+          fontSize: typeSize.input,
           fontWeight: '500',
           backgroundColor: theme.isDark ? 'rgba(255,255,255,0.04)' : theme.colors.surfaceElevated,
           color: theme.colors.primary,

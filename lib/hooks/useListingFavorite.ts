@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { showToast } from '@/components/ui/Toast';
 import { useAuth } from '@/lib/context/AuthContext';
 import { useGuestFavoriteAuth } from '@/lib/context/GuestFavoriteAuthContext';
 import { subscribeFavoritesChanged } from '@/lib/favorites/events';
@@ -8,6 +10,7 @@ import { hapticLight } from '@/lib/haptics';
 import { supabase } from '@/lib/supabase';
 
 export function useListingFavorite(listingId: string | null) {
+  const { t } = useTranslation();
   const { session } = useAuth();
   const { openGuestFavoriteAuth } = useGuestFavoriteAuth();
   const [isFavorite, setIsFavorite] = useState(false);
@@ -86,8 +89,23 @@ export function useListingFavorite(listingId: string | null) {
 
     if (!ok) {
       rollback();
+      showToast({ tone: 'error', message: t(next ? 'favorites.toastSaveFailed' : 'favorites.toastRemoveFailed') });
+      return;
     }
-  }, [isFavorite, listingId, openGuestFavoriteAuth, session?.user?.id]);
+
+    // What happened + a way back (design doc: three answers).
+    const userId = session.user.id;
+    showToast({
+      // Demo listings are saved on the device only and never get price alerts: don't promise one.
+      message: t(next ? (usesLocalFavoriteStorage(listingId) ? 'favorites.toastSavedPlain' : 'favorites.toastSaved') : 'favorites.toastRemoved'),
+      actionLabel: t('common.undo'),
+      onAction: () => {
+        void (next ? removeListingFavorite(userId, listingId) : saveListingFavorite(userId, listingId)).then((undone) => {
+          if (undone) setIsFavorite(previous);
+        });
+      },
+    });
+  }, [isFavorite, listingId, openGuestFavoriteAuth, session?.user?.id, t]);
 
   return { isFavorite, justSaved, toggleFavorite };
 }

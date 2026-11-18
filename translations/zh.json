@@ -46,7 +46,8 @@
       "showLess": "显示较少",
       "showMore": "显示更多",
       "networkError": "网络错误",
-      "ok": "好"
+      "ok": "好",
+      "undo": "撤销"
     },
     "map": {
       "filters": "筛选",
@@ -503,7 +504,12 @@
       "signInRequired": "收藏",
       "signInHint": "登录或注册以保存房源。",
       "guestCard": "已保存在此设备",
-      "guestBannerHint": "登录以在所有设备上同步收藏。"
+      "guestBannerHint": "登录以在所有设备上同步收藏。",
+      "toastSaved": "已收藏 · 降价时会通知您",
+      "toastRemoved": "已从收藏中移除",
+      "toastSaveFailed": "收藏失败——请检查网络。没有任何更改。",
+      "toastRemoveFailed": "移除失败——请检查网络。该房源仍在收藏中。",
+      "toastSavedPlain": "已加入收藏"
     },
     "flags": {
       "title": "举报",

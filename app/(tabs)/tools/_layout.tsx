@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { BackButton } from '@/components/navigation/BackButton';
 import { fixedColors } from '@/lib/design/colors';
+import { typeSize } from '@/lib/design/typography';
 import { useTheme } from '@/lib/theme';
 
 export default function ToolsLayout() {
@@ -17,7 +18,7 @@ export default function ToolsLayout() {
           backgroundColor: theme.colors.background,
         },
         headerTitleStyle: {
-          fontSize: 18,
+          fontSize: typeSize.h3,
           fontWeight: '700',
           letterSpacing: -0.3,
         },

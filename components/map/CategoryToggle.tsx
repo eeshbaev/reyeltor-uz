@@ -7,6 +7,7 @@ import { getCategoryColors } from '@/lib/design/categoryColors';
 import { mapChromeBorder } from '@/lib/design/mapChrome';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 import { hapticLight } from '@/lib/haptics';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
   },
   pillText: {
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: typeSize.caption,
     letterSpacing: 0.1,
   },
 });

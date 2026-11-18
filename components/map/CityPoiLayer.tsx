@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { POI_CATEGORY_COLOR, POI_CATEGORY_ICON } from '@/components/map/neighborhoodMarkerStyles';
 import { Text } from '@/components/ui/Text';
 import { fixedColors } from '@/lib/design/colors';
+import { typeSize } from '@/lib/design/typography';
 import { CITY_POI_LABEL_ZOOM } from '@/lib/map/cityPois';
 import type { NeighborhoodPoi } from '@/lib/neighborhood/amenities';
 
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   label: {
     marginLeft: 4,
     maxWidth: 150,
-    fontSize: 11,
+    fontSize: typeSize.micro,
     fontWeight: '600',
     textShadowColor: 'rgba(255,255,255,0.95)',
     textShadowOffset: { width: 0, height: 0 },

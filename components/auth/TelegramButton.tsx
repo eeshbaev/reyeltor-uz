@@ -4,6 +4,7 @@ import { Text } from '@/components/ui/Text';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
+import { typeSize } from '@/lib/design/typography';
 
 const TELEGRAM_BLUE = fixedColors.telegram;
 
@@ -48,5 +49,5 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   dimmed: { opacity: 0.7 },
-  label: { color: fixedColors.white, fontWeight: '700', fontSize: 16 },
+  label: { color: fixedColors.white, fontWeight: '700', fontSize: typeSize.input },
 });
