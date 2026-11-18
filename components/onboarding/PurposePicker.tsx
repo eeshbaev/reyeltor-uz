@@ -122,6 +122,14 @@ export function PurposePicker({ onDone }: PurposePickerProps) {
               />
             </Animated.View>
           ))}
+          <Animated.View entering={enter(160)}>
+            <Row
+              icon="add-circle-outline"
+              label={t('purposes.list')}
+              big
+              onPress={() => finish(['realtor'], null)}
+            />
+          </Animated.View>
           <Pressable
             onPress={() => finish([], null)}
             accessibilityRole="button"
