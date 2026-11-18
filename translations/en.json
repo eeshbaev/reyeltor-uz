@@ -228,9 +228,7 @@
       "promise": {
         "heading": "Find your place in Tashkent.",
         "subtitle": "Homes, offices and shops with real prices. Follow a search and we'll tell you what's new.",
-        "benefitFind": "Tired of endless calls? See real prices and fresh listings on one map.",
-        "benefitPost": "Have a home to rent or sell? Post it free. The right people will find you.",
-        "benefitAgents": "Realtor? Put your listings in front of people searching right now. Free.",
+        "body": "Rent, buy or list a home, office or shop. Real prices, one map.",
         "cta": "Start",
         "signIn": "I already have an account"
       },

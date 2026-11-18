@@ -228,9 +228,7 @@
       "promise": {
         "heading": "Taşkent'te yuvanızı bulun.",
         "subtitle": "Konutlar, ofisler ve dükkanlar gerçek fiyatlarla. Bir aramayı takip edin, yenileri size haber verelim.",
-        "benefitFind": "Sonu gelmeyen aramalardan bıktınız mı? Gerçek fiyatlar ve güncel ilanlar tek haritada.",
-        "benefitPost": "Kiralayacak ya da satacak eviniz mi var? Ücretsiz yayınlayın, doğru kişiler sizi bulsun.",
-        "benefitAgents": "Emlakçı mısınız? İlanlarınızı şu an arayanlara gösterin. Ücretsiz.",
+        "body": "Ev, ofis ya da dükkânı kiralayın, satın alın veya ilan verin. Gerçek fiyatlar, tek harita.",
         "cta": "Başla",
         "signIn": "Zaten hesabım var"
       },

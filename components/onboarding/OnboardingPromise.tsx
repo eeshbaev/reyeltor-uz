@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
@@ -10,12 +9,6 @@ import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { hapticLight } from '@/lib/haptics';
 import { useReduceMotion } from '@/lib/hooks/useReduceMotion';
-
-const BENEFITS: { key: string; icon: keyof typeof Ionicons.glyphMap }[] = [
-  { key: 'benefitFind', icon: 'notifications-outline' },
-  { key: 'benefitPost', icon: 'add-circle-outline' },
-  { key: 'benefitAgents', icon: 'briefcase-outline' },
-];
 
 interface OnboardingPromiseProps {
   onStart: () => void;
@@ -49,21 +42,14 @@ export function OnboardingPromise({ onStart, onSignIn }: OnboardingPromiseProps)
           <AppText variant="h1" style={styles.heading}>
             {t('onboarding.promise.heading')}
           </AppText>
+          <AppText variant="body" style={styles.body}>
+            {t('onboarding.promise.body')}
+          </AppText>
           <AppText variant="label" style={styles.note}>
             {t('onboarding.trust.note')}
           </AppText>
         </Animated.View>
 
-        <Animated.View entering={enter(200)} style={styles.benefits}>
-          {BENEFITS.map((item) => (
-            <View key={item.key} style={styles.benefit}>
-              <Ionicons name={item.icon} size={18} color={fixedColors.goldSoft} />
-              <AppText variant="label" style={styles.benefitText}>
-                {t(`onboarding.promise.${item.key}`)}
-              </AppText>
-            </View>
-          ))}
-        </Animated.View>
 
         <Animated.View entering={enter(240)} style={styles.actions}>
           <Pressable
@@ -101,9 +87,7 @@ const styles = StyleSheet.create({
   wordmark: { alignItems: 'flex-start' },
   heading: { color: fixedColors.white, letterSpacing: -0.4 },
   note: { color: fixedColors.goldSoft, marginTop: spacing.sm },
-  benefits: { gap: spacing.smd },
-  benefit: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.smd },
-  benefitText: { flex: 1, color: 'rgba(255,255,255,0.88)' },
+  body: { color: 'rgba(255,255,255,0.85)', marginTop: spacing.sm },
   actions: { gap: spacing.xs },
   cta: {
     backgroundColor: fixedColors.white,

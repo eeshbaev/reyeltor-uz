@@ -228,9 +228,7 @@
       "promise": {
         "heading": "Toshkentda oʻz maskaningizni toping.",
         "subtitle": "Uylar, ofislar va doʻkonlar haqiqiy narxlar bilan. Qidiruvni kuzatib boring — yangilarini sizga xabar qilamiz.",
-        "benefitFind": "Cheksiz qoʻngʻiroqlardan charchadingizmi? Haqiqiy narxlar va yangi eʼlonlar bitta xaritada.",
-        "benefitPost": "Uyingizni ijaraga yoki sotmoqchimisiz? Bepul joylang — kerakli odamlar sizni topadi.",
-        "benefitAgents": "Rieltormisiz? Eʼlonlaringizni hozir qidirayotganlarga koʻrsating. Bepul.",
+        "body": "Uy, ofis yoki doʻkonni ijaraga oling, sotib oling yoki eʼlon qiling. Haqiqiy narxlar, bitta xarita.",
         "cta": "Boshlash",
         "signIn": "Menda akkaunt bor"
       },
