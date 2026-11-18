@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BrandWordmark } from '@/components/brand/BrandWordmark';
+import { ListingFloaters } from '@/components/onboarding/ListingFloaters';
 import { AppText } from '@/components/ui/AppText';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
@@ -30,6 +31,8 @@ export function OnboardingPromise({ onStart, onSignIn }: OnboardingPromiseProps)
 
   return (
     <View style={styles.root}>
+      <ListingFloaters />
+
       <View
         style={[styles.copy, wide && styles.copyWide, { paddingBottom: insets.bottom + spacing.lg }]}
         pointerEvents="box-none"
