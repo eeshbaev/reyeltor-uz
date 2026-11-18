@@ -218,23 +218,27 @@
       "freeAccess": "Reyeltor-uz 的全部功能均可免费使用。"
     },
     "onboarding": {
-      "welcome": {
-        "heading": "欢迎使用 Reyeltor-uz！",
-        "subtitle": "在乌兹别克斯坦找住宅和商业地产最便捷的方式 — 从 Tashkent 地图开始。"
-      },
-      "residential": {
-        "heading": "在塔什干找到你的家。",
-        "subtitle": "在交互式地图上浏览数百套经过验证的公寓和房屋。"
-      },
-      "commercial": {
-        "heading": "办公室、零售或仓库 — 这里应有尽有。",
-        "subtitle": "塔什干及周边地区的商业空间，真实市场价格。"
-      },
       "trust": {
-        "heading": "真实房源。真实经纪人。真实价格。",
-        "subtitle": "每个房源都显示经纪人统计、价格历史和社区详情。",
-        "cta": "探索地图 →",
         "note": "高端体验，免费使用。"
+      },
+      "promise": {
+        "heading": "塔什干房产，尽在一张实时地图。",
+        "subtitle": "住宅、办公室和商铺，真实价格。关注一个搜索，有新房源时我们会通知您。",
+        "cta": "开始",
+        "signIn": "我已有账户"
+      },
+      "mapWelcome": {
+        "rent": "地图上的出租住宅：{{count}} 套。点击价格即可查看。",
+        "buy": "地图上的出售住宅：{{count}} 套。点击价格即可查看。",
+        "investor": "出售中的商业地产：{{count}} 处。点击价格即可查看。",
+        "browse": "地图上的房源：{{count}} 个。点击价格即可查看。",
+        "none": "暂无匹配房源——请缩小地图或调整筛选条件。"
+      },
+      "postCard": {
+        "title": "发布您的第一个房源——免费",
+        "body": "发布后立即显示在地图上。发布时需通过 Telegram 登录。",
+        "cta": "发布房源",
+        "later": "稍后"
       }
     },
     "listing": {
@@ -924,8 +928,6 @@
       "keepLastSearch": "保存为搜索"
     },
     "purposes": {
-      "title": "您使用 Reyeltor 的目的是什么？",
-      "subtitle": "可多选。我们将为您设置第一个搜索——随时可以更改。",
       "investor": "投资者",
       "investorHint": "接收符合预算的新房源提醒",
       "realtor": "房产经纪人",
@@ -935,10 +937,11 @@
       "buy": "想买房",
       "buyHint": "公寓、住宅、土地及商业地产",
       "note": "仅用于个性化，所有功能均可使用。",
-      "continue": "继续",
-      "skip": "暂时跳过",
       "profileTitle": "您的目的",
-      "profileHint": "用于个性化体验，所有功能均可使用。"
+      "profileHint": "用于个性化体验，所有功能均可使用。",
+      "titleOne": "您在找什么？",
+      "subtitleOne": "我们会为您设置地图，随时可以更改。",
+      "justBrowse": "先随便看看地图"
     },
     "demo": {
       "badge": "示例",

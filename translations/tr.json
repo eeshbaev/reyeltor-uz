@@ -218,23 +218,27 @@
       "freeAccess": "Reyeltor-uz’daki her şey sizin için ücretsiz."
     },
     "onboarding": {
-      "welcome": {
-        "heading": "Reyeltor-uz'a hoş geldiniz!",
-        "subtitle": "Özbekistan'da konut ve ticari emlak bulmanın en kolay yolu — Tashkent haritasından başlayın."
-      },
-      "residential": {
-        "heading": "Taşkent'te evinizi bulun.",
-        "subtitle": "Etkileşimli harita üzerinde yüzlerce doğrulanmış daire ve evi inceleyin."
-      },
-      "commercial": {
-        "heading": "Ofis, perakende veya depo — hepsi burada.",
-        "subtitle": "Taşkent ve bölge genelindeki ticari alanlar, gerçek pazar fiyatlarıyla."
-      },
       "trust": {
-        "heading": "Gerçek Listeler. Gerçek Acenteler. Gerçek Fiyatlar.",
-        "subtitle": "Her liste, acente istatistiklerini, fiyat geçmişini ve mahalle ayrıntılarını gösterir.",
-        "cta": "Haritayı Keşfet →",
         "note": "Premium deneyim. Ücretsiz erişim."
+      },
+      "promise": {
+        "heading": "Taşkent emlakı tek bir canlı haritada.",
+        "subtitle": "Konutlar, ofisler ve dükkanlar gerçek fiyatlarla. Bir aramayı takip edin, yenileri size haber verelim.",
+        "cta": "Başla",
+        "signIn": "Zaten hesabım var"
+      },
+      "mapWelcome": {
+        "rent": "Haritada kiralık konutlar: {{count}}. Açmak için bir fiyata dokunun.",
+        "buy": "Haritada satılık konutlar: {{count}}. Açmak için bir fiyata dokunun.",
+        "investor": "Satılık ticari mülkler: {{count}}. Açmak için bir fiyata dokunun.",
+        "browse": "Haritadaki ilanlar: {{count}}. Açmak için bir fiyata dokunun.",
+        "none": "Henüz eşleşen yok — haritayı uzaklaştırın veya filtreleri değiştirin."
+      },
+      "postCard": {
+        "title": "İlk ilanınızı verin — ücretsiz",
+        "body": "Hemen haritada yayınlanır. Yayınlamak için Telegram ile giriş yaparsınız.",
+        "cta": "İlan ver",
+        "later": "Sonra"
       }
     },
     "listing": {
@@ -924,8 +928,6 @@
       "keepLastSearch": "Kayıtlı arama olarak sakla"
     },
     "purposes": {
-      "title": "Reyeltor'u ne için kullanıyorsunuz?",
-      "subtitle": "Uygun olanların hepsini seçin. İlk aramanızı hazırlayalım — dilediğiniz zaman değiştirebilirsiniz.",
       "investor": "Yatırımcı",
       "investorHint": "Bütçenize uyan yeni mülkler için bildirimler",
       "realtor": "Emlakçı",
@@ -935,10 +937,11 @@
       "buy": "Satın almak istiyorum",
       "buyHint": "Daire, ev, arsa ve ticari mülk",
       "note": "Bu yalnızca kişiselleştirme içindir. Tüm özellikler açık kalır.",
-      "continue": "Devam",
-      "skip": "Şimdilik geç",
       "profileTitle": "Amaçlarınız",
-      "profileHint": "Deneyiminizi kişiselleştirir. Tüm özellikler açık kalır."
+      "profileHint": "Deneyiminizi kişiselleştirir. Tüm özellikler açık kalır.",
+      "titleOne": "Ne arıyorsunuz?",
+      "subtitleOne": "Haritayı sizin için ayarlayalım. İstediğiniz zaman değiştirebilirsiniz.",
+      "justBrowse": "Sadece haritaya göz at"
     },
     "demo": {
       "badge": "DEMO",

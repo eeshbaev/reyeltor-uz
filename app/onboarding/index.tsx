@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { LanguageTopBar } from '@/components/i18n/LanguageTopBar';
-import { OnboardingPager } from '@/components/onboarding/OnboardingPager';
+import { OnboardingPromise } from '@/components/onboarding/OnboardingPromise';
 import { PurposePicker } from '@/components/onboarding/PurposePicker';
 import { AppSystemBars } from '@/components/ui/AppSystemBars';
 import { useAuth } from '@/lib/context/AuthContext';
@@ -16,7 +16,8 @@ export default function OnboardingScreen() {
   const router = useRouter();
   const { session, refreshProfile } = useAuth();
   const { setFilters } = useListingsCache();
-  const [step, setStep] = useState<'slides' | 'purposes'>('slides');
+  // One promise screen, then one goal question, then the map (strategy doc, onboarding).
+  const [step, setStep] = useState<'promise' | 'goal'>('promise');
 
   const handlePurposes = useCallback(
     async (purposes: UserPurpose[]) => {
@@ -35,7 +36,7 @@ export default function OnboardingScreen() {
       }
 
       await markOnboardingDone();
-      router.replace('/(tabs)/map');
+      router.replace({ pathname: '/(tabs)/map', params: { welcomeGoal: purposes[0] ?? 'browse' } });
     },
     [refreshProfile, router, session?.user?.id, setFilters],
   );
@@ -43,8 +44,13 @@ export default function OnboardingScreen() {
   return (
     <View style={styles.container}>
       <AppSystemBars style="light" />
-      {step === 'slides' ? (
-        <OnboardingPager onComplete={() => setStep('purposes')} />
+      {step === 'promise' ? (
+        <OnboardingPromise
+          onStart={() => setStep('goal')}
+          onSignIn={() => {
+            void markOnboardingDone().then(() => router.replace('/(tabs)/profile/login'));
+          }}
+        />
       ) : (
         <PurposePicker onDone={(purposes) => void handlePurposes(purposes)} />
       )}

@@ -218,23 +218,27 @@
       "freeAccess": "Reyeltor-uz'dagi hamma narsadan bepul foydalaning."
     },
     "onboarding": {
-      "welcome": {
-        "heading": "Reyeltor-uz'ga Xush Kelibsiz!",
-        "subtitle": "O'zbekistonda uy va tijorat mulklarini topishning eng oson usuli — Toshkent xaritasidan boshlang."
-      },
-      "residential": {
-        "heading": "Toshkentda o'z uyingizni toping.",
-        "subtitle": "Interaktiv xaritada yuzlab tasdiqlangan kvartira va uylarni ko'rib chiqing."
-      },
-      "commercial": {
-        "heading": "Ofis, chakana yoki omboy — barchasi bu yerda.",
-        "subtitle": "Toshkent va mintaqadagi tijorat makonlari, haqiqiy bozor narxlari bilan."
-      },
       "trust": {
-        "heading": "Haqiqiy E'lonlar. Haqiqiy Agentlar. Haqiqiy Narxlar.",
-        "subtitle": "Har bir e'lon agent statistikasini, narx tarixini va mahallaning tafsilotlarini ko'rsatadi.",
-        "cta": "Xaritani ochish →",
         "note": "Premium tajriba. Bepul foydalanish."
+      },
+      "promise": {
+        "heading": "Toshkent ko'chmas mulki bitta jonli xaritada.",
+        "subtitle": "Uylar, ofislar va do'konlar haqiqiy narxlar bilan. Qidiruvni kuzatib boring — yangilarini sizga xabar qilamiz.",
+        "cta": "Boshlash",
+        "signIn": "Menda hisob bor"
+      },
+      "mapWelcome": {
+        "rent": "Xaritada ijaraga uylar: {{count}}. Ochish uchun narxga bosing.",
+        "buy": "Xaritada sotuvdagi uylar: {{count}}. Ochish uchun narxga bosing.",
+        "investor": "Sotuvdagi tijorat mulki: {{count}}. Ochish uchun narxga bosing.",
+        "browse": "Xaritadagi e'lonlar: {{count}}. Ochish uchun narxga bosing.",
+        "none": "Hozircha mos e'lon yo'q — xaritani uzoqlashtiring yoki filtrlarni o'zgartiring."
+      },
+      "postCard": {
+        "title": "Birinchi e'loningizni joylang — bepul",
+        "body": "E'lon darhol xaritada paydo bo'ladi. Joylash uchun Telegram orqali kirasiz.",
+        "cta": "E'lon joylash",
+        "later": "Keyinroq"
       }
     },
     "listing": {
@@ -924,8 +928,6 @@
       "keepLastSearch": "Saqlangan qidiruv sifatida saqlash"
     },
     "purposes": {
-      "title": "Reyeltorga nima uchun keldingiz?",
-      "subtitle": "Mos keladiganlarning barchasini tanlang. Birinchi qidiruvingizni sozlaymiz — istalgan vaqtda o'zgartirish mumkin.",
       "investor": "Investor",
       "investorHint": "Byudjetingizga mos yangi obyektlar haqida xabarlar",
       "realtor": "Rieltor",
@@ -935,10 +937,11 @@
       "buy": "Sotib olmoqchiman",
       "buyHint": "Kvartira, uy, yer va tijorat ko'chmas mulki",
       "note": "Bu faqat shaxsiylashtirish. Barcha imkoniyatlar ochiq qoladi.",
-      "continue": "Davom etish",
-      "skip": "Hozircha o'tkazib yuborish",
       "profileTitle": "Maqsadlaringiz",
-      "profileHint": "Ilovani shaxsiylashtirishga yordam beradi. Barcha imkoniyatlar ochiq qoladi."
+      "profileHint": "Ilovani shaxsiylashtirishga yordam beradi. Barcha imkoniyatlar ochiq qoladi.",
+      "titleOne": "Nima qidiryapsiz?",
+      "subtitleOne": "Xaritani siz uchun sozlaymiz. Istalgan vaqtda o'zgartirishingiz mumkin.",
+      "justBrowse": "Shunchaki xaritani ko'rish"
     },
     "demo": {
       "badge": "DEMO",

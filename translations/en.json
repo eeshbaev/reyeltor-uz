@@ -218,23 +218,27 @@
       "freeAccess": "Everything in Reyeltor-uz is yours to use — free."
     },
     "onboarding": {
-      "welcome": {
-        "heading": "Welcome to Reyeltor-uz!",
-        "subtitle": "The easiest way to find homes and commercial property in Uzbekistan — start on the Tashkent map."
-      },
-      "residential": {
-        "heading": "Find your home in Tashkent.",
-        "subtitle": "Browse hundreds of verified apartments and houses on an interactive map."
-      },
-      "commercial": {
-        "heading": "Office, retail, or warehouse — it's all here.",
-        "subtitle": "Commercial spaces across Tashkent and the region, with real market prices."
-      },
       "trust": {
-        "heading": "Real listings. Real agents. Real prices.",
-        "subtitle": "Every listing shows agent stats, price history, and neighborhood details.",
-        "cta": "Explore the map →",
         "note": "Premium experience. Free access."
+      },
+      "promise": {
+        "heading": "Tashkent property on one live map.",
+        "subtitle": "Homes, offices and shops with real prices. Follow a search and we'll tell you what's new.",
+        "cta": "Start",
+        "signIn": "I already have an account"
+      },
+      "mapWelcome": {
+        "rent": "Homes for rent on the map: {{count}}. Tap a price to open one.",
+        "buy": "Homes for sale on the map: {{count}}. Tap a price to open one.",
+        "investor": "Commercial property for sale: {{count}}. Tap a price to open one.",
+        "browse": "Listings on the map: {{count}}. Tap a price to open one.",
+        "none": "Nothing matches yet — zoom out or change the filters."
+      },
+      "postCard": {
+        "title": "Post your first listing — it's free",
+        "body": "It goes live on the map right away. You'll sign in with Telegram to publish.",
+        "cta": "Post a listing",
+        "later": "Later"
       }
     },
     "listing": {
@@ -924,8 +928,6 @@
       "keepLastSearch": "Keep as a saved search"
     },
     "purposes": {
-      "title": "What brings you to Reyeltor?",
-      "subtitle": "Choose all that apply. We will set up your first search — you can change this any time.",
       "investor": "Investor",
       "investorHint": "Get alerts about new properties that fit your budget",
       "realtor": "Realtor",
@@ -935,10 +937,11 @@
       "buy": "Looking to buy",
       "buyHint": "Apartments, houses, land and commercial property",
       "note": "This only personalizes the app. Every feature stays available.",
-      "continue": "Continue",
-      "skip": "Skip for now",
       "profileTitle": "What brings you here",
-      "profileHint": "Personalizes your experience. All features stay available."
+      "profileHint": "Personalizes your experience. All features stay available.",
+      "titleOne": "What are you looking for?",
+      "subtitleOne": "We'll set up the map for you. You can change it any time.",
+      "justBrowse": "Just browse the map"
     },
     "demo": {
       "badge": "DEMO",

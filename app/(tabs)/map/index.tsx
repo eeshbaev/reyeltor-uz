@@ -48,6 +48,8 @@ export default function MapScreen() {
     postedType?: ListingType;
     postedDistrict?: string;
     postedFirst?: string;
+    /** Set once by onboarding: the goal the person picked (or 'browse'). */
+    welcomeGoal?: string;
   }>();
   const insets = useSafeAreaInsets();
   const controlsTop = mapOverlayTop(insets);
@@ -75,6 +77,8 @@ export default function MapScreen() {
   const [focusedListingId, setFocusedListingId] = useState<string | null>(null);
   const [postSuccessVisible, setPostSuccessVisible] = useState(false);
   const [postSuccessFirst, setPostSuccessFirst] = useState(false);
+  const [welcomeGoal, setWelcomeGoal] = useState<string | null>(null);
+  const welcomeHandledRef = useRef(false);
   const postSuccessHandledRef = useRef<string | null>(null);
   // OPTIMIZATION #7: Debounce filter changes to avoid excessive re-renders during slider drags
   const filterChangeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -144,6 +148,18 @@ export default function MapScreen() {
       zoom: LISTING_MAP_FOCUS_ZOOM,
     });
   }, [focusVersion, consumeFocus]);
+
+  // First arrival from onboarding: say how many listings match their goal (real count),
+  // or offer agents/owners their first listing. Shown once, never blocks the map.
+  useEffect(() => {
+    if (welcomeHandledRef.current || !params.welcomeGoal || loading) return;
+    welcomeHandledRef.current = true;
+    setWelcomeGoal(params.welcomeGoal);
+    router.setParams({ welcomeGoal: undefined });
+    if (params.welcomeGoal === 'realtor') return; // the post card stays until dismissed
+    const timer = setTimeout(() => setWelcomeGoal(null), 6000);
+    return () => clearTimeout(timer);
+  }, [loading, params.welcomeGoal, router]);
 
   useEffect(() => {
     const listingId = params.postedListingId;
@@ -427,6 +443,52 @@ export default function MapScreen() {
         </View>
       ) : null}
 
+      {welcomeGoal && welcomeGoal !== 'realtor' && !postSuccessVisible && !mapChromeHidden ? (
+        <View style={[styles.postSuccess, { top: controlsTop + 52 }]} pointerEvents="none">
+          <FrostedView style={styles.postSuccessInner}>
+            <AppText variant="caption" style={styles.postSuccessText}>
+              {filteredListings.length > 0
+                ? t(`onboarding.mapWelcome.${welcomeGoal === 'rent' || welcomeGoal === 'buy' || welcomeGoal === 'investor' ? welcomeGoal : 'browse'}`, {
+                    count: filteredListings.length,
+                  })
+                : t('onboarding.mapWelcome.none')}
+            </AppText>
+          </FrostedView>
+        </View>
+      ) : null}
+
+      {welcomeGoal === 'realtor' && !mapChromeHidden && !drawMode ? (
+        <View style={[styles.postCard, { top: controlsTop + 52 }]}>
+          <FrostedView style={styles.postCardInner}>
+            <View style={styles.postCardCopy}>
+              <AppText variant="label">{t('onboarding.postCard.title')}</AppText>
+              <AppText variant="caption" color="secondary">
+                {t('onboarding.postCard.body')}
+              </AppText>
+            </View>
+            <View style={styles.postCardActions}>
+              <Pressable onPress={() => setWelcomeGoal(null)} accessibilityRole="button" hitSlop={8}>
+                <AppText variant="label" color="secondary">
+                  {t('onboarding.postCard.later')}
+                </AppText>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setWelcomeGoal(null);
+                  router.push('/(tabs)/post');
+                }}
+                accessibilityRole="button"
+                hitSlop={8}
+              >
+                <AppText variant="label" color="accent">
+                  {t('onboarding.postCard.cta')}
+                </AppText>
+              </Pressable>
+            </View>
+          </FrostedView>
+        </View>
+      ) : null}
+
       {liveFetchFailed && !mapChromeHidden && !drawMode ? (
         <Pressable
           style={[styles.liveNotice, { bottom: zoomControlsBottom }]}
@@ -533,6 +595,10 @@ const styles = StyleSheet.create({
     maxWidth: 340,
   },
   postSuccessText: { textAlign: 'center', fontWeight: '600' },
+  postCard: { position: 'absolute', left: spacing.md, right: spacing.md, zIndex: 12 },
+  postCardInner: { padding: spacing.md, borderRadius: 12, gap: spacing.sm },
+  postCardCopy: { gap: 2 },
+  postCardActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: spacing.lg },
   liveNotice: { position: 'absolute', left: spacing.md, right: 72, zIndex: 11 },
   liveNoticeInner: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, borderRadius: 12 },
   zoomControls: {
