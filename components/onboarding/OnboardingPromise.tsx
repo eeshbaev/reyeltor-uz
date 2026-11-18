@@ -1,14 +1,9 @@
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { BrandWordmark } from '@/components/brand/BrandWordmark';
-import { MapView } from '@/components/map/MapView';
 import { AppText } from '@/components/ui/AppText';
-import { MAP_COVERAGE_CENTER } from '@/lib/constants';
-import { useListingsCache } from '@/lib/context/ListingsContext';
 import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
@@ -20,8 +15,6 @@ interface OnboardingPromiseProps {
   onSignIn: () => void;
 }
 
-const noop = () => undefined;
-
 /**
  * One promise screen. The background *is* the product: the live Tashkent map with real listing
  * prices where they really are. One line of copy, one button (manual V-01, O-02).
@@ -29,43 +22,14 @@ const noop = () => undefined;
 export function OnboardingPromise({ onStart, onSignIn }: OnboardingPromiseProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const reduceMotion = useReduceMotion();
-  const { mapPoints, filters, loadListingsIfNeeded } = useListingsCache();
   const wide = width >= 600;
-
-  // Load listings now: the map behind fills in, and the real map is ready after the goal step.
-  useEffect(() => {
-    void loadListingsIfNeeded();
-  }, [loadListingsIfNeeded]);
 
   const enter = (delay: number) => (reduceMotion ? FadeIn.duration(150) : FadeInDown.duration(320).delay(delay));
 
   return (
     <View style={styles.root}>
-      {/* Live map, look-only: touches go to the buttons, never the map. */}
-      <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <MapView
-          listings={mapPoints}
-          listingCategory={filters.category}
-          onListingPress={noop}
-          initialCenter={{ ...MAP_COVERAGE_CENTER.city, zoom: 12.5 }}
-          showMarkers
-        />
-      </View>
-
-      <Svg width={width} height={height} style={StyleSheet.absoluteFill} pointerEvents="none">
-        <Defs>
-          <LinearGradient id="promise-scrim" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor={fixedColors.ink} stopOpacity="0.25" />
-            <Stop offset="0.38" stopColor={fixedColors.ink} stopOpacity="0" />
-            <Stop offset="0.6" stopColor={fixedColors.ink} stopOpacity="0.75" />
-            <Stop offset="0.75" stopColor={fixedColors.ink} stopOpacity="1" />
-          </LinearGradient>
-        </Defs>
-        <Rect width={width} height={height} fill="url(#promise-scrim)" />
-      </Svg>
-
       <View
         style={[styles.copy, wide && styles.copyWide, { paddingBottom: insets.bottom + spacing.lg }]}
         pointerEvents="box-none"
@@ -108,7 +72,7 @@ export function OnboardingPromise({ onStart, onSignIn }: OnboardingPromiseProps)
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: fixedColors.ink },
+  root: { flex: 1 },
   copy: {
     flex: 1,
     justifyContent: 'flex-end',

@@ -957,6 +957,10 @@
       "profileTitle": "Maqsadlaringiz",
       "profileHint": "Ilovani shaxsiylashtirishga yordam beradi. Barcha imkoniyatlar ochiq qoladi.",
       "titleOne": "Nima qidiryapsiz?",
+      "titleRent": "Nimani ijaraga olasiz?",
+      "titleBuy": "Nimani sotib olasiz?",
+      "typeHouse": "Uy",
+      "typeShop": "Doʻkon",
       "subtitleOne": "Xaritani siz uchun sozlaymiz. Istalgan vaqtda oʻzgartirishingiz mumkin.",
       "justBrowse": "Shunchaki xaritani koʻrish"
     },

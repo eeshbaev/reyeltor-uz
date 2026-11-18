@@ -956,6 +956,10 @@
       "profileTitle": "您的目的",
       "profileHint": "用于个性化体验，所有功能均可使用。",
       "titleOne": "您在找什么？",
+      "titleRent": "租什么？",
+      "titleBuy": "买什么？",
+      "typeHouse": "房屋",
+      "typeShop": "商铺",
       "subtitleOne": "我们会为您设置地图，随时可以更改。",
       "justBrowse": "先随便看看地图"
     },

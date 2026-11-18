@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { LanguageTopBar } from '@/components/i18n/LanguageTopBar';
+import { OnboardingBackdrop } from '@/components/onboarding/OnboardingBackdrop';
 import { OnboardingPromise } from '@/components/onboarding/OnboardingPromise';
 import { PurposePicker } from '@/components/onboarding/PurposePicker';
 import { AppSystemBars } from '@/components/ui/AppSystemBars';
@@ -11,7 +12,7 @@ import { useListingsCache } from '@/lib/context/ListingsContext';
 import { fixedColors } from '@/lib/design/colors';
 import { markOnboardingDone } from '@/lib/onboarding/storage';
 import { filtersForPurposes, SAVE_SEARCH_HINT_KEY, saveUserPurposes, storePendingPurposes } from '@/lib/purposes';
-import type { UserPurpose } from '@/types';
+import type { ListingFilters, UserPurpose } from '@/types';
 
 export default function OnboardingScreen() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function OnboardingScreen() {
   const [step, setStep] = useState<'promise' | 'goal'>('promise');
 
   const handlePurposes = useCallback(
-    async (purposes: UserPurpose[]) => {
+    async (purposes: UserPurpose[], chosen: ListingFilters | null) => {
       if (purposes.length > 0) {
         // Remembered locally; synced to the profile once the user signs in (PurposesSync).
         await storePendingPurposes(purposes);
@@ -30,7 +31,7 @@ export default function OnboardingScreen() {
         }
       }
 
-      const firstSearch = filtersForPurposes(purposes);
+      const firstSearch = chosen ?? filtersForPurposes(purposes);
       if (firstSearch) {
         setFilters(firstSearch);
         await AsyncStorage.setItem(SAVE_SEARCH_HINT_KEY, '1');
@@ -45,6 +46,7 @@ export default function OnboardingScreen() {
   return (
     <View style={styles.container}>
       <AppSystemBars style="light" />
+      <OnboardingBackdrop dim={step === 'goal'} />
       {step === 'promise' ? (
         <OnboardingPromise
           onStart={() => setStep('goal')}
@@ -53,7 +55,7 @@ export default function OnboardingScreen() {
           }}
         />
       ) : (
-        <PurposePicker onDone={(purposes) => void handlePurposes(purposes)} />
+        <PurposePicker onDone={(purposes, filters) => void handlePurposes(purposes, filters)} />
       )}
       <View style={styles.languageBar} pointerEvents="box-none">
         <LanguageTopBar />

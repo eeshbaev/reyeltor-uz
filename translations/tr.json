@@ -957,6 +957,10 @@
       "profileTitle": "Amaçlarınız",
       "profileHint": "Deneyiminizi kişiselleştirir. Tüm özellikler açık kalır.",
       "titleOne": "Ne arıyorsunuz?",
+      "titleRent": "Ne kiralamak istiyorsunuz?",
+      "titleBuy": "Ne satın almak istiyorsunuz?",
+      "typeHouse": "Ev",
+      "typeShop": "Dükkân",
       "subtitleOne": "Haritayı sizin için ayarlayalım. İstediğiniz zaman değiştirebilirsiniz.",
       "justBrowse": "Sadece haritaya göz at"
     },

@@ -957,6 +957,10 @@
       "profileTitle": "What brings you here",
       "profileHint": "Personalizes your experience. All features stay available.",
       "titleOne": "What are you looking for?",
+      "titleRent": "Rent what?",
+      "titleBuy": "Buy what?",
+      "typeHouse": "House",
+      "typeShop": "Shop",
       "subtitleOne": "We'll set up the map for you. You can change it any time.",
       "justBrowse": "Just browse the map"
     },
