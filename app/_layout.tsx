@@ -21,12 +21,14 @@ import { GuestFavoriteAuthProvider } from '@/lib/context/GuestFavoriteAuthContex
 import { ListingsProvider } from '@/lib/context/ListingsContext';
 import { MapContextProvider } from '@/lib/context/MapContextProvider';
 import { UIChromeProvider } from '@/lib/context/UIChromeProvider';
+import { fixedColors } from '@/lib/design/colors';
+import { loadAppFonts } from '@/lib/design/fonts';
 import { initRatingState } from '@/lib/growth/ratingPrompt';
 import i18n from '@/lib/i18n';
 import { queryClient } from '@/lib/queryClient';
 import { initSentry } from '@/lib/sentry';
 
-const SPLASH_BG = '#07090F';
+const SPLASH_BG = fixedColors.splash;
 /** Keep branded splash visible briefly so cold start never flashes a blank frame. */
 const MIN_SPLASH_MS = 1_500;
 // Upper bound if startup hangs on slow devices (API 28–30)
@@ -70,6 +72,7 @@ export default function RootLayout() {
     void Promise.all([
       runAppStartup().catch(() => undefined),
       initRatingState().catch(() => undefined),
+      loadAppFonts(),
       new Promise<void>((resolve) => setTimeout(resolve, MIN_SPLASH_MS)),
     ]).finally(() => {
       if (!cancelled) {

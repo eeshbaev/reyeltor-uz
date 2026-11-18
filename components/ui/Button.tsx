@@ -9,6 +9,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { AppText } from './AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
@@ -96,7 +97,7 @@ function createStyles(theme: ReturnType<typeof useTheme>) {
     base: {
       minHeight: Platform.OS === 'ios' ? 52 : 48,
       minWidth: Platform.OS === 'ios' ? 44 : 48,
-      borderRadius: 14,
+      borderRadius: radius.md,
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: spacing.md,

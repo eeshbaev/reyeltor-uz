@@ -24,7 +24,7 @@ export function useAnimatedPress(onPress?: () => void) {
       Animated.spring(scale, {
         toValue: 1,
         useNativeDriver: true,
-        ...motion.spring,
+        ...motion.springTap,
       }).start();
     }
   };

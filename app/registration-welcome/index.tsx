@@ -6,6 +6,7 @@ import { PostRegistrationWelcome } from '@/components/registration/PostRegistrat
 import { AppSystemBars } from '@/components/ui/AppSystemBars';
 import { resolveWelcomeDisplayName } from '@/lib/auth/displayName';
 import { useAuth } from '@/lib/context/AuthContext';
+import { fixedColors } from '@/lib/design/colors';
 import i18n from '@/lib/i18n';
 import { parseRouteParam } from '@/lib/navigation/routeParams';
 import { getPendingWelcomeName, getRegisteredFullName } from '@/lib/onboarding/storage';
@@ -69,5 +70,5 @@ export default function RegistrationWelcomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0A0A0A' },
+  container: { flex: 1, backgroundColor: fixedColors.ink },
 });

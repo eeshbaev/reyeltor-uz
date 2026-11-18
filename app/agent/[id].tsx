@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import { ShareSheet, type ShareSheetRef } from '@/components/growth/ShareSheet';
 import { DemoListingNotice } from '@/components/listing/DemoListingNotice';
 import { ListingCard } from '@/components/listing/ListingCard';
@@ -17,7 +17,9 @@ import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { SafeScreen } from '@/components/ui/SafeScreen';
 import { ListingCardSkeleton } from '@/components/ui/Skeleton';
+import { Text } from '@/components/ui/Text';
 import { getDemoAgentById, isDemoId } from '@/lib/demo';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { formatDate, getTrustLabelKey } from '@/lib/format';
 import { quickShare } from '@/lib/growth/quickShare';
@@ -323,13 +325,13 @@ const styles = StyleSheet.create({
   header: { alignItems: 'center', marginBottom: spacing.lg },
   bio: { textAlign: 'center', marginTop: spacing.md, maxWidth: 320, lineHeight: 22 },
   contactRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: spacing.sm, marginTop: spacing.md },
-  contactChip: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, borderWidth: 1, borderRadius: 999, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
-  shareOnlyBtn: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, borderWidth: 1, borderRadius: 999, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, marginTop: spacing.md },
+  contactChip: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, borderWidth: 1, borderRadius: radius.pill, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
+  shareOnlyBtn: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, borderWidth: 1, borderRadius: radius.pill, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, marginTop: spacing.md },
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.lg },
   statCard: {
     width: '31%',
     padding: spacing.md,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
     alignItems: 'center',
   },

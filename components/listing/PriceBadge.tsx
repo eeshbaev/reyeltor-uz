@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -39,7 +40,7 @@ function createStyles(theme: ReturnType<typeof useTheme>) {
       alignSelf: 'flex-start',
       paddingHorizontal: spacing.sm + 2,
       paddingVertical: spacing.xs + 2,
-      borderRadius: 999,
+      borderRadius: radius.pill,
     },
     below: { backgroundColor: theme.colors.successSurface },
     above: { backgroundColor: theme.colors.warningSurface },

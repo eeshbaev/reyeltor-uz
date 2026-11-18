@@ -6,6 +6,7 @@ import {
   POI_CONTEXT_MARKER_SIZE,
   POI_MARKER_SIZE,
 } from '@/components/map/neighborhoodMarkerStyles';
+import { fixedColors } from '@/lib/design/colors';
 import type { NeighborhoodPoi, NearbyPoi } from '@/lib/neighborhood/amenities';
 
 interface NeighborhoodMarkersLayerProps {
@@ -59,7 +60,7 @@ export function NeighborhoodMarkersLayer({
                 },
               ]}
             >
-              <Ionicons name={icon} size={isContext ? 10 : 14} color="#ffffff" />
+              <Ionicons name={icon} size={isContext ? 10 : 14} color={fixedColors.white} />
             </View>
           </View>
         );
@@ -80,10 +81,10 @@ const styles = StyleSheet.create({
     zIndex: 4,
   },
   marker: {
-    borderColor: '#ffffff',
+    borderColor: fixedColors.white,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000000',
+    shadowColor: fixedColors.black,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.15,
     shadowRadius: 1,

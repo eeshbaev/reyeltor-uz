@@ -9,6 +9,7 @@ import { AppText } from '@/components/ui/AppText';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { useAuth } from '@/lib/context/AuthContext';
 import { useGuestFavoriteAuth } from '@/lib/context/GuestFavoriteAuthContext';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { hapticSuccess } from '@/lib/haptics';
 import { useSavedSearches } from '@/lib/hooks/useSavedSearches';
@@ -129,5 +130,5 @@ export function SaveSearchControl({ filters }: SaveSearchControlProps) {
 
 const styles = StyleSheet.create({
   hint: { position: 'absolute', right: 58, top: 4, width: 220 },
-  hintInner: { padding: spacing.sm, borderRadius: 12 },
+  hintInner: { padding: spacing.sm, borderRadius: radius.md },
 });

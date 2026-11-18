@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
   iconWrap: {
     width: 48,
     height: 48,
-    borderRadius: 16,
+    borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     paddingHorizontal: spacing.sm + 2,
     paddingVertical: spacing.xs + 2,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     borderWidth: StyleSheet.hairlineWidth,
   },
   badgeText: {

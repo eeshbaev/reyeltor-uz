@@ -1,6 +1,8 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { Text } from '@/components/ui/Text';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import {
   TOOL_CARD_RADIUS,
@@ -44,8 +46,8 @@ export const toolScreenStyles = StyleSheet.create({
   colPeriod: { flex: 1.1 },
   col: { flex: 1, textAlign: 'right' as const },
   selectors: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
-  selector: { flex: 1, borderRadius: 16, borderWidth: 1, padding: spacing.md, gap: spacing.xs },
-  picker: { borderRadius: 16, borderWidth: 1, marginBottom: spacing.md, overflow: 'hidden' },
+  selector: { flex: 1, borderRadius: radius.md, borderWidth: 1, padding: spacing.md, gap: spacing.xs },
+  picker: { borderRadius: radius.md, borderWidth: 1, marginBottom: spacing.md, overflow: 'hidden' },
   pickerItem: { padding: spacing.md },
   chartHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   loading: { alignItems: 'center', justifyContent: 'center', gap: spacing.sm, minHeight: 180 },
@@ -72,7 +74,7 @@ export const toolScreenStyles = StyleSheet.create({
   statsRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
   statCard: {
     flex: 1,
-    borderRadius: 16,
+    borderRadius: radius.md,
     borderWidth: 1,
     padding: spacing.md,
     gap: 6,
@@ -217,7 +219,7 @@ export function ToolReadOnlyBox({ children }: { children: React.ReactNode }) {
 
 function toolSoftBanner(_theme: ReturnType<typeof useTheme>): ViewStyle {
   return {
-    borderRadius: 16,
+    borderRadius: radius.md,
     borderWidth: 1,
     padding: spacing.lg,
     marginBottom: spacing.md,

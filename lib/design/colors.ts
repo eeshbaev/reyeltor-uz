@@ -66,3 +66,49 @@ export const colorTokens = {
 
 export type ThemeColors = typeof colorTokens.light | typeof colorTokens.dark;
 export type ColorScheme = 'light' | 'dark';
+
+/**
+ * Fixed colours that do not follow light/dark mode: brand surfaces (splash, welcome,
+ * onboarding are always dark), third-party brand marks, the share card image and map art.
+ * Screens never write a hex value themselves — they use a theme colour or one of these
+ * (enforced by the no-raw-hex lint rule in .eslintrc.json).
+ */
+export const fixedColors = {
+  white: '#FFFFFF',
+  black: '#000000',
+  /** Brand canvas: onboarding, welcome, About header. */
+  ink: '#0A0A0A',
+  ink900: '#1A1A1A',
+  ink850: '#1F1F1F',
+  /** Splash background. */
+  splash: '#07090F',
+  night: '#0B0F1A',
+  slate900: '#0F172A',
+  slate600: '#475569',
+  slate500: '#64748B',
+  gray400: '#A0AEC0',
+  gray200: '#E5E7EB',
+  mist: '#DCE6F0',
+  mistLight: '#E8EEF5',
+  paper: '#F4F6FA',
+  snow: '#FAFAFA',
+  blue: '#2563EB',
+  blueDark: '#1D4ED8',
+  blueDeep: '#0057B8',
+  sky: '#0EA5E9',
+  teal: '#0D9488',
+  violet: '#7C3AED',
+  orange: '#EA580C',
+  green: '#16A34A',
+  greenLight: '#22C55E',
+  red: '#DC2626',
+  redLight: '#EF4444',
+  redSoft: '#F87171',
+  /** Brand gold (wordmark, Early Member). */
+  gold: '#E8C872',
+  goldSoft: '#F3DFA2',
+  telegram: '#229ED9',
+  telegramTint: '#229ED918',
+  whatsapp: '#25D366',
+  whatsappTint: '#25D36618',
+} as const;

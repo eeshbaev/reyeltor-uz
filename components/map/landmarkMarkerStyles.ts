@@ -1,3 +1,4 @@
+import { fixedColors } from '@/lib/design/colors';
 import type { MapLandmarkKind } from '@/lib/map/tashkentMapLandmarks';
 
 export const LANDMARK_KIND_ICON: Record<MapLandmarkKind, string> = {
@@ -10,15 +11,15 @@ export const LANDMARK_KIND_ICON: Record<MapLandmarkKind, string> = {
 };
 
 export const LANDMARK_KIND_COLOR: Record<MapLandmarkKind, string> = {
-  metro: '#0057B8',
-  park: '#16a34a',
-  railway: '#475569',
-  airport: '#0ea5e9',
-  museum: '#7c3aed',
-  stadium: '#ea580c',
+  metro: fixedColors.blueDeep,
+  park: fixedColors.green,
+  railway: fixedColors.slate600,
+  airport: fixedColors.sky,
+  museum: fixedColors.violet,
+  stadium: fixedColors.orange,
 };
 
 export const METRO_MARKER_SIZE = 14;
-export const METRO_MARKER_COLOR = '#0057B8';
+export const METRO_MARKER_COLOR = fixedColors.blueDeep;
 export const LANDMARK_MARKER_SIZE = 12;
 export const LANDMARK_MARKER_OPACITY = 0.72;

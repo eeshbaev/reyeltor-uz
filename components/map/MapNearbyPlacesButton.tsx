@@ -4,6 +4,7 @@ import { Pressable, StyleSheet } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { mapChromeBorder } from '@/lib/design/mapChrome';
+import { radius } from '@/lib/design/radius';
 import { hapticLight } from '@/lib/haptics';
 import { spacing, useTheme } from '@/lib/theme';
 
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     paddingHorizontal: spacing.md + 2,
     paddingVertical: spacing.sm + 2,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     maxWidth: '100%',
   },
   label: {

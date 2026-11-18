@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: spacing.sm + 2,
     paddingVertical: 5,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     borderWidth: StyleSheet.hairlineWidth,
     marginTop: spacing.xs,
   },

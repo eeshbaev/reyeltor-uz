@@ -9,6 +9,7 @@ import Svg, {
   Rect,
   Stop,
 } from 'react-native-svg';
+import { fixedColors } from '@/lib/design/colors';
 import { useTheme } from '@/lib/theme';
 
 const SIZE = 200;
@@ -31,10 +32,10 @@ export function FavoritesEmptyIllustration() {
         </LinearGradient>
         <LinearGradient id={`${id}-card`} x1="0%" y1="0%" x2="0%" y2="100%">
           <Stop offset="0%" stopColor={surface} />
-          <Stop offset="100%" stopColor={theme.isDark ? '#1F1F1F' : '#FAFAFA'} />
+          <Stop offset="100%" stopColor={theme.isDark ? fixedColors.ink850 : fixedColors.snow} />
         </LinearGradient>
         <LinearGradient id={`${id}-heart`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <Stop offset="0%" stopColor="#F87171" />
+          <Stop offset="0%" stopColor={fixedColors.redSoft} />
           <Stop offset="100%" stopColor={heart} />
         </LinearGradient>
       </Defs>

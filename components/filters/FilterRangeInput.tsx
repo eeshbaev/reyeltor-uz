@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing, useTheme } from '@/lib/theme';
 
 interface FilterRangeInputProps {
@@ -39,7 +40,7 @@ export function FilterRangeInput({
         field: { flex: 1, gap: 4 },
         input: {
           minHeight: 48,
-          borderRadius: 12,
+          borderRadius: radius.md,
           borderWidth: 1,
           borderColor: theme.colors.border,
           paddingHorizontal: spacing.md,

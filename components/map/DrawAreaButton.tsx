@@ -1,7 +1,9 @@
 import { Animated, Pressable, StyleSheet } from 'react-native';
 import { PenDrawIcon } from '@/components/icons/PenDrawIcon';
 import { FrostedView } from '@/components/ui/FrostedView';
+import { fixedColors } from '@/lib/design/colors';
 import { mapChromeBorder } from '@/lib/design/mapChrome';
+import { radius } from '@/lib/design/radius';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
 
@@ -10,7 +12,7 @@ interface DrawAreaButtonProps {
   onPress: () => void;
 }
 
-const PEN_RED_ACTIVE = '#DC2626';
+const PEN_RED_ACTIVE = fixedColors.red;
 
 export function DrawAreaButton({ active, onPress }: DrawAreaButtonProps) {
   const theme = useTheme();
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
   button: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },

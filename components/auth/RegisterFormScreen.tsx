@@ -2,24 +2,14 @@ import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Switch,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Switch, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TelegramButton } from '@/components/auth/TelegramButton';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { ScrollView } from '@/components/ui/GestureScrollView';
+import { Text } from '@/components/ui/Text';
 import {
   registerWithTelegram,
   TelegramAuthError,
@@ -27,6 +17,7 @@ import {
 } from '@/lib/auth/telegramAuth';
 import { telegramErrorMessage } from '@/lib/auth/telegramMessages';
 import { useGuestFavoriteAuth } from '@/lib/context/GuestFavoriteAuthContext';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { clearPendingReferralCode, getPendingReferralCode } from '@/lib/growth/pendingReferral';
 import { applyReferralCode } from '@/lib/growth/referral';
@@ -346,10 +337,10 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   content: { padding: themeSpacing.lg, paddingTop: themeSpacing.md },
   intro: { gap: spacing.md, alignItems: 'stretch', paddingTop: spacing.lg },
-  stepBadge: { alignSelf: 'center', width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
+  stepBadge: { alignSelf: 'center', width: 64, height: 64, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   center: { textAlign: 'center' },
   waitingRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  notice: { borderWidth: 1, borderRadius: 12, padding: spacing.md, gap: spacing.md },
+  notice: { borderWidth: 1, borderRadius: radius.md, padding: spacing.md, gap: spacing.md },
   noticeActions: { gap: spacing.sm },
   label: {
     fontSize: fontSize.sm,
@@ -361,7 +352,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 10,
+    borderRadius: radius.sm,
     padding: themeSpacing.md,
     marginBottom: themeSpacing.xs,
     fontSize: fontSize.md,
@@ -381,7 +372,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     padding: themeSpacing.md,
-    borderRadius: 10,
+    borderRadius: radius.sm,
     alignItems: 'center',
     marginTop: themeSpacing.md,
   },

@@ -2,12 +2,15 @@ import { useEffect } from 'react';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BrandWordmark } from '@/components/brand/BrandWordmark';
 import { AppText } from '@/components/ui/AppText';
+import { Text } from '@/components/ui/Text';
+import { fixedColors } from '@/lib/design/colors';
 import { motion } from '@/lib/design/motion';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 
 interface PostLoginWelcomeBackProps {
@@ -59,7 +62,7 @@ export function PostLoginWelcomeBack({ fullName, returnTo }: PostLoginWelcomeBac
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
+    backgroundColor: fixedColors.ink,
     paddingHorizontal: spacing.lg,
     justifyContent: 'space-between',
   },
@@ -78,7 +81,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   greeting: {
-    color: '#FFFFFF',
+    color: fixedColors.white,
     fontSize: 24,
     fontWeight: '600',
     textAlign: 'center',
@@ -90,8 +93,8 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   cta: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 999,
+    backgroundColor: fixedColors.white,
+    borderRadius: radius.pill,
     minHeight: 52,
     alignItems: 'center',
     justifyContent: 'center',
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
   },
   ctaLabel: {
-    color: '#0A0A0A',
+    color: fixedColors.ink,
     fontSize: 15,
     fontWeight: '600',
   },

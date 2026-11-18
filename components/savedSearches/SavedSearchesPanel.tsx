@@ -10,6 +10,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { useListingsCache } from '@/lib/context/ListingsContext';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useSavedSearches } from '@/lib/hooks/useSavedSearches';
 import { requestSavedSearchNotificationPermission } from '@/lib/notifications';
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
   loading: { marginTop: spacing.xl },
   list: { gap: spacing.md },
   empty: { alignItems: 'center', gap: spacing.sm, paddingTop: spacing.xl, paddingHorizontal: spacing.md },
-  emptyIcon: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.sm },
+  emptyIcon: { width: 64, height: 64, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.sm },
   center: { textAlign: 'center', maxWidth: 320 },
   emptyCta: { marginTop: spacing.md, maxWidth: 320 },
   lastBlock: { gap: spacing.sm, marginBottom: spacing.sm },

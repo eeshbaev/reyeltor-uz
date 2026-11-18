@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import qrcode from 'qrcode-generator';
 import Svg, { Path, Rect } from 'react-native-svg';
+import { fixedColors } from '@/lib/design/colors';
 
 interface QrCodeProps {
   value: string;
@@ -10,7 +11,7 @@ interface QrCodeProps {
 }
 
 /** Offline QR code rendered as a single SVG path (no network, no images). */
-export function QrCode({ value, size, color = '#0F172A', background = '#FFFFFF' }: QrCodeProps) {
+export function QrCode({ value, size, color = fixedColors.slate900, background = fixedColors.white }: QrCodeProps) {
   const { path, count } = useMemo(() => {
     const qr = qrcode(0, 'M');
     qr.addData(value);

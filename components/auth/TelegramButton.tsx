@@ -1,8 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
+import { Text } from '@/components/ui/Text';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 
-const TELEGRAM_BLUE = '#229ED9';
+const TELEGRAM_BLUE = fixedColors.telegram;
 
 interface TelegramButtonProps {
   label: string;
@@ -22,10 +25,10 @@ export function TelegramButton({ label, onPress, loading, disabled }: TelegramBu
       style={({ pressed }) => [styles.button, (pressed || inactive) && styles.dimmed]}
     >
       {loading ? (
-        <ActivityIndicator color="#fff" />
+        <ActivityIndicator color={fixedColors.white} />
       ) : (
         <>
-          <Ionicons name="paper-plane" size={20} color="#fff" />
+          <Ionicons name="paper-plane" size={20} color={fixedColors.white} />
           <Text style={styles.label}>{label}</Text>
         </>
       )}
@@ -36,7 +39,7 @@ export function TelegramButton({ label, onPress, loading, disabled }: TelegramBu
 const styles = StyleSheet.create({
   button: {
     backgroundColor: TELEGRAM_BLUE,
-    borderRadius: 12,
+    borderRadius: radius.md,
     minHeight: 52,
     paddingHorizontal: spacing.lg,
     flexDirection: 'row',
@@ -45,5 +48,5 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   dimmed: { opacity: 0.7 },
-  label: { color: '#fff', fontWeight: '700', fontSize: 16 },
+  label: { color: fixedColors.white, fontWeight: '700', fontSize: 16 },
 });

@@ -5,6 +5,7 @@ import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from 'react-nat
 import { AppText } from '@/components/ui/AppText';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import {
   pickProfilePhotoFromLibrary,
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: 32,
     height: 32,
-    borderRadius: 16,
+    borderRadius: radius.pill,
     borderWidth: 3,
     alignItems: 'center',
     justifyContent: 'center',

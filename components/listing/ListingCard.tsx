@@ -12,7 +12,9 @@ import { Badge } from '@/components/ui/Badge';
 import { DemoBadge } from '@/components/ui/DemoBadge';
 import { isDemoId } from '@/lib/demo';
 import { getCategoryColors } from '@/lib/design/categoryColors';
+import { fixedColors } from '@/lib/design/colors';
 import { mapElevatedShadow } from '@/lib/design/mapChrome';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { daysSince } from '@/lib/format';
 import { createHorizontalSwipeGesture } from '@/lib/gestures';
@@ -378,7 +380,7 @@ function createStyles(
       borderWidth: mapCard ? 0 : 1,
       borderColor: theme.isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.06)',
       ...(mapCard ? null : Platform.select({
-        ios: { shadowColor: '#0F172A', shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
+        ios: { shadowColor: fixedColors.slate900, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
         android: { elevation: 4 },
       })),
     },
@@ -396,8 +398,8 @@ function createStyles(
     imageWrap: {
       position: 'relative',
       overflow: 'hidden',
-      backgroundColor: '#0b0f1a',
-      ...(mapCard ? { borderRadius: 14, ...mapElevatedShadow(theme) } : null),
+      backgroundColor: fixedColors.night,
+      ...(mapCard ? { borderRadius: radius.md, ...mapElevatedShadow(theme) } : null),
     },
     defaultImageWrap: {
       width: '100%',
@@ -423,7 +425,7 @@ function createStyles(
       zIndex: 2,
     },
     mapPrice: {
-      color: '#ffffff',
+      color: fixedColors.white,
       fontWeight: '700',
       fontSize: 16,
       letterSpacing: -0.3,
@@ -436,7 +438,7 @@ function createStyles(
     featuredBadgeInline: {
       paddingHorizontal: spacing.sm,
       paddingVertical: spacing.xs,
-      borderRadius: 999,
+      borderRadius: radius.pill,
     },
     imageTopBadges: {
       position: 'absolute',
@@ -463,10 +465,10 @@ function createStyles(
     socialBadge: {
       paddingHorizontal: spacing.sm,
       paddingVertical: spacing.xs,
-      borderRadius: 999,
+      borderRadius: radius.pill,
     },
     saveBadgeText: {
-      color: '#ffffff',
+      color: fixedColors.white,
       fontSize: 10,
       fontWeight: '700',
     },

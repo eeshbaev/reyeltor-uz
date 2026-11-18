@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { formatDate } from '@/lib/format';
 import { translatePropertyLevel, translatePropertyType, translatePropertyView } from '@/lib/i18n/filterLabels';
@@ -139,12 +141,12 @@ export function PropertyInfoSection({ listing, locale, usdRate = 12_017 }: Prope
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 18,
+    borderRadius: radius.lg,
     borderWidth: 1,
     padding: spacing.md,
     gap: spacing.md,
     ...Platform.select({
-      ios: { shadowColor: '#0F172A', shadowOpacity: 0.05, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
+      ios: { shadowColor: fixedColors.slate900, shadowOpacity: 0.05, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
       android: { elevation: 1 },
     }),
   },
@@ -160,7 +162,7 @@ const styles = StyleSheet.create({
     width: '48%',
     flexGrow: 1,
     minWidth: 140,
-    borderRadius: 14,
+    borderRadius: radius.md,
     borderWidth: 1,
     paddingHorizontal: spacing.sm + 2,
     paddingVertical: spacing.sm + 2,

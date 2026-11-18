@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
 import { StyleSheet, View, type ViewStyle } from 'react-native';
 import { AppText } from './AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -49,7 +50,7 @@ const badgeStyles = StyleSheet.create({
   badge: {
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     alignSelf: 'flex-start',
   },
 });

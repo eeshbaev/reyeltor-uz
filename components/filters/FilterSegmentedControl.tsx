@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { hapticLight } from '@/lib/haptics';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { spacing, useTheme } from '@/lib/theme';
@@ -44,7 +45,7 @@ function SegmentButton({
           {
             flex: 1,
             minHeight: 44,
-            borderRadius: 12,
+            borderRadius: radius.md,
             alignItems: 'center',
             justifyContent: 'center',
             paddingHorizontal: spacing.sm,
@@ -84,7 +85,7 @@ export function FilterSegmentedControl<T extends string>({
       StyleSheet.create({
         track: {
           flexDirection: 'row',
-          borderRadius: 14,
+          borderRadius: radius.md,
           padding: 3,
           gap: 3,
           backgroundColor: theme.isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.05)',

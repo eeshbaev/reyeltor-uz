@@ -1,4 +1,5 @@
 import { StyleSheet, View, type ViewStyle } from 'react-native';
+import { fixedColors } from '@/lib/design/colors';
 
 interface MapPlaceholderProps {
   style?: ViewStyle;
@@ -19,7 +20,7 @@ export function MapPlaceholder({ style }: MapPlaceholderProps) {
 const styles = StyleSheet.create({
   base: {
     flex: 1,
-    backgroundColor: '#dce6f0',
+    backgroundColor: fixedColors.mist,
     overflow: 'hidden',
   },
   gridH1: {

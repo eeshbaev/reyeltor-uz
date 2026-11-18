@@ -17,6 +17,7 @@ import { ScrollView } from '@/components/ui/GestureScrollView';
 import { FavoriteListingCardSkeleton } from '@/components/ui/Skeleton';
 import { useAuth } from '@/lib/context/AuthContext';
 import { useGuestFavoriteAuth } from '@/lib/context/GuestFavoriteAuthContext';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { subscribeFavoritesChanged } from '@/lib/favorites/events';
 import { loadFavoriteListings, type FavoriteListing } from '@/lib/favorites/loadFavoriteListings';
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    borderRadius: 16,
+    borderRadius: radius.md,
     borderWidth: StyleSheet.hairlineWidth,
   },
   footerTipText: {

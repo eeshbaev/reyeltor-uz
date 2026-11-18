@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
+import { radius } from '@/lib/design/radius';
 import { spacing, useTheme } from '@/lib/theme';
 
 export function useFilterFieldStyles() {
@@ -11,7 +12,7 @@ export function useFilterFieldStyles() {
         row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
         textArea: {
           minHeight: 52,
-          borderRadius: 12,
+          borderRadius: radius.md,
           borderWidth: 1,
           borderColor: theme.colors.border,
           paddingHorizontal: spacing.md,

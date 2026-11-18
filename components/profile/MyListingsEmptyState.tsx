@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { MyListingsEmptyIllustration } from '@/components/profile/MyListingsEmptyIllustration';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -76,14 +77,14 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
     maxWidth: 320,
   },
   tipIcon: {
     width: 32,
     height: 32,
-    borderRadius: 16,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },

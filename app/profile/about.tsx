@@ -14,6 +14,7 @@ import { ScrollView } from '@/components/ui/GestureScrollView';
 import { isEarlyMember, useAccessSettings } from '@/lib/access/accessModel';
 import { openSupportEmail } from '@/lib/contact/supportEmail';
 import { useAuth } from '@/lib/context/AuthContext';
+import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { rateFromSettings } from '@/lib/growth/ratingPrompt';
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xl,
     paddingHorizontal: spacing.lg,
     borderRadius: radius.xl,
-    backgroundColor: '#0A0A0A',
+    backgroundColor: fixedColors.ink,
   },
   onDark: { color: 'rgba(255,255,255,0.78)' },
   onDarkMuted: { color: 'rgba(255,255,255,0.45)' },

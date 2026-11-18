@@ -3,6 +3,7 @@ import { FilterEmblemIcon } from '@/components/icons/FilterEmblemIcon';
 import { AppText } from '@/components/ui/AppText';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { mapChromeBorder } from '@/lib/design/mapChrome';
+import { radius } from '@/lib/design/radius';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
 
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   button: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     right: -2,
     minWidth: 18,
     height: 18,
-    borderRadius: 9,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 4,

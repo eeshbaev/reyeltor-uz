@@ -3,15 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  Alert,
-  Linking,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, Linking, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ShareSheet, type ShareSheetRef } from '@/components/growth/ShareSheet';
 import { AgentCard } from '@/components/listing/AgentCard';
@@ -30,9 +22,11 @@ import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { SafeScreen } from '@/components/ui/SafeScreen';
+import { Text } from '@/components/ui/Text';
 import { useAuth } from '@/lib/context/AuthContext';
 import { useListingsCache } from '@/lib/context/ListingsContext';
 import { isDemoId } from '@/lib/demo';
+import { radius } from '@/lib/design/radius';
 import { getDeviceId } from '@/lib/device';
 import { formatDate } from '@/lib/format';
 import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
@@ -400,7 +394,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   backChip: {
-    borderRadius: 999,
+    borderRadius: radius.pill,
     overflow: 'hidden',
   },
   container: { flex: 1 },
@@ -415,7 +409,7 @@ const styles = StyleSheet.create({
   description: { fontSize: fontSize.md, color: colors.text, lineHeight: 22 },
   historyRow: { fontSize: fontSize.sm, color: colors.textSecondary, marginBottom: spacing.xs },
   actions: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.lg, marginBottom: spacing.xl },
-  actionBtn: { flex: 1, minWidth: '45%', backgroundColor: colors.primary, padding: spacing.md, borderRadius: 10, alignItems: 'center' },
+  actionBtn: { flex: 1, minWidth: '45%', backgroundColor: colors.primary, padding: spacing.md, borderRadius: radius.sm, alignItems: 'center' },
   actionText: { color: colors.surface, fontWeight: '700' },
   reportBtn: { width: '100%', padding: spacing.md, alignItems: 'center' },
   reportText: { color: colors.danger, fontWeight: '600' },

@@ -8,6 +8,7 @@ import { PurposePicker } from '@/components/onboarding/PurposePicker';
 import { AppSystemBars } from '@/components/ui/AppSystemBars';
 import { useAuth } from '@/lib/context/AuthContext';
 import { useListingsCache } from '@/lib/context/ListingsContext';
+import { fixedColors } from '@/lib/design/colors';
 import { markOnboardingDone } from '@/lib/onboarding/storage';
 import { filtersForPurposes, SAVE_SEARCH_HINT_KEY, saveUserPurposes, storePendingPurposes } from '@/lib/purposes';
 import type { UserPurpose } from '@/types';
@@ -62,7 +63,7 @@ export default function OnboardingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0A0A0A' },
+  container: { flex: 1, backgroundColor: fixedColors.ink },
   languageBar: {
     position: 'absolute',
     top: 0,

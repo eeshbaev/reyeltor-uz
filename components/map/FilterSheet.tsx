@@ -14,6 +14,8 @@ import { FilterSegmentedControl } from '@/components/filters/FilterSegmentedCont
 import { ResidentialFilterFields } from '@/components/filters/ResidentialFilterFields';
 import { AppText } from '@/components/ui/AppText';
 import { getCategoryColors } from '@/lib/design/categoryColors';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { countActiveFilters, countFilterResults } from '@/lib/filters';
 import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
 import { hapticLight } from '@/lib/haptics';
@@ -284,7 +286,7 @@ function createStyles(theme: ReturnType<typeof useTheme>) {
     applyPress: { flex: 1.5 },
     clearButton: {
       minHeight: 52,
-      borderRadius: 14,
+      borderRadius: radius.md,
       borderWidth: 1,
       borderColor: theme.colors.border,
       alignItems: 'center',
@@ -294,13 +296,13 @@ function createStyles(theme: ReturnType<typeof useTheme>) {
     },
     applyButton: {
       minHeight: 52,
-      borderRadius: 14,
+      borderRadius: radius.md,
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: spacing.md,
       ...Platform.select({
         ios: {
-          shadowColor: '#2563EB',
+          shadowColor: fixedColors.blue,
           shadowOpacity: 0.28,
           shadowRadius: 12,
           shadowOffset: { width: 0, height: 4 },

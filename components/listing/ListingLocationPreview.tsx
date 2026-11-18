@@ -2,6 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { getStaticMapUrl } from '@/lib/supabase';
 import { useTheme } from '@/lib/theme';
@@ -52,12 +54,12 @@ export function ListingLocationPreview({ lat, lng, onPress, title, subtitle }: L
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 18,
+    borderRadius: radius.lg,
     borderWidth: 1,
     padding: spacing.md,
     gap: spacing.sm,
     ...Platform.select({
-      ios: { shadowColor: '#0F172A', shadowOpacity: 0.05, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
+      ios: { shadowColor: fixedColors.slate900, shadowOpacity: 0.05, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
       android: { elevation: 1 },
     }),
   },
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
   mapWrap: {
     width: '100%',
     height: 148,
-    borderRadius: 14,
+    borderRadius: radius.md,
     overflow: 'hidden',
   },
   map: { width: '100%', height: '100%' },

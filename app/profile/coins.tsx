@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/Button';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { CHECKIN_DAYS } from '@/lib/constants';
 import { useAuth } from '@/lib/context/AuthContext';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { formatDate } from '@/lib/format';
 import { quickShare } from '@/lib/growth/quickShare';
@@ -201,7 +203,7 @@ const styles = StyleSheet.create({
     marginHorizontal: spacing.md,
     marginBottom: spacing.lg,
     padding: spacing.md,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
     gap: spacing.sm,
   },
@@ -224,6 +226,6 @@ const styles = StyleSheet.create({
   },
   txType: { flex: 1 },
   txAmount: { fontWeight: '700', marginHorizontal: spacing.sm },
-  positive: { color: '#22c55e' },
-  negative: { color: '#ef4444' },
+  positive: { color: fixedColors.greenLight },
+  negative: { color: fixedColors.redLight },
 });

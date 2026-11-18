@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View, type ViewStyle } from 'react-native';
+import { radius } from '@/lib/design/radius';
 import { useReduceMotion } from '@/lib/hooks/useReduceMotion';
 import { useTheme } from '@/lib/theme';
 
@@ -81,11 +82,11 @@ export function FavoriteListingCardSkeleton() {
 }
 
 const skeletonStyles = StyleSheet.create({
-  card: { borderRadius: 12, borderWidth: 1, overflow: 'hidden', marginBottom: 16 },
+  card: { borderRadius: radius.md, borderWidth: 1, overflow: 'hidden', marginBottom: 16 },
   image: { borderTopLeftRadius: 12, borderTopRightRadius: 12 },
   content: { padding: 16 },
   pills: { flexDirection: 'row', gap: 8, marginTop: 12 },
-  favoriteCard: { borderRadius: 22, borderWidth: 1, overflow: 'hidden' },
+  favoriteCard: { borderRadius: radius.lg, borderWidth: 1, overflow: 'hidden' },
   favoriteBody: { padding: 16, gap: 12 },
   favoritePills: { flexDirection: 'row', gap: 8 },
   favoriteFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },

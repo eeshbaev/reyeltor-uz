@@ -11,6 +11,7 @@ import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { POI_CATEGORY_ORDER } from '@/components/map/neighborhoodMarkerStyles';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
 import { hapticLight } from '@/lib/haptics';
 import { useOpenListingOnMap } from '@/lib/hooks/useOpenListingOnMap';
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
   mapWrap: {
     width: '100%',
     height: 180,
-    borderRadius: 12,
+    borderRadius: radius.md,
     overflow: 'hidden',
     marginBottom: spacing.sm,
   },

@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import type { MapCoverage } from '@/lib/constants';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import {
   BOUNDARY_LABEL_FRAME,
   getBoundaryLabelOpacity,
@@ -92,10 +94,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: BOUNDARY_LABEL_BADGE_WIDTH,
     paddingHorizontal: 14,
-    borderRadius: 14,
+    borderRadius: radius.md,
     borderWidth: 1,
     alignItems: 'center',
-    shadowColor: '#0F172A',
+    shadowColor: fixedColors.slate900,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.14,
     shadowRadius: 14,

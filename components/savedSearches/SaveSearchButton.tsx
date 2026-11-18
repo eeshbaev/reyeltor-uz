@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { mapChromeBorder } from '@/lib/design/mapChrome';
+import { radius } from '@/lib/design/radius';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
 
@@ -52,5 +53,5 @@ export function SaveSearchButton({ saved, onPress }: SaveSearchButtonProps) {
 
 const styles = StyleSheet.create({
   wrapper: { width: 50, height: 50, alignItems: 'center', justifyContent: 'center' },
-  button: { width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center' },
+  button: { width: 50, height: 50, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
 });

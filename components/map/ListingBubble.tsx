@@ -3,6 +3,7 @@ import { Pressable } from 'react-native-gesture-handler';
 import { AppText } from '@/components/ui/AppText';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { mapChromeBorder } from '@/lib/design/mapChrome';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
@@ -43,7 +44,7 @@ export function ListingBubble({ price, onPress, featured, accentColor }: Listing
 
 const styles = StyleSheet.create({
   bubble: {
-    borderRadius: 999,
+    borderRadius: radius.pill,
     paddingHorizontal: spacing.sm + 2,
     paddingVertical: spacing.xs + 2,
   },

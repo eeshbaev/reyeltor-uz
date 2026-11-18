@@ -1,6 +1,7 @@
 import { View, StyleSheet } from 'react-native';
 import { AppText } from './AppText';
 import { Button } from './Button';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -95,12 +96,12 @@ const styles = StyleSheet.create({
   container: { alignItems: 'center', padding: spacing.xl, paddingTop: spacing.xxl },
   title: { textAlign: 'center', marginTop: spacing.lg, maxWidth: 280 },
   illustration: { width: 80, height: 80, alignItems: 'center', justifyContent: 'center' },
-  pin: { width: 12, height: 12, borderRadius: 6, position: 'absolute', bottom: 20 },
-  heart: { width: 32, height: 28, borderRadius: 8, transform: [{ rotate: '45deg' }] },
+  pin: { width: 12, height: 12, borderRadius: radius.pill, position: 'absolute', bottom: 20 },
+  heart: { width: 32, height: 28, borderRadius: radius.sm, transform: [{ rotate: '45deg' }] },
   building: { width: 48, height: 56, borderWidth: 2, borderRadius: 4 },
-  plus: { width: 20, height: 20, borderRadius: 10, position: 'absolute', right: 8, top: 8 },
-  circle: { width: 40, height: 40, borderRadius: 20, borderWidth: 3 },
+  plus: { width: 20, height: 20, borderRadius: radius.pill, position: 'absolute', right: 8, top: 8 },
+  circle: { width: 40, height: 40, borderRadius: radius.pill, borderWidth: 3 },
   handle: { width: 16, height: 24, borderRadius: 4, position: 'absolute', bottom: 8, right: 12, transform: [{ rotate: '45deg' }] },
   door: { width: 36, height: 52, borderWidth: 2, borderRadius: 4 },
-  box: { width: 48, height: 36, borderWidth: 1, borderRadius: 6 },
+  box: { width: 48, height: 36, borderWidth: 1, borderRadius: 4 },
 });

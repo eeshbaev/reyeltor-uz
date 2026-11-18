@@ -9,6 +9,8 @@ import {
   METRO_MARKER_COLOR,
   METRO_MARKER_SIZE,
 } from '@/components/map/landmarkMarkerStyles';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { landmarkDisplayName, type MapLandmark } from '@/lib/map/tashkentMapLandmarks';
 import { POI_AMBIENT_TAP_MIN_ZOOM } from '@/lib/neighborhood/poiMapConstants';
 
@@ -37,19 +39,19 @@ function Callout({
       <div
         style={{
           backgroundColor: 'rgba(255,255,255,0.96)',
-          borderRadius: 10,
+          borderRadius: radius.sm,
           border: `1px solid ${accentColor}33`,
           padding: '6px 10px',
           boxShadow: '0 4px 12px rgba(15, 23, 42, 0.14)',
           textAlign: 'center',
         }}
       >
-        <div style={{ fontSize: 11, fontWeight: 700, lineHeight: 1.25, color: '#0F172A' }}>{title}</div>
+        <div style={{ fontSize: 11, fontWeight: 700, lineHeight: 1.25, color: fixedColors.slate900 }}>{title}</div>
         {subtitle ? (
-          <div style={{ marginTop: 2, fontSize: 10, lineHeight: 1.2, color: '#64748B' }}>{subtitle}</div>
+          <div style={{ marginTop: 2, fontSize: 10, lineHeight: 1.2, color: fixedColors.slate500 }}>{subtitle}</div>
         ) : null}
       </div>
-      <div style={{ width: 2, height: 5, borderRadius: 1, backgroundColor: accentColor, opacity: 0.45 }} />
+      <div style={{ width: 2, height: 5, borderRadius: radius.pill, backgroundColor: accentColor, opacity: 0.45 }} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { BackButton } from '@/components/navigation/BackButton';
+import { fixedColors } from '@/lib/design/colors';
 import { useTheme } from '@/lib/theme';
 
 export default function ToolsLayout() {
@@ -24,7 +25,7 @@ export default function ToolsLayout() {
         headerShadowVisible: false,
         headerBackVisible: false,
         headerLeft: route.name === 'index' ? undefined : () => <BackButton href="/(tabs)/tools" />,
-        contentStyle: { backgroundColor: theme.isDark ? theme.colors.background : '#F4F6FA' },
+        contentStyle: { backgroundColor: theme.isDark ? theme.colors.background : fixedColors.paper },
       })}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />

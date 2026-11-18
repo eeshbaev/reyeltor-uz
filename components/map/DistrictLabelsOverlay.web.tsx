@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { MapCoverage } from '@/lib/constants';
+import { radius } from '@/lib/design/radius';
 import {
   BOUNDARY_LABEL_FRAME,
   getBoundaryLabelOpacity,
@@ -68,7 +69,7 @@ export function DistrictLabelsOverlay({
               width: BOUNDARY_LABEL_BADGE_WIDTH,
               boxSizing: 'border-box',
               padding: content.showMarket ? '10px 12px' : '8px 12px',
-              borderRadius: 12,
+              borderRadius: radius.md,
               border: `1.5px solid ${frame.border}`,
               background: frame.background,
               boxShadow: '0 2px 10px rgba(15, 23, 42, 0.14)',

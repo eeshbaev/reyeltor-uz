@@ -4,6 +4,7 @@ import { Pressable, StyleSheet } from 'react-native';
 import { Animated } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { CHECKIN_DAYS } from '@/lib/constants';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { hapticMedium } from '@/lib/haptics';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
@@ -71,7 +72,7 @@ function createStyles(_theme: ReturnType<typeof useTheme>) {
   return StyleSheet.create({
     button: {
       padding: spacing.md,
-      borderRadius: 14,
+      borderRadius: radius.md,
       alignItems: 'center',
       marginHorizontal: spacing.md,
       minHeight: 52,

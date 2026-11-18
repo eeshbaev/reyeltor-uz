@@ -22,6 +22,8 @@ import type { MapViewProps, MapViewRef } from './types';
 import { MapTileImage } from '@/components/map/MapTileImage';
 import { CLUSTER_MAX_ZOOM, TASHKENT_CENTER } from '@/lib/constants';
 import { getCategoryColors } from '@/lib/design/categoryColors';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { MAP_PAN_GESTURE } from '@/lib/gestures';
 import { getVisibleMapLandmarks } from '@/lib/map/ambientMapLayers';
 import { getVisibleCityPois } from '@/lib/map/cityPois';
@@ -756,7 +758,7 @@ export const InteractiveTileMap = forwardRef<MapViewRef, MapViewProps>((
 });
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#dce6f0', overflow: 'hidden' },
+  container: { flex: 1, backgroundColor: fixedColors.mist, overflow: 'hidden' },
   mapGestureSurface: { flex: 1 },
   mapSurface: { ...StyleSheet.absoluteFill },
   markersOverlay: { ...StyleSheet.absoluteFill, zIndex: 5 },
@@ -780,16 +782,16 @@ const styles = StyleSheet.create({
   pinHead: {
     width: 28,
     height: 28,
-    borderRadius: 14,
-    backgroundColor: '#DC2626',
+    borderRadius: radius.pill,
+    backgroundColor: fixedColors.red,
     borderWidth: 3,
-    borderColor: '#FFFFFF',
+    borderColor: fixedColors.white,
   },
   pinStem: {
     width: 4,
     height: 10,
-    borderRadius: 2,
-    backgroundColor: '#DC2626',
+    borderRadius: radius.pill,
+    backgroundColor: fixedColors.red,
     marginTop: -2,
   },
 });

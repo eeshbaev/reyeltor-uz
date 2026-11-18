@@ -1,6 +1,7 @@
 import { Animated, StyleSheet } from 'react-native';
 import { Pressable } from 'react-native-gesture-handler';
 import { AppText } from '@/components/ui/AppText';
+import { fixedColors } from '@/lib/design/colors';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
 
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 2.5,
     borderColor: 'rgba(255,255,255,0.95)',
-    shadowColor: '#0F172A',
+    shadowColor: fixedColors.slate900,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,

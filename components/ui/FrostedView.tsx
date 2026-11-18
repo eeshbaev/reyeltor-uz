@@ -1,6 +1,7 @@
 import React from "react";
 import { BlurView } from 'expo-blur';
 import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { fixedColors } from '@/lib/design/colors';
 import { useTheme } from '@/lib/theme';
 
 interface FrostedViewProps {
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     overflow: 'visible',
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: fixedColors.black,
         shadowOpacity: 0.1,
         shadowRadius: 12,
         shadowOffset: { width: 0, height: 4 },

@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
   track: {
     flexDirection: 'row',
     padding: 4,
-    borderRadius: 14,
+    borderRadius: radius.md,
     borderWidth: 1,
     gap: 4,
   },
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     paddingVertical: spacing.sm + 2,
     paddingHorizontal: spacing.sm,
-    borderRadius: 10,
+    borderRadius: radius.sm,
   },
   buttonSelected: {
     shadowOffset: { width: 0, height: 1 },
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
   count: {
     minWidth: 22,
     height: 22,
-    borderRadius: 11,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 6,

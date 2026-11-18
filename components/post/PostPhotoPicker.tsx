@@ -3,6 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useTranslation } from 'react-i18next';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
   dropzone: {
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderRadius: 16,
+    borderRadius: radius.md,
     paddingVertical: spacing.lg,
     paddingHorizontal: spacing.md,
     alignItems: 'center',
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   iconBadge: {
     width: 52,
     height: 52,
-    borderRadius: 26,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
   thumb: {
     width: 88,
     height: 88,
-    borderRadius: 12,
+    borderRadius: radius.md,
   },
   coverBadge: {
     position: 'absolute',
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
     bottom: 6,
     paddingHorizontal: 6,
     paddingVertical: 2,
-    borderRadius: 6,
+    borderRadius: radius.pill,
   },
   coverText: {
     fontSize: 10,
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     right: 4,
     width: 22,
     height: 22,
-    borderRadius: 11,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },

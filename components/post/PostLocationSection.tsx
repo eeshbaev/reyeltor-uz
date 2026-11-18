@@ -7,6 +7,7 @@ import { PostFormChipRow } from '@/components/post/PostFormChipRow';
 import { PostFormSection } from '@/components/post/PostFormSection';
 import { AppText } from '@/components/ui/AppText';
 import { TASHKENT_DISTRICTS } from '@/lib/constants';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import type { LocationSuggestion } from '@/lib/map/locationSuggestions';
 import { useTheme } from '@/lib/theme';
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginBottom: spacing.md,
     paddingVertical: spacing.md,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
   },
   pinStatus: {
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginTop: spacing.md,
     padding: spacing.md,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
   },
   pinStatusText: {

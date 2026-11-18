@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Image, type ImageSource } from 'expo-image';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Text } from '@/components/ui/Text';
 import { getInitials } from '@/lib/format';
 import { useTheme } from '@/lib/theme';
 

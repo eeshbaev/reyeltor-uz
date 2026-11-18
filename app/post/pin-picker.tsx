@@ -11,6 +11,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { LISTING_MAP_FOCUS_ZOOM, TASHKENT_CENTER } from '@/lib/constants';
 import { usePin } from '@/lib/context/PinContext';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useCurrentLocation } from '@/lib/hooks/useCurrentLocation';
 import { useLocationSearch } from '@/lib/hooks/useLocationSearch';
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
     left: spacing.md,
     right: spacing.md,
     zIndex: 10,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
     padding: spacing.md,
   },
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: spacing.xs,
     paddingVertical: spacing.sm + 2,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
   },
 });

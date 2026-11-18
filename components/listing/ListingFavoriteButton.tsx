@@ -4,6 +4,8 @@ import { Pressable, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { AppText } from '@/components/ui/AppText';
 import { FrostedView } from '@/components/ui/FrostedView';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useListingFavorite } from '@/lib/hooks/useListingFavorite';
 import { useTheme } from '@/lib/theme';
@@ -26,7 +28,7 @@ export function ListingFavoriteButton({
   const theme = useTheme();
   const { isFavorite, toggleFavorite } = useListingFavorite(listingId);
   const accessibilityLabel = isFavorite ? t('favorites.remove') : t('favorites.add');
-  const iconColor = isFavorite ? theme.colors.danger : variant === 'overlay' ? '#ffffff' : theme.colors.text;
+  const iconColor = isFavorite ? theme.colors.danger : variant === 'overlay' ? fixedColors.white : theme.colors.text;
   const iconName = isFavorite ? 'heart' : 'heart-outline';
   const actionLabel = isFavorite ? t('favorites.remove') : t('common.save');
 
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
   action: {
     flex: 1,
     minHeight: 46,
-    borderRadius: 14,
+    borderRadius: radius.md,
     borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
   actionIcon: {
     minWidth: 46,
     minHeight: 46,
-    borderRadius: 14,
+    borderRadius: radius.md,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
   overlayButton: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },

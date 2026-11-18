@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ListingShareCard, SHARE_CARD_HEIGHT, SHARE_CARD_WIDTH } from '@/components/share/ListingShareCard';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
+import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { hapticSuccess } from '@/lib/haptics';
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.sm,
     maxHeight: '92%',
   },
-  handle: { alignSelf: 'center', width: 40, height: 4, borderRadius: 2, marginBottom: spacing.md },
+  handle: { alignSelf: 'center', width: 40, height: 4, borderRadius: radius.pill, marginBottom: spacing.md },
   title: { textAlign: 'center' },
   subtitle: { textAlign: 'center', marginTop: spacing.xs, marginBottom: spacing.md },
   previewWrap: { alignItems: 'center' },
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     // Scale the full-size card down for the preview; capture still renders it at full size.
     transform: [{ scale: 0.8 }],
     marginVertical: -SHARE_CARD_HEIGHT * 0.1,
-    shadowColor: '#000',
+    shadowColor: fixedColors.black,
     shadowOpacity: 0.18,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },

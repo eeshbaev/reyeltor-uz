@@ -19,6 +19,8 @@ import Animated, {
   type SharedValue,
 } from 'react-native-reanimated';
 import { AppText } from '@/components/ui/AppText';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { hapticLight } from '@/lib/haptics';
 import { LISTING_PHOTO_PLACEHOLDER_SOURCE, listingPhotoPlaceholder, resolveListingPhotoSource } from '@/lib/listingPhotos';
@@ -132,7 +134,7 @@ function CarouselFooter({
             scrollX={scrollX}
             slideWidth={slideWidth}
             inactiveColor={overlay ? 'rgba(255,255,255,0.55)' : theme.colors.border}
-            activeColor={overlay ? '#ffffff' : theme.colors.primary}
+            activeColor={overlay ? fixedColors.white : theme.colors.primary}
             overlay={overlay}
           />
         ))}
@@ -340,7 +342,7 @@ export function ListingCarousel({
     return (
       <Image
         source={LISTING_PHOTO_PLACEHOLDER_SOURCE}
-        style={{ width: slideWidth, height: imageHeight, borderRadius: 12 }}
+        style={{ width: slideWidth, height: imageHeight, borderRadius: radius.md }}
         contentFit="cover"
       />
     );
@@ -404,7 +406,7 @@ export function ListingCarousel({
 const styles = StyleSheet.create({
   wrap: { position: 'relative', overflow: 'hidden' },
   pagerStrip: { flexDirection: 'row' },
-  slide: { overflow: 'hidden', backgroundColor: '#0b0f1a' },
+  slide: { overflow: 'hidden', backgroundColor: fixedColors.night },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -423,7 +425,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
   },
   dots: { flexDirection: 'row', gap: spacing.xs, alignItems: 'center' },
-  dot: { height: 6, borderRadius: 3 },
+  dot: { height: 6, borderRadius: radius.pill },
   counter: { opacity: 0.8 },
   overlayCounter: { color: 'rgba(255,255,255,0.9)', marginLeft: spacing.sm, fontWeight: '600' },
 });

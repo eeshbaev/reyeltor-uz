@@ -17,6 +17,8 @@ import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { BrandWordmark } from '@/components/brand/BrandWordmark';
 import { AppText } from '@/components/ui/AppText';
 import { useListingsCache } from '@/lib/context/ListingsContext';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { hapticLight } from '@/lib/haptics';
 import { useFormatPrice } from '@/lib/hooks/useFormatPrice';
@@ -83,9 +85,9 @@ export function OnboardingPromise({ onStart, onSignIn }: OnboardingPromiseProps)
         <Svg width={imageWidth} height={imageHeight} style={StyleSheet.absoluteFill} pointerEvents="none">
           <Defs>
             <LinearGradient id="promise-fade" x1="0" y1="0" x2={wide ? '1' : '0'} y2={wide ? '0' : '1'}>
-              <Stop offset="0" stopColor="#0A0A0A" stopOpacity="0.15" />
-              <Stop offset="0.65" stopColor="#0A0A0A" stopOpacity="0.35" />
-              <Stop offset="1" stopColor="#0A0A0A" stopOpacity="1" />
+              <Stop offset="0" stopColor={fixedColors.ink} stopOpacity="0.15" />
+              <Stop offset="0.65" stopColor={fixedColors.ink} stopOpacity="0.35" />
+              <Stop offset="1" stopColor={fixedColors.ink} stopOpacity="1" />
             </LinearGradient>
           </Defs>
           <Rect width={imageWidth} height={imageHeight} fill="url(#promise-fade)" />
@@ -124,7 +126,7 @@ export function OnboardingPromise({ onStart, onSignIn }: OnboardingPromiseProps)
             {t('onboarding.promise.subtitle')}
           </AppText>
           <View style={styles.note}>
-            <Ionicons name="sparkles" size={14} color="#E8C872" />
+            <Ionicons name="sparkles" size={14} color={fixedColors.gold} />
             <AppText variant="caption" style={styles.noteText}>
               {t('onboarding.trust.note')}
             </AppText>
@@ -196,20 +198,20 @@ function PriceDrop({
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#0A0A0A' },
+  root: { flex: 1, backgroundColor: fixedColors.ink },
   rootWide: { flexDirection: 'row' },
   wordmark: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
   bubble: {
     position: 'absolute',
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     backgroundColor: 'rgba(255,255,255,0.94)',
   },
-  bubbleText: { color: '#0A0A0A', fontWeight: '700', letterSpacing: -0.2 },
+  bubbleText: { color: fixedColors.ink, fontWeight: '700', letterSpacing: -0.2 },
   copy: { flex: 1, justifyContent: 'space-between', paddingHorizontal: spacing.lg, gap: spacing.lg },
   copyWide: { justifyContent: 'center', maxWidth: 480 },
-  heading: { color: '#FFFFFF', fontWeight: '600', letterSpacing: -0.4, maxWidth: 420 },
+  heading: { color: fixedColors.white, fontWeight: '600', letterSpacing: -0.4, maxWidth: 420 },
   subtitle: { color: 'rgba(255,255,255,0.72)', marginTop: spacing.sm, maxWidth: 420 },
   note: {
     flexDirection: 'row',
@@ -218,23 +220,23 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(232, 200, 114, 0.55)',
     backgroundColor: 'rgba(232, 200, 114, 0.12)',
     marginTop: spacing.md,
   },
-  noteText: { color: '#F3DFA2', fontWeight: '600', letterSpacing: 0.2 },
+  noteText: { color: fixedColors.goldSoft, fontWeight: '600', letterSpacing: 0.2 },
   actions: { gap: spacing.sm },
   cta: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: fixedColors.white,
+    borderRadius: radius.md,
     minHeight: 52,
     alignItems: 'center',
     justifyContent: 'center',
   },
   pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
-  ctaLabel: { color: '#0A0A0A', fontSize: 15, fontWeight: '600' },
+  ctaLabel: { color: fixedColors.ink, fontSize: 15, fontWeight: '600' },
   signIn: { alignSelf: 'center', paddingVertical: spacing.sm },
   signInText: { color: 'rgba(255,255,255,0.7)', fontWeight: '600' },
 });

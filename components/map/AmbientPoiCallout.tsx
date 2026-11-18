@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 
 interface AmbientPoiCalloutProps {
@@ -8,7 +9,7 @@ interface AmbientPoiCalloutProps {
   accentColor?: string;
 }
 
-export function AmbientPoiCallout({ title, subtitle, accentColor = '#0F172A' }: AmbientPoiCalloutProps) {
+export function AmbientPoiCallout({ title, subtitle, accentColor = fixedColors.slate900 }: AmbientPoiCalloutProps) {
   return (
     <View style={styles.wrap} pointerEvents="none">
       <View style={[styles.bubble, { borderColor: `${accentColor}33` }]}>
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     paddingVertical: 6,
-    shadowColor: '#0F172A',
+    shadowColor: fixedColors.slate900,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.14,
     shadowRadius: 8,
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
   stem: {
     width: 2,
     height: 5,
-    borderRadius: 1,
+    borderRadius: radius.pill,
     opacity: 0.45,
   },
 });

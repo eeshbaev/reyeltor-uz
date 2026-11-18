@@ -6,7 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
 import { DEFAULT_LANGUAGE, LANGUAGE_LABELS, SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/lib/constants';
-import { colorTokens } from '@/lib/design/colors';
+import { colorTokens, fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { typography } from '@/lib/design/typography';
 import { hapticLight } from '@/lib/haptics';
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     borderWidth: 1,
   },
   modalRoot: {
@@ -125,10 +126,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     minWidth: 180,
     maxHeight: 320,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
     overflow: 'hidden',
-    shadowColor: '#1a1a1a',
+    shadowColor: fixedColors.ink900,
     shadowOpacity: 0.12,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 4 },

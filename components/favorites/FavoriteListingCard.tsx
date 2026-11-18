@@ -8,6 +8,8 @@ import { AppText } from '@/components/ui/AppText';
 import { DemoBadge } from '@/components/ui/DemoBadge';
 import { isDemoId } from '@/lib/demo';
 import { getCategoryColors } from '@/lib/design/categoryColors';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { daysSince } from '@/lib/format';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
@@ -140,11 +142,11 @@ export function FavoriteListingCard({ listing, onPress, unavailable }: FavoriteL
 }
 
 function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featured: boolean) {
-  const shadowColor = featured ? accent : '#0F172A';
+  const shadowColor = featured ? accent : fixedColors.slate900;
 
   return StyleSheet.create({
     card: {
-      borderRadius: 22,
+      borderRadius: radius.lg,
       overflow: 'hidden',
       backgroundColor: theme.colors.surfaceElevated,
       borderWidth: 1,
@@ -169,7 +171,7 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
       position: 'relative',
       width: '100%',
       aspectRatio: 16 / 10,
-      backgroundColor: '#0b0f1a',
+      backgroundColor: fixedColors.night,
     },
     image: {
       ...StyleSheet.absoluteFill,
@@ -210,7 +212,7 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
     featuredPill: {
       paddingHorizontal: spacing.sm,
       paddingVertical: 4,
-      borderRadius: 999,
+      borderRadius: radius.pill,
     },
     featuredText: {
       fontWeight: '700',
@@ -220,13 +222,13 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
     savedBadge: {
       width: 32,
       height: 32,
-      borderRadius: 16,
+      borderRadius: radius.pill,
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: 'rgba(255,255,255,0.94)',
       ...Platform.select({
         ios: {
-          shadowColor: '#000',
+          shadowColor: fixedColors.black,
           shadowOpacity: 0.12,
           shadowRadius: 8,
           shadowOffset: { width: 0, height: 2 },
@@ -243,7 +245,7 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
       zIndex: 2,
     },
     heroPrice: {
-      color: '#ffffff',
+      color: fixedColors.white,
       fontWeight: '700',
       letterSpacing: -0.6,
       fontSize: 24,
@@ -265,10 +267,10 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
       zIndex: 4,
     },
     unavailableLabel: {
-      color: '#ffffff',
+      color: fixedColors.white,
       paddingHorizontal: spacing.md,
       paddingVertical: spacing.sm,
-      borderRadius: 999,
+      borderRadius: radius.pill,
       backgroundColor: 'rgba(0,0,0,0.45)',
       overflow: 'hidden',
     },
@@ -286,7 +288,7 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
     metaChip: {
       paddingHorizontal: spacing.sm,
       paddingVertical: 5,
-      borderRadius: 999,
+      borderRadius: radius.pill,
     },
     metaChipText: {
       fontWeight: '600',
@@ -304,7 +306,7 @@ function createStyles(theme: ReturnType<typeof useTheme>, accent: string, featur
       paddingLeft: spacing.sm,
       paddingRight: spacing.xs,
       paddingVertical: 5,
-      borderRadius: 999,
+      borderRadius: radius.pill,
       borderWidth: StyleSheet.hairlineWidth,
       borderColor: theme.colors.border,
     },

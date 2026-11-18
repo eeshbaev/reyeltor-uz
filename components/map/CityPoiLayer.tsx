@@ -1,7 +1,9 @@
 import { memo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { POI_CATEGORY_COLOR, POI_CATEGORY_ICON } from '@/components/map/neighborhoodMarkerStyles';
+import { Text } from '@/components/ui/Text';
+import { fixedColors } from '@/lib/design/colors';
 import { CITY_POI_LABEL_ZOOM } from '@/lib/map/cityPois';
 import type { NeighborhoodPoi } from '@/lib/neighborhood/amenities';
 
@@ -52,7 +54,7 @@ function CityPoiLayerComponent({ pois, zoom, language, getScreenPosition }: City
         return (
           <View key={poi.id} style={[styles.anchor, { left: screen.x, top: screen.y }]} pointerEvents="none">
             <View style={[styles.dot, { backgroundColor: color }]}>
-              <Ionicons name={icon} size={12} color="#ffffff" />
+              <Ionicons name={icon} size={12} color={fixedColors.white} />
             </View>
             {showLabels ? (
               <Text style={[styles.label, { color }]} numberOfLines={1}>
@@ -83,11 +85,11 @@ const styles = StyleSheet.create({
     height: SIZE,
     borderRadius: SIZE / 2,
     borderWidth: 1.5,
-    borderColor: '#ffffff',
+    borderColor: fixedColors.white,
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.92,
-    shadowColor: '#000000',
+    shadowColor: fixedColors.black,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.15,
     shadowRadius: 1,

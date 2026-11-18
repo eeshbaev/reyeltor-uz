@@ -1,8 +1,9 @@
 import { ActivityIndicator, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { AppBootIcon } from '@/components/AppBootIcon';
+import { fixedColors } from '@/lib/design/colors';
 import { spacing } from '@/lib/design/spacing';
 
-export const APP_LOADING_BG = '#07090F';
+export const APP_LOADING_BG = fixedColors.splash;
 
 interface AppLoadingScreenProps {
   style?: StyleProp<ViewStyle>;
@@ -14,7 +15,7 @@ export function AppLoadingScreen({ style, iconSize = 120 }: AppLoadingScreenProp
   return (
     <View style={[styles.container, style]}>
       <AppBootIcon size={iconSize} />
-      <ActivityIndicator size="small" color="#2563EB" style={styles.spinner} accessibilityLabel="Loading" />
+      <ActivityIndicator size="small" color={fixedColors.blue} style={styles.spinner} accessibilityLabel="Loading" />
     </View>
   );
 }

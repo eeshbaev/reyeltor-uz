@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { FrostedView } from '@/components/ui/FrostedView';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import {
   getNoResultsReason,
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
   },
   card: {
     padding: spacing.md,
-    borderRadius: 16,
+    borderRadius: radius.md,
     alignItems: 'stretch',
   },
   title: {

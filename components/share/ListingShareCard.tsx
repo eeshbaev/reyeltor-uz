@@ -1,8 +1,11 @@
 import { forwardRef } from 'react';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { QrCode } from '@/components/share/QrCode';
+import { Text } from '@/components/ui/Text';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { getListingCategory } from '@/lib/listing';
 import { LISTING_PHOTO_PLACEHOLDER_SOURCE, resolveListingPhotoSource } from '@/lib/listingPhotos';
 import { getPhotoUrl } from '@/lib/supabase';
@@ -12,8 +15,8 @@ import type { ListingWithPhotos } from '@/types';
 export const SHARE_CARD_WIDTH = 360;
 export const SHARE_CARD_HEIGHT = 450;
 
-const BRAND_BLUE = '#2563EB';
-const INK = '#0F172A';
+const BRAND_BLUE = fixedColors.blue;
+const INK = fixedColors.slate900;
 
 interface ListingShareCardProps {
   listing: ListingWithPhotos;
@@ -93,27 +96,27 @@ const styles = StyleSheet.create({
   card: {
     width: SHARE_CARD_WIDTH,
     height: SHARE_CARD_HEIGHT,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    backgroundColor: fixedColors.white,
+    borderRadius: radius.lg,
     overflow: 'hidden',
   },
-  photoWrap: { flex: 1, backgroundColor: '#E5E7EB' },
+  photoWrap: { flex: 1, backgroundColor: fixedColors.gray200 },
   scrim: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(15,23,42,0.28)' },
   pillRow: { position: 'absolute', top: 14, left: 14, flexDirection: 'row', gap: 6 },
   pill: {
     backgroundColor: BRAND_BLUE,
-    color: '#FFFFFF',
+    color: fixedColors.white,
     fontWeight: '700',
     fontSize: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     overflow: 'hidden',
   },
   pillLight: { backgroundColor: 'rgba(255,255,255,0.92)', color: INK },
   headline: { position: 'absolute', left: 16, right: 16, bottom: 14 },
-  price: { color: '#FFFFFF', fontSize: 28, fontWeight: '800', letterSpacing: -0.5 },
-  specs: { color: '#FFFFFF', fontSize: 15, fontWeight: '600', marginTop: 4 },
+  price: { color: fixedColors.white, fontSize: 28, fontWeight: '800', letterSpacing: -0.5 },
+  specs: { color: fixedColors.white, fontSize: 15, fontWeight: '600', marginTop: 4 },
   district: { color: 'rgba(255,255,255,0.92)', fontSize: 14, marginTop: 2 },
   footer: {
     height: 116,
@@ -126,5 +129,5 @@ const styles = StyleSheet.create({
   logo: { width: 40, height: 40 },
   brandCopy: { flex: 1 },
   brandName: { color: BRAND_BLUE, fontWeight: '800', fontSize: 15, letterSpacing: 0.6 },
-  scanText: { color: '#475569', fontSize: 12, marginTop: 2 },
+  scanText: { color: fixedColors.slate600, fontSize: 12, marginTop: 2 },
 });

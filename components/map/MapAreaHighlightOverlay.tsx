@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Polygon } from 'react-native-svg';
+import { fixedColors } from '@/lib/design/colors';
 import type { MapAreaPolygon } from '@/types';
 
 const FILL = 'rgba(220, 38, 38, 0.15)';
-const STROKE = '#DC2626';
+const STROKE = fixedColors.red;
 const STROKE_WIDTH = 2.5;
 
 interface MapAreaHighlightOverlayProps {

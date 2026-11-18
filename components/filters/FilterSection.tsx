@@ -1,6 +1,7 @@
 import { useMemo, type ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing, useTheme } from '@/lib/theme';
 
 interface FilterSectionProps {
@@ -21,7 +22,7 @@ export function FilterSection({ title, hint, children, first }: FilterSectionPro
           gap: spacing.sm,
         },
         card: {
-          borderRadius: 16,
+          borderRadius: radius.md,
           borderWidth: StyleSheet.hairlineWidth,
           borderColor: theme.colors.border,
           backgroundColor: theme.isDark ? 'rgba(255,255,255,0.03)' : theme.colors.surface,

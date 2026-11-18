@@ -1,4 +1,5 @@
 import { StyleSheet, View } from 'react-native';
+import { radius } from '@/lib/design/radius';
 import { useTheme } from '@/lib/theme';
 
 export function FavoritesAmbientBackground() {
@@ -34,7 +35,7 @@ export function FavoritesAmbientBackground() {
 const styles = StyleSheet.create({
   orb: {
     position: 'absolute',
-    borderRadius: 999,
+    borderRadius: radius.pill,
   },
   orbPrimary: {
     width: 320,

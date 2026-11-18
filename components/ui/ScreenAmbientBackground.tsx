@@ -1,4 +1,5 @@
 import { StyleSheet, View } from 'react-native';
+import { radius } from '@/lib/design/radius';
 import { useTheme } from '@/lib/theme';
 
 /** Soft gradient orbs behind profile/favorites-style screens. */
@@ -26,7 +27,7 @@ export function ScreenAmbientBackground() {
 }
 
 const styles = StyleSheet.create({
-  orb: { position: 'absolute', borderRadius: 999 },
+  orb: { position: 'absolute', borderRadius: radius.pill },
   orbPrimary: { width: 300, height: 300, top: -100, right: -90 },
   orbSecondary: { width: 220, height: 220, bottom: 120, left: -80 },
 });

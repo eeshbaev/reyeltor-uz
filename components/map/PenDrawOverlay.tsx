@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Svg, { Polygon, Polyline } from 'react-native-svg';
 import type { MapViewRef } from './types';
+import { fixedColors } from '@/lib/design/colors';
 import {
   isClosedPath,
   simplifyPath,
@@ -60,14 +61,14 @@ export function PenDrawOverlay({ mapRef, onComplete, onCancel: _onCancel }: PenD
           {completed ? (
             <Polygon
               points={pointString}
-              stroke="#DC2626"
+              stroke={fixedColors.red}
               strokeWidth={2.5}
               fill="rgba(220,38,38,0.15)"
             />
           ) : svgPoints.length > 0 ? (
             <Polyline
               points={pointString}
-              stroke="#DC2626"
+              stroke={fixedColors.red}
               strokeWidth={2.5}
               fill="none"
             />

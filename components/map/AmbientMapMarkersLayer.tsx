@@ -11,6 +11,7 @@ import {
   METRO_MARKER_COLOR,
   METRO_MARKER_SIZE,
 } from '@/components/map/landmarkMarkerStyles';
+import { fixedColors } from '@/lib/design/colors';
 import { landmarkDisplayName, type MapLandmark } from '@/lib/map/tashkentMapLandmarks';
 import { POI_AMBIENT_TAP_MIN_ZOOM } from '@/lib/neighborhood/poiMapConstants';
 
@@ -135,8 +136,8 @@ const styles = StyleSheet.create({
   },
   selectedDot: {
     borderWidth: 2,
-    borderColor: '#FFFFFF',
-    shadowColor: '#0F172A',
+    borderColor: fixedColors.white,
+    shadowColor: fixedColors.slate900,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.22,
     shadowRadius: 4,

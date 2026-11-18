@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { getCategoryColors } from '@/lib/design/categoryColors';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { getListingStatusBadge } from '@/lib/listing';
 import { useTheme } from '@/lib/theme';
@@ -65,14 +67,14 @@ function createVariantColors(theme: ReturnType<typeof useTheme>, categoryColors:
   return {
     default: { bg: theme.colors.surfaceElevated, text: theme.colors.secondary, border: theme.colors.border },
     rent: { bg: categoryColors.main, text: categoryColors.onMain, border: categoryColors.main },
-    buy: { bg: theme.colors.soldText, text: '#ffffff', border: theme.colors.soldText },
+    buy: { bg: theme.colors.soldText, text: fixedColors.white, border: theme.colors.soldText },
     warning: { bg: categoryColors.main, text: categoryColors.onMain, border: categoryColors.main },
-    sold: { bg: theme.colors.soldText, text: '#ffffff', border: theme.colors.soldText },
+    sold: { bg: theme.colors.soldText, text: fixedColors.white, border: theme.colors.soldText },
     expired: { bg: theme.colors.surfaceElevated, text: theme.colors.tertiary, border: theme.colors.borderStrong },
-    danger: { bg: theme.colors.danger, text: '#ffffff', border: theme.colors.danger },
-    success: { bg: theme.colors.success, text: '#ffffff', border: theme.colors.success },
-    active: { bg: theme.colors.success, text: '#ffffff', border: theme.colors.success },
-    expiring: { bg: theme.colors.warning, text: '#ffffff', border: theme.colors.warning },
+    danger: { bg: theme.colors.danger, text: fixedColors.white, border: theme.colors.danger },
+    success: { bg: theme.colors.success, text: fixedColors.white, border: theme.colors.success },
+    active: { bg: theme.colors.success, text: fixedColors.white, border: theme.colors.success },
+    expiring: { bg: theme.colors.warning, text: fixedColors.white, border: theme.colors.warning },
   };
 }
 
@@ -95,10 +97,10 @@ const styles = StyleSheet.create({
   pill: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs + 2,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     borderWidth: 1,
     ...Platform.select({
-      ios: { shadowColor: '#0F172A', shadowOpacity: 0.14, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
+      ios: { shadowColor: fixedColors.slate900, shadowOpacity: 0.14, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
       android: { elevation: 4 },
     }),
   },

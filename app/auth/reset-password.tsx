@@ -2,20 +2,13 @@ import { useEffect, useState } from 'react';
 import * as ExpoLinking from 'expo-linking';
 import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScrollView } from '@/components/ui/GestureScrollView';
+import { Text } from '@/components/ui/Text';
 import { mapAuthFlowError } from '@/lib/auth/errors';
 import { AuthRequestTimeoutError, withAuthTimeout } from '@/lib/auth/timeouts';
+import { radius } from '@/lib/design/radius';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import { colors, fontSize, spacing, useTheme } from '@/lib/theme';
 import { isValidPassword, passwordsMatch } from '@/lib/validation';
@@ -194,7 +187,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 10,
+    borderRadius: radius.sm,
     padding: spacing.md,
     fontSize: fontSize.md,
     backgroundColor: colors.surface,
@@ -202,7 +195,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     padding: spacing.md,
-    borderRadius: 10,
+    borderRadius: radius.sm,
     alignItems: 'center',
     marginTop: spacing.sm,
   },

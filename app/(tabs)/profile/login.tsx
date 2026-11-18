@@ -1,20 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TelegramButton } from '@/components/auth/TelegramButton';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
 import { ScrollView } from '@/components/ui/GestureScrollView';
+import { Text } from '@/components/ui/Text';
 import { resolveWelcomeDisplayName } from '@/lib/auth/displayName';
 import { mapAuthFlowError } from '@/lib/auth/errors';
 import { getPasswordResetRedirectUrl } from '@/lib/auth/redirects';
@@ -31,6 +23,7 @@ import { resolvePostLoginRoute } from '@/lib/auth/welcomeNavigation';
 import { openSupportEmail } from '@/lib/contact/supportEmail';
 import { useAuth } from '@/lib/context/AuthContext';
 import { motion } from '@/lib/design/motion';
+import { radius } from '@/lib/design/radius';
 import { useTelegramConfirm } from '@/lib/hooks/useTelegramConfirm';
 import { getRegisteredFullName } from '@/lib/onboarding/storage';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
@@ -337,7 +330,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 10,
+    borderRadius: radius.sm,
     padding: spacing.md,
     marginBottom: spacing.sm,
     fontSize: fontSize.md,
@@ -357,7 +350,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     padding: spacing.md,
-    borderRadius: 10,
+    borderRadius: radius.sm,
     alignItems: 'center',
     marginTop: spacing.md,
   },

@@ -10,6 +10,8 @@ import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
 import { AppText } from '@/components/ui/AppText';
 import { ScrollView } from '@/components/ui/GestureScrollView';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
@@ -83,9 +85,9 @@ function ToolCard({
           <Svg width={layout.width} height={layout.height} style={StyleSheet.absoluteFill} pointerEvents="none">
             <Defs>
               <LinearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="0" stopColor="#000000" stopOpacity="0.12" />
-                <Stop offset="0.45" stopColor="#000000" stopOpacity="0.38" />
-                <Stop offset="1" stopColor="#000000" stopOpacity="0.84" />
+                <Stop offset="0" stopColor={fixedColors.black} stopOpacity="0.12" />
+                <Stop offset="0.45" stopColor={fixedColors.black} stopOpacity="0.38" />
+                <Stop offset="1" stopColor={fixedColors.black} stopOpacity="0.84" />
               </LinearGradient>
             </Defs>
             <Rect width={layout.width} height={layout.height} fill={`url(#${gradientId})`} />
@@ -94,7 +96,7 @@ function ToolCard({
 
         <View style={styles.cardContent}>
           <View style={styles.iconBadge}>
-            <Ionicons name={icon} size={22} color="#FFFFFF" />
+            <Ionicons name={icon} size={22} color={fixedColors.white} />
           </View>
           <View style={styles.cardSpacer} />
           <AppText variant="h3" style={styles.cardTitle}>
@@ -119,10 +121,10 @@ const styles = StyleSheet.create({
   },
   cardWrap: { width: '47%', flexGrow: 1 },
   card: {
-    borderRadius: 16,
+    borderRadius: radius.md,
     overflow: 'hidden',
     minHeight: 168,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: fixedColors.ink900,
   },
   cardContent: {
     flex: 1,
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
   iconBadge: {
     width: 40,
     height: 40,
-    borderRadius: 12,
+    borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.22)',
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
   },
   cardSpacer: { flex: 1, minHeight: spacing.sm },
   cardTitle: {
-    color: '#FFFFFF',
+    color: fixedColors.white,
     marginBottom: 4,
   },
   cardDescription: {

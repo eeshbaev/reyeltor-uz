@@ -1,7 +1,9 @@
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Avatar } from '@/components/ui/Avatar';
+import { Text } from '@/components/ui/Text';
+import { radius } from '@/lib/design/radius';
 import { formatDate } from '@/lib/format';
 import { resolveAvatarSource } from '@/lib/profile/avatar';
 import { colors, fontSize, spacing } from '@/lib/theme';
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     padding: spacing.md,
     backgroundColor: colors.surface,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.border,
   },

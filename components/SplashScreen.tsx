@@ -3,6 +3,8 @@ import { Animated, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppBootIcon } from '@/components/AppBootIcon';
 import { APP_LOADING_BG } from '@/components/AppLoadingScreen';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 
 export interface SplashScreenProps {
   isVisible: boolean;
@@ -172,14 +174,14 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: fixedColors.white,
     letterSpacing: 0.5,
     marginBottom: 8,
   },
   tagline: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#A0AEC0',
+    color: fixedColors.gray400,
     letterSpacing: 0.3,
   },
   bottomContainer: {
@@ -190,10 +192,10 @@ const styles = StyleSheet.create({
   loadingSpinner: {
     width: 44,
     height: 44,
-    borderRadius: 22,
+    borderRadius: radius.pill,
     borderWidth: 3,
     borderColor: 'rgba(255, 255, 255, 0.1)',
-    borderTopColor: '#2563EB',
+    borderTopColor: fixedColors.blue,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
@@ -201,12 +203,12 @@ const styles = StyleSheet.create({
   spinnerDot: {
     width: 6,
     height: 6,
-    borderRadius: 3,
-    backgroundColor: '#2563EB',
+    borderRadius: radius.pill,
+    backgroundColor: fixedColors.blue,
   },
   loadingText: {
     fontSize: 12,
-    color: '#64748B',
+    color: fixedColors.slate500,
     letterSpacing: 0.5,
     fontWeight: '500',
   },

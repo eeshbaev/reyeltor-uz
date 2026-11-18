@@ -2,16 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WelcomeCoin } from './WelcomeCoin';
 import { BrandWordmark } from '@/components/brand/BrandWordmark';
 import { AppText } from '@/components/ui/AppText';
+import { Text } from '@/components/ui/Text';
 import { isEarlyMember, useAccessSettings } from '@/lib/access/accessModel';
 import { WELCOME_COINS } from '@/lib/constants';
 import { useAuth } from '@/lib/context/AuthContext';
+import { fixedColors } from '@/lib/design/colors';
 import { motion } from '@/lib/design/motion';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { markWelcomeShown } from '@/lib/onboarding/storage';
 
@@ -99,7 +102,7 @@ export function PostRegistrationWelcome({ fullName, returnTo }: PostRegistration
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
+    backgroundColor: fixedColors.ink,
     paddingHorizontal: spacing.lg,
     justifyContent: 'space-between',
   },
@@ -117,7 +120,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   count: {
-    color: '#FFFFFF',
+    color: fixedColors.white,
     fontSize: 72,
     fontWeight: '500',
     lineHeight: 80,
@@ -128,7 +131,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   welcomeName: {
-    color: '#FFFFFF',
+    color: fixedColors.white,
     fontSize: 20,
     fontWeight: '500',
     marginTop: spacing.md,
@@ -144,8 +147,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   cta: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 999,
+    backgroundColor: fixedColors.white,
+    borderRadius: radius.pill,
     minHeight: 52,
     alignItems: 'center',
     justifyContent: 'center',
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
   },
   ctaLabel: {
-    color: '#0A0A0A',
+    color: fixedColors.ink,
     fontSize: 15,
     fontWeight: '600',
   },

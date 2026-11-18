@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { hapticLight } from '@/lib/haptics';
 import { spacing, useTheme } from '@/lib/theme';
 
@@ -54,7 +55,7 @@ export function FilterStepper({
         btn: {
           width: 40,
           height: 40,
-          borderRadius: 12,
+          borderRadius: radius.md,
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: theme.isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.05)',

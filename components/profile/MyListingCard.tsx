@@ -8,6 +8,8 @@ import { FreshnessLabel } from '@/components/listing/FreshnessLabel';
 import { AppText } from '@/components/ui/AppText';
 import { Badge } from '@/components/ui/Badge';
 import { getCategoryColors } from '@/lib/design/categoryColors';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { daysUntil } from '@/lib/format';
 import { needsAvailabilityCheck } from '@/lib/freshness';
@@ -77,7 +79,7 @@ export function MyListingCard({
         </View>
         {listing.is_featured ? (
           <View style={[styles.featured, { backgroundColor: categoryColors.main }]}>
-            <Ionicons name="star" size={12} color="#FFFFFF" />
+            <Ionicons name="star" size={12} color={fixedColors.white} />
           </View>
         ) : null}
       </Pressable>
@@ -234,7 +236,7 @@ const statStyles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: spacing.sm,
     paddingVertical: 5,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     borderWidth: 1,
   },
 });
@@ -242,7 +244,7 @@ const statStyles = StyleSheet.create({
 function createStyles(theme: ReturnType<typeof useTheme>) {
   return StyleSheet.create({
     card: {
-      borderRadius: 16,
+      borderRadius: radius.md,
       overflow: 'hidden',
       backgroundColor: theme.colors.surfaceElevated,
       borderWidth: 1,
@@ -276,7 +278,7 @@ function createStyles(theme: ReturnType<typeof useTheme>) {
       right: spacing.sm,
       width: 28,
       height: 28,
-      borderRadius: 14,
+      borderRadius: radius.pill,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -302,15 +304,15 @@ function createStyles(theme: ReturnType<typeof useTheme>) {
       gap: spacing.sm,
       marginTop: spacing.xs,
     },
-    checkBox: { borderRadius: 12, padding: spacing.sm, gap: spacing.sm, marginTop: spacing.sm },
+    checkBox: { borderRadius: radius.md, padding: spacing.sm, gap: spacing.sm, marginTop: spacing.sm },
     checkActions: { flexDirection: 'row', gap: spacing.sm },
-    checkBtn: { flex: 1, alignItems: 'center', paddingVertical: spacing.sm, borderRadius: 10 },
+    checkBtn: { flex: 1, alignItems: 'center', paddingVertical: spacing.sm, borderRadius: radius.sm },
     actionBtn: {
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
       paddingVertical: spacing.sm + 2,
-      borderRadius: 10,
+      borderRadius: radius.sm,
       borderWidth: 1,
       borderColor: theme.colors.border,
       backgroundColor: theme.colors.surface,
@@ -330,7 +332,7 @@ function createStyles(theme: ReturnType<typeof useTheme>) {
       gap: spacing.xs,
       marginTop: spacing.xs,
       paddingVertical: spacing.sm + 2,
-      borderRadius: 10,
+      borderRadius: radius.sm,
       backgroundColor: theme.colors.accent,
     },
     reactivateDisabled: {

@@ -5,6 +5,7 @@ import { FrostedView } from '@/components/ui/FrostedView';
 import { useListingsCache } from '@/lib/context/ListingsContext';
 import { getCategoryColors } from '@/lib/design/categoryColors';
 import { mapChromeBorder } from '@/lib/design/mapChrome';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { hapticLight } from '@/lib/haptics';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignSelf: 'center',
-    borderRadius: 999,
+    borderRadius: radius.pill,
     padding: 3,
     gap: 3,
     minWidth: 220,
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
   pill: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs + 2,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     minHeight: 30,
     justifyContent: 'center',
     alignItems: 'center',

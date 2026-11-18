@@ -3,6 +3,7 @@ import * as Notifications from 'expo-notifications';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Linking, Platform, Pressable, StyleSheet, Switch, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import {
   fetchNotificationPreferences,
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: spacing.lg,
     padding: spacing.md,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
   },
   title: { marginBottom: spacing.xs },
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
   enableRow: {
     alignItems: 'center',
     paddingVertical: spacing.sm,
-    borderRadius: 10,
+    borderRadius: radius.sm,
     borderWidth: 1,
     marginBottom: spacing.sm,
   },

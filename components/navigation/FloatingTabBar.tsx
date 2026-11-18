@@ -8,6 +8,7 @@ import { AppText } from '@/components/ui/AppText';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { useMapChrome } from '@/lib/context/MapChromeContext';
 import { useOverlayChrome } from '@/lib/context/OverlayChromeContext';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { hapticLight } from '@/lib/haptics';
 
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
   },
   bar: {
     flexDirection: 'row',
-    borderRadius: 22,
+    borderRadius: radius.lg,
     borderWidth: 1,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.xs,
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   activeDot: {
     width: 4,
     height: 4,
-    borderRadius: 2,
+    borderRadius: radius.pill,
   },
   label: { textAlign: 'center', opacity: 0.88 },
   labelActive: { fontWeight: '600', opacity: 1 },

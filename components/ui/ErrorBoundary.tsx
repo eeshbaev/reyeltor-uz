@@ -7,6 +7,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
+import { fixedColors } from '@/lib/design/colors';
 import { spacing } from '@/lib/design/spacing';
 import { logger } from '@/lib/logging/logger';
 
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: spacing.lg,
-    backgroundColor: '#07090F',
+    backgroundColor: fixedColors.splash,
   },
   content: {
     alignItems: 'center',

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { formatTrendDateLabel, type DistrictTrendPoint } from '@/lib/market/districtPriceHistory';
 
@@ -187,5 +188,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xs,
   },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
-  legendDot: { width: 10, height: 10, borderRadius: 5 },
+  legendDot: { width: 10, height: 10, borderRadius: radius.pill },
 });

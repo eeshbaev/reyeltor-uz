@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import type { LocationSuggestion, LocationSuggestionKind } from '@/lib/map/locationSuggestions';
 import { useTheme } from '@/lib/theme';
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: radius.md,
     paddingHorizontal: spacing.sm + 4,
     minHeight: 48,
   },
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
   },
   list: {
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: radius.md,
     overflow: 'hidden',
   },
   row: {
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
   iconWrap: {
     width: 32,
     height: 32,
-    borderRadius: 16,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },

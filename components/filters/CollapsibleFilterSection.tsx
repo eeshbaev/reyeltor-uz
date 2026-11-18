@@ -2,6 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { hapticLight } from '@/lib/haptics';
 import { spacing, useTheme } from '@/lib/theme';
 
@@ -26,7 +27,7 @@ export function CollapsibleFilterSection({
       StyleSheet.create({
         section: {
           marginTop: spacing.md,
-          borderRadius: 16,
+          borderRadius: radius.md,
           borderWidth: StyleSheet.hairlineWidth,
           borderColor: theme.colors.border,
           backgroundColor: theme.isDark ? 'rgba(255,255,255,0.03)' : theme.colors.surface,
@@ -44,7 +45,7 @@ export function CollapsibleFilterSection({
         iconWrap: {
           width: 28,
           height: 28,
-          borderRadius: 14,
+          borderRadius: radius.pill,
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: theme.isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.05)',

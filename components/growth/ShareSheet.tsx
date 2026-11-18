@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/ui/AppText';
+import { fixedColors } from '@/lib/design/colors';
 import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import {
@@ -94,11 +95,11 @@ export const ShareSheet = forwardRef<ShareSheetRef>((_props, ref) => {
           onPress={handleTelegram}
           disabled={busy !== null}
         >
-          <View style={[styles.iconWrap, { backgroundColor: '#229ED918' }]}>
+          <View style={[styles.iconWrap, { backgroundColor: fixedColors.telegramTint }]}>
             {busy === 'telegram' ? (
-              <ActivityIndicator size="small" color="#229ED9" />
+              <ActivityIndicator size="small" color={fixedColors.telegram} />
             ) : (
-              <Ionicons name="paper-plane-outline" size={22} color="#229ED9" />
+              <Ionicons name="paper-plane-outline" size={22} color={fixedColors.telegram} />
             )}
           </View>
           <AppText variant="label">{t('growth.shareTelegram')}</AppText>
@@ -109,11 +110,11 @@ export const ShareSheet = forwardRef<ShareSheetRef>((_props, ref) => {
           onPress={handleWhatsApp}
           disabled={busy !== null}
         >
-          <View style={[styles.iconWrap, { backgroundColor: '#25D36618' }]}>
+          <View style={[styles.iconWrap, { backgroundColor: fixedColors.whatsappTint }]}>
             {busy === 'whatsapp' ? (
-              <ActivityIndicator size="small" color="#25D366" />
+              <ActivityIndicator size="small" color={fixedColors.whatsapp} />
             ) : (
-              <Ionicons name="logo-whatsapp" size={22} color="#25D366" />
+              <Ionicons name="logo-whatsapp" size={22} color={fixedColors.whatsapp} />
             )}
           </View>
           <AppText variant="label">{t('growth.shareWhatsApp')}</AppText>
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 40,
     height: 4,
-    borderRadius: 2,
+    borderRadius: radius.pill,
     marginBottom: spacing.md,
   },
   title: { marginBottom: spacing.md, textAlign: 'center' },
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
   iconWrap: {
     width: 44,
     height: 44,
-    borderRadius: 22,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },

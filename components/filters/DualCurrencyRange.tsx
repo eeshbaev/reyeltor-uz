@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { FilterRangeInput } from '@/components/filters/FilterRangeInput';
 import { FilterSegmentedControl } from '@/components/filters/FilterSegmentedControl';
 import { AppText } from '@/components/ui/AppText';
+import { radius } from '@/lib/design/radius';
 import { uzsToUsd } from '@/lib/exchange/cbuRate';
 import { spacing, useTheme } from '@/lib/theme';
 import type { PriceCurrency } from '@/types';
@@ -37,7 +38,7 @@ export function DualCurrencyRange({
         rateNote: {
           paddingHorizontal: spacing.sm,
           paddingVertical: spacing.xs,
-          borderRadius: 8,
+          borderRadius: radius.sm,
           backgroundColor: theme.isDark ? 'rgba(59,130,246,0.12)' : theme.colors.accentSurface,
           alignSelf: 'flex-start',
         },

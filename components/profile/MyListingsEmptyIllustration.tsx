@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import Svg, { Circle, Defs, G, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
+import { fixedColors } from '@/lib/design/colors';
 import { useTheme } from '@/lib/theme';
 
 const SIZE = 180;
@@ -21,7 +22,7 @@ export function MyListingsEmptyIllustration() {
         </LinearGradient>
         <LinearGradient id={`${id}-roof`} x1="0%" y1="0%" x2="100%" y2="100%">
           <Stop offset="0%" stopColor={accent} />
-          <Stop offset="100%" stopColor="#1D4ED8" />
+          <Stop offset="100%" stopColor={fixedColors.blueDark} />
         </LinearGradient>
       </Defs>
 

@@ -47,7 +47,10 @@
     "no-console": [
       "warn",
       {
-        "allow": ["warn", "error"]
+        "allow": [
+          "warn",
+          "error"
+        ]
       }
     ],
     "unused-imports/no-unused-imports": "error",
@@ -63,7 +66,14 @@
     "import/order": [
       "warn",
       {
-        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
         "pathGroups": [
           {
             "pattern": "react",
@@ -71,7 +81,9 @@
             "position": "before"
           }
         ],
-        "pathGroupsExcludedImportTypes": ["react"],
+        "pathGroupsExcludedImportTypes": [
+          "react"
+        ],
         "alphabetize": {
           "order": "asc",
           "caseInsensitive": true
@@ -81,11 +93,41 @@
     "no-var": "error",
     "prefer-const": "error",
     "prefer-arrow-callback": "error",
-    "eqeqeq": ["warn", "always", { "null": "ignore" }]
+    "eqeqeq": [
+      "warn",
+      "always",
+      {
+        "null": "ignore"
+      }
+    ]
   },
   "settings": {
     "react": {
       "version": "detect"
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "app/**/*.{ts,tsx}",
+        "components/**/*.{ts,tsx}"
+      ],
+      "excludedFiles": [
+        "components/brand/**"
+      ],
+      "rules": {
+        "no-restricted-syntax": [
+          "error",
+          {
+            "selector": "Literal[value=/^#[0-9A-Fa-f]{3,8}$/]",
+            "message": "Use a theme colour (useTheme) or fixedColors from lib/design/colors \u2014 no raw hex in screens."
+          },
+          {
+            "selector": "Property[key.name='borderRadius'] > Literal[value>4]",
+            "message": "Use radius.sm / md / lg / pill from lib/design/radius."
+          }
+        ]
+      }
+    }
+  ]
 }

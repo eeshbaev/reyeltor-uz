@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { ReyeltorCoin } from '@/components/brand/ReyeltorCoin';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
   },
   card: {
-    borderRadius: 20,
+    borderRadius: radius.lg,
     borderWidth: 1,
     padding: spacing.lg,
     alignItems: 'center',

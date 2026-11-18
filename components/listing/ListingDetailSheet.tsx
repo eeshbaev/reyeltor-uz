@@ -21,6 +21,8 @@ import { Button } from '@/components/ui/Button';
 import { requestCacheMedium } from '@/lib/cache/requestCache';
 import { useListingsCache } from '@/lib/context/ListingsContext';
 import { isDemoId } from '@/lib/demo';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { formatDate } from '@/lib/format';
 import { BOTTOM_SHEET_GESTURE_PROPS } from '@/lib/gestures';
@@ -367,7 +369,7 @@ const styles = StyleSheet.create({
     minHeight: 220,
   },
   photos: {
-    backgroundColor: '#0b0f1a',
+    backgroundColor: fixedColors.night,
     overflow: 'hidden',
   },
   body: {
@@ -382,7 +384,7 @@ const styles = StyleSheet.create({
   actionPrimary: {
     flex: 1,
     minHeight: 46,
-    borderRadius: 14,
+    borderRadius: radius.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -392,7 +394,7 @@ const styles = StyleSheet.create({
   actionSecondary: {
     flex: 1,
     minHeight: 46,
-    borderRadius: 14,
+    borderRadius: radius.md,
     borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -408,7 +410,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   sectionCard: {
-    borderRadius: 18,
+    borderRadius: radius.lg,
     borderWidth: 1,
     padding: spacing.md,
     gap: spacing.sm,
@@ -423,7 +425,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
-    borderRadius: 14,
+    borderRadius: radius.md,
     borderWidth: StyleSheet.hairlineWidth,
   },
 });

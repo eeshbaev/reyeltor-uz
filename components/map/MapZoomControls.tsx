@@ -2,6 +2,7 @@ import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { mapChromeBorder } from '@/lib/design/mapChrome';
+import { radius } from '@/lib/design/radius';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
 
@@ -59,7 +60,7 @@ export function MapZoomControls({ onZoomIn, onZoomOut, canZoomIn = true, canZoom
 
 const styles = StyleSheet.create({
   stack: {
-    borderRadius: 14,
+    borderRadius: radius.md,
     alignSelf: 'flex-start',
   },
   pressable: {

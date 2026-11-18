@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: 1,
   },
-  iconWrap: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  iconWrap: { width: 40, height: 40, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   optionCopy: { flex: 1, gap: 2 },
   optionTitle: { fontWeight: '600' },
   browse: { alignSelf: 'center', paddingVertical: spacing.sm, marginTop: spacing.sm },

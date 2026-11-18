@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import type { MapViewRef } from './types';
+import { fixedColors } from '@/lib/design/colors';
 import {
   isClosedPath,
   simplifyPath,
@@ -96,7 +97,7 @@ export function PenDrawOverlay({ mapRef, onComplete, onCancel }: PenDrawOverlayP
       style={{ position: 'absolute', inset: 0, cursor: 'crosshair', zIndex: 999, touchAction: 'none' }}
     >
       <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-        <polyline ref={svgPathRef} stroke="#DC2626" strokeWidth="2.5" fill="none" points="" />
+        <polyline ref={svgPathRef} stroke={fixedColors.red} strokeWidth="2.5" fill="none" points="" />
       </svg>
     </div>
   );

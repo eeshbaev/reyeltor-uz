@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { mapChromeBorder } from '@/lib/design/mapChrome';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -58,7 +59,7 @@ export function MarkerSkeleton({ featured }: MarkerSkeletonProps) {
 
 const styles = StyleSheet.create({
   bubble: {
-    borderRadius: 999,
+    borderRadius: radius.pill,
     paddingHorizontal: spacing.sm + 2,
     paddingVertical: spacing.xs + 2,
   },

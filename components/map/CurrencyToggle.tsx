@@ -4,6 +4,7 @@ import { AppText } from '@/components/ui/AppText';
 import { FrostedView } from '@/components/ui/FrostedView';
 import { useDisplayCurrency } from '@/lib/context/DisplayCurrencyContext';
 import { mapChromeBorder } from '@/lib/design/mapChrome';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useAnimatedPress } from '@/lib/hooks/useAnimatedPress';
 import { useTheme } from '@/lib/theme';
@@ -65,14 +66,14 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignSelf: 'flex-start',
-    borderRadius: 999,
+    borderRadius: radius.pill,
     padding: 4,
     gap: 2,
   },
   pill: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     minHeight: 34,
     justifyContent: 'center',
   },

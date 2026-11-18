@@ -7,6 +7,7 @@ import { FavoritesEmptyIllustration } from '@/components/favorites/FavoritesEmpt
 import { TAB_BAR_CLEARANCE } from '@/components/navigation/FloatingTabBar';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { useTheme } from '@/lib/theme';
 
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   },
   ambientOrb: {
     position: 'absolute',
-    borderRadius: 999,
+    borderRadius: radius.pill,
   },
   ambientOrbPrimary: {
     width: 280,
@@ -174,13 +175,13 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
-    borderRadius: 999,
+    borderRadius: radius.pill,
     borderWidth: 1,
   },
   tipIcon: {
     width: 28,
     height: 28,
-    borderRadius: 14,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -27,6 +27,8 @@ import {
 import { useDisplayCurrency } from '@/lib/context/DisplayCurrencyContext';
 import { useListingsCache } from '@/lib/context/ListingsContext';
 import { useMapFocus } from '@/lib/context/MapFocusContext';
+import { fixedColors } from '@/lib/design/colors';
+import { radius } from '@/lib/design/radius';
 import { spacing } from '@/lib/design/spacing';
 import { countActiveFilters, filtersToRevealListing, resetAreaSearch, resetSearchFiltersPreservingArea, shouldShowDistrictMarketStats } from '@/lib/filters';
 import { onValueMoment } from '@/lib/growth/ratingPrompt';
@@ -555,8 +557,8 @@ export default function MapScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#07090F' },
-  mapLayer: { flex: 1, zIndex: 0, overflow: 'hidden', backgroundColor: '#07090F' },
+  container: { flex: 1, backgroundColor: fixedColors.splash },
+  mapLayer: { flex: 1, zIndex: 0, overflow: 'hidden', backgroundColor: fixedColors.splash },
   penDrawLayer: {
     position: 'absolute',
     top: 0,
@@ -578,9 +580,9 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   drawHint: { position: 'absolute', left: spacing.md, right: spacing.md, zIndex: 11 },
-  drawHintInner: { padding: spacing.sm, borderRadius: 12, alignSelf: 'flex-start', maxWidth: 280 },
+  drawHintInner: { padding: spacing.sm, borderRadius: radius.md, alignSelf: 'flex-start', maxWidth: 280 },
   tooltip: { position: 'absolute', right: spacing.md + 58, zIndex: 11, maxWidth: 220 },
-  tooltipInner: { padding: spacing.sm, borderRadius: 12 },
+  tooltipInner: { padding: spacing.sm, borderRadius: radius.md },
   postSuccess: {
     position: 'absolute',
     left: spacing.md,
@@ -591,16 +593,16 @@ const styles = StyleSheet.create({
   postSuccessInner: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    borderRadius: 12,
+    borderRadius: radius.md,
     maxWidth: 340,
   },
   postSuccessText: { textAlign: 'center', fontWeight: '600' },
   postCard: { position: 'absolute', left: spacing.md, right: spacing.md, zIndex: 12 },
-  postCardInner: { padding: spacing.md, borderRadius: 12, gap: spacing.sm },
+  postCardInner: { padding: spacing.md, borderRadius: radius.md, gap: spacing.sm },
   postCardCopy: { gap: 2 },
   postCardActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: spacing.lg },
   liveNotice: { position: 'absolute', left: spacing.md, right: 72, zIndex: 11 },
-  liveNoticeInner: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, borderRadius: 12 },
+  liveNoticeInner: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, borderRadius: radius.md },
   zoomControls: {
     position: 'absolute',
     right: spacing.md,
