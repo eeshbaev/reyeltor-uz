@@ -228,6 +228,9 @@
       "promise": {
         "heading": "Toshkent koʻchmas mulki bitta jonli xaritada.",
         "subtitle": "Uylar, ofislar va doʻkonlar haqiqiy narxlar bilan. Qidiruvni kuzatib boring — yangilarini sizga xabar qilamiz.",
+        "benefitFind": "Haqiqiy narxlar. Yangi va arzonlashgan uylar haqida xabar beramiz.",
+        "benefitPost": "Egalar: bepul eʼlon bering — xaritada daqiqalarda koʻrinasiz.",
+        "benefitAgents": "Rieltorlar: eʼlonlar, koʻrishlar va aloqalar bir joyda.",
         "cta": "Boshlash",
         "signIn": "Menda akkaunt bor"
       },

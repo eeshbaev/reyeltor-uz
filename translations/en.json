@@ -228,6 +228,9 @@
       "promise": {
         "heading": "Tashkent property on one live map.",
         "subtitle": "Homes, offices and shops with real prices. Follow a search and we'll tell you what's new.",
+        "benefitFind": "Real prices. Alerts for new and cheaper homes.",
+        "benefitPost": "Owners: post free, get seen on the map in minutes.",
+        "benefitAgents": "Realtors: listings, views and contacts in one place.",
         "cta": "Start",
         "signIn": "I already have an account"
       },
