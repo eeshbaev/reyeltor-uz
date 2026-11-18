@@ -518,7 +518,9 @@
       "toastRemoved": "Saqlanganlardan olib tashlandi",
       "toastSaveFailed": "Uy saqlanmadi — internetni tekshiring. Hech narsa oʻzgarmadi.",
       "toastRemoveFailed": "Uy olib tashlanmadi — internetni tekshiring. U saqlangan holda qoldi.",
-      "toastSavedPlain": "Saqlanganlarga qoʻshildi"
+      "toastSavedPlain": "Saqlanganlarga qoʻshildi",
+      "cheaperSinceSaved_one": "{{count}} ta uy saqlaganingizdan beri arzonlashdi",
+      "cheaperSinceSaved_other": "{{count}} ta uy saqlaganingizdan beri arzonlashdi"
     },
     "flags": {
       "title": "Eʼlon haqida shikoyat",
@@ -1140,6 +1142,13 @@
       "done": "Tayyor",
       "stats_one": "Reyeltor-uzʼda {{count}} marta koʻrildi",
       "stats_other": "Reyeltor-uzʼda {{count}} marta koʻrildi"
+    },
+    "a11y": {
+      "decrease": "{{label}}ni kamaytirish",
+      "increase": "{{label}}ni koʻpaytirish",
+      "removePhoto": "Rasmni olib tashlash",
+      "openListing": "Eʼlonni ochish",
+      "showOnMap": "Xaritada koʻrsatish"
     }
   }
 }

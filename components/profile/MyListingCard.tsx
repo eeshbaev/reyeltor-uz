@@ -71,7 +71,7 @@ export function MyListingCard({
 
   return (
     <View style={styles.card}>
-      <Pressable onPress={onPress} style={styles.imageWrap} android_ripple={{ color: theme.colors.borderStrong }}>
+      <Pressable onPress={onPress} style={styles.imageWrap} android_ripple={{ color: theme.colors.borderStrong }} accessibilityRole="button" accessibilityLabel={t('a11y.openListing')}>
         <Image source={imageSource} style={styles.image} contentFit="cover" transition={200} />
         <View style={[styles.imageOverlay, variant === 'archived' && styles.imageArchived]} />
         <View style={styles.badges}>
@@ -180,7 +180,7 @@ export function MyListingCard({
               </Pressable>
             ) : null}
             {onManage ? (
-              <Pressable style={[styles.actionBtn, styles.actionIcon]} onPress={onManage}>
+              <Pressable style={[styles.actionBtn, styles.actionIcon]} onPress={onManage} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('profile.manageListing')}>
                 <Ionicons name="ellipsis-horizontal" size={18} color={theme.colors.secondary} />
               </Pressable>
             ) : null}

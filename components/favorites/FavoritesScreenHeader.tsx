@@ -9,9 +9,11 @@ import { useTheme } from '@/lib/theme';
 
 interface FavoritesScreenHeaderProps {
   count: number;
+  /** Saved homes that are cheaper now than when saved (real price history). */
+  cheaperCount?: number;
 }
 
-export function FavoritesScreenHeader({ count }: FavoritesScreenHeaderProps) {
+export function FavoritesScreenHeader({ count, cheaperCount = 0 }: FavoritesScreenHeaderProps) {
   const { t } = useTranslation();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
@@ -26,9 +28,15 @@ export function FavoritesScreenHeader({ count }: FavoritesScreenHeaderProps) {
           <AppText variant="h1" style={styles.title}>
             {t('tabs.favorites')}
           </AppText>
-          <AppText variant="caption" color="secondary">
-            {t('favorites.subtitle')}
-          </AppText>
+          {cheaperCount > 0 ? (
+            <AppText variant="caption" color="success" style={styles.cheaper}>
+              {t('favorites.cheaperSinceSaved', { count: cheaperCount })}
+            </AppText>
+          ) : (
+            <AppText variant="caption" color="secondary">
+              {t('favorites.subtitle')}
+            </AppText>
+          )}
         </View>
       </View>
       <View style={[styles.badge, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
@@ -41,6 +49,7 @@ export function FavoritesScreenHeader({ count }: FavoritesScreenHeaderProps) {
 }
 
 const styles = StyleSheet.create({
+  cheaper: { fontWeight: '600' },
   header: {
     flexDirection: 'row',
     alignItems: 'flex-start',

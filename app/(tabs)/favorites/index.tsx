@@ -22,6 +22,7 @@ import { spacing } from '@/lib/design/spacing';
 import { useWindowClass } from '@/lib/design/windowClass';
 import { subscribeFavoritesChanged } from '@/lib/favorites/events';
 import { loadFavoriteListings, type FavoriteListing } from '@/lib/favorites/loadFavoriteListings';
+import { countCheaperSinceSaved } from '@/lib/favorites/savings';
 import { useSavedSearches } from '@/lib/hooks/useSavedSearches';
 import { useSheetOverlay } from '@/lib/hooks/useSheetOverlay';
 import { sheetOverlayLayerStyle } from '@/lib/sheetChrome';
@@ -40,6 +41,7 @@ export default function FavoritesScreen() {
   const { searches, refetch: refetchSearches } = useSavedSearches();
   const detailRef = useRef<ListingDetailSheetRef>(null);
   const [listings, setListings] = useState<FavoriteListing[]>([]);
+  const [cheaperCount, setCheaperCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [detailOpen, setDetailOpen] = useState(false);
   const [neighborhoodOpen, setNeighborhoodOpen] = useState(false);
@@ -56,6 +58,10 @@ export default function FavoritesScreen() {
     try {
       const next = await loadFavoriteListings(session.user.id);
       setListings(next);
+      const prices = new Map(next.filter((l) => !l.unavailable).map((l) => [l.id, l.price] as const));
+      void countCheaperSinceSaved(session.user.id, prices)
+        .then(setCheaperCount)
+        .catch(() => setCheaperCount(0));
     } finally {
       setLoading(false);
     }
@@ -86,7 +92,7 @@ export default function FavoritesScreen() {
 
   const header = (
     <View>
-      <FavoritesScreenHeader count={savedCount} />
+      <FavoritesScreenHeader count={savedCount} cheaperCount={cheaperCount} />
       <View style={styles.segmentWrap}>
         <FavoritesSegment
           tab={tab}

@@ -90,13 +90,13 @@ export function FilterStepper({
         </AppText>
       ) : null}
       <View style={styles.row}>
-        <Pressable style={styles.btn} onPress={stepDown} hitSlop={6}>
+        <Pressable style={styles.btn} onPress={stepDown} hitSlop={6} accessibilityRole="button" accessibilityLabel={t('a11y.decrease', { label })}>
           <Ionicons name="remove" size={18} color={theme.colors.primary} />
         </Pressable>
         <AppText variant="label" style={styles.value}>
           {display}
         </AppText>
-        <Pressable style={styles.btn} onPress={stepUp} hitSlop={6}>
+        <Pressable style={styles.btn} onPress={stepUp} hitSlop={6} accessibilityRole="button" accessibilityLabel={t('a11y.increase', { label })}>
           <Ionicons name="add" size={18} color={theme.colors.primary} />
         </Pressable>
       </View>

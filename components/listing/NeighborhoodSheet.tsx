@@ -141,6 +141,8 @@ export const NeighborhoodSheet = forwardRef<NeighborhoodSheetRef, NeighborhoodSh
               <Pressable
                 onPress={listingId ? handleShowOnMap : undefined}
                 disabled={!listingId}
+                accessibilityRole="button"
+                accessibilityLabel={t('a11y.showOnMap')}
                 style={[styles.mapWrap, { backgroundColor: theme.colors.border }]}
               >
                 <Image source={{ uri: mapUrl }} style={styles.map} contentFit="cover" />

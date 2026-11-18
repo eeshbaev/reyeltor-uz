@@ -518,7 +518,9 @@
       "toastRemoved": "Removed from saved homes",
       "toastSaveFailed": "Couldn't save this home — check your connection. Nothing changed.",
       "toastRemoveFailed": "Couldn't remove this home — check your connection. It's still saved.",
-      "toastSavedPlain": "Saved to your homes"
+      "toastSavedPlain": "Saved to your homes",
+      "cheaperSinceSaved_one": "{{count}} home is cheaper than when you saved it",
+      "cheaperSinceSaved_other": "{{count}} homes are cheaper than when you saved them"
     },
     "flags": {
       "title": "Report listing",
@@ -1140,6 +1142,13 @@
       "done": "Done",
       "stats_one": "{{count}} view on Reyeltor-uz",
       "stats_other": "{{count}} views on Reyeltor-uz"
+    },
+    "a11y": {
+      "decrease": "Decrease {{label}}",
+      "increase": "Increase {{label}}",
+      "removePhoto": "Remove photo",
+      "openListing": "Open listing",
+      "showOnMap": "Show on the map"
     }
   }
 }

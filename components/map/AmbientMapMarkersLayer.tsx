@@ -62,6 +62,8 @@ export function AmbientMapMarkersLayer({
         return (
           <Pressable
             key={landmark.id}
+            accessibilityRole="button"
+            accessibilityLabel={`${title}, ${t(subtitleKey)}`}
             style={[
               styles.hitTarget,
               isSelected && styles.selectedAnchor,

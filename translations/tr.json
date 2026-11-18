@@ -518,7 +518,9 @@
       "toastRemoved": "Kaydedilenlerden kaldırıldı",
       "toastSaveFailed": "Kaydedilemedi — bağlantınızı kontrol edin. Hiçbir şey değişmedi.",
       "toastRemoveFailed": "Kaldırılamadı — bağlantınızı kontrol edin. Hâlâ kayıtlı.",
-      "toastSavedPlain": "Kaydedilenlere eklendi"
+      "toastSavedPlain": "Kaydedilenlere eklendi",
+      "cheaperSinceSaved_one": "{{count}} ev kaydettiğinizden beri ucuzladı",
+      "cheaperSinceSaved_other": "{{count}} ev kaydettiğinizden beri ucuzladı"
     },
     "flags": {
       "title": "Bildir",
@@ -1140,6 +1142,13 @@
       "done": "Tamam",
       "stats_one": "Reyeltor-uz'da {{count}} görüntülenme",
       "stats_other": "Reyeltor-uz'da {{count}} görüntülenme"
+    },
+    "a11y": {
+      "decrease": "{{label}} azalt",
+      "increase": "{{label}} artır",
+      "removePhoto": "Fotoğrafı kaldır",
+      "openListing": "İlanı aç",
+      "showOnMap": "Haritada göster"
     }
   }
 }

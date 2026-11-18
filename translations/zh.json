@@ -518,7 +518,8 @@
       "toastRemoved": "已从收藏中移除",
       "toastSaveFailed": "收藏失败——请检查网络。没有任何更改。",
       "toastRemoveFailed": "移除失败——请检查网络。该房源仍在收藏中。",
-      "toastSavedPlain": "已加入收藏"
+      "toastSavedPlain": "已加入收藏",
+      "cheaperSinceSaved_other": "{{count}} 套房源比您收藏时更便宜了"
     },
     "flags": {
       "title": "举报",
@@ -1139,6 +1140,13 @@
       "postAnother": "再发布一个房源",
       "done": "完成",
       "stats_other": "在 Reyeltor-uz 上被浏览 {{count}} 次"
+    },
+    "a11y": {
+      "decrease": "减少{{label}}",
+      "increase": "增加{{label}}",
+      "removePhoto": "删除照片",
+      "openListing": "打开房源",
+      "showOnMap": "在地图上显示"
     }
   }
 }

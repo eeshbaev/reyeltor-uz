@@ -518,7 +518,11 @@
       "toastRemoved": "Удалено из сохранённых",
       "toastSaveFailed": "Не удалось сохранить — проверьте интернет. Ничего не изменилось.",
       "toastRemoveFailed": "Не удалось удалить — проверьте интернет. Объявление осталось в сохранённых.",
-      "toastSavedPlain": "Добавлено в сохранённые"
+      "toastSavedPlain": "Добавлено в сохранённые",
+      "cheaperSinceSaved_one": "{{count}} объект подешевел с момента сохранения",
+      "cheaperSinceSaved_few": "{{count}} объекта подешевели с момента сохранения",
+      "cheaperSinceSaved_many": "{{count}} объектов подешевели с момента сохранения",
+      "cheaperSinceSaved_other": "{{count}} объекта подешевели с момента сохранения"
     },
     "flags": {
       "title": "Пожаловаться",
@@ -1142,6 +1146,13 @@
       "stats_few": "{{count}} просмотра на Reyeltor-uz",
       "stats_many": "{{count}} просмотров на Reyeltor-uz",
       "stats_other": "{{count}} просмотра на Reyeltor-uz"
+    },
+    "a11y": {
+      "decrease": "Уменьшить: {{label}}",
+      "increase": "Увеличить: {{label}}",
+      "removePhoto": "Удалить фото",
+      "openListing": "Открыть объявление",
+      "showOnMap": "Показать на карте"
     }
   }
 }

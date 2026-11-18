@@ -74,6 +74,8 @@ export function PostPhotoPicker({ photos, onChange }: PostPhotoPickerProps) {
               ) : null}
               <Pressable
                 onPress={() => removePhoto(photo.uri)}
+                accessibilityRole="button"
+                accessibilityLabel={t('a11y.removePhoto')}
                 style={[styles.removeBtn, { backgroundColor: theme.colors.primary }]}
                 hitSlop={8}
               >

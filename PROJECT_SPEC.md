@@ -84,6 +84,7 @@ Status: ✅ pass · 🔧 fixed today · ⏳ open · 📱 needs a device test · 
 | V-03 icon + label in navigation | ✅ | Tab bar has labels |
 | H-02 value before asking | ✅ | Account/notifications/rating only after value moments |
 | H-06 never punish absence | ✅ | No streaks, no guilt copy |
+| H-04 accumulated value | 🔧 | Favorites header: "N homes are cheaper than when you saved them" from real price history |
 | L-01 margins / L-02 proximity | ✅ | 16 on phones, tokens |
 | L-03 radius scale | 🔧 | 4 radii, lint-enforced |
 | L-04 safe areas | ✅ | safe-area insets on screen roots |
@@ -138,7 +139,7 @@ Status: ✅ pass · 🔧 fixed today · ⏳ open · 📱 needs a device test · 
 | ND-02 quiet hours | 🔧 | Instant alerts and price drops pause 22:00–08:00 Tashkent (redeploy function) |
 | ND-07 notification settings | ✅ | Per-type toggles |
 | FB-01/02/05 feedback & rating | 🔧 | Value moments, 7 days, 90-day cooldown, native API, no gating |
-| A-01 labels on icon buttons | ⏳ | Spot-check with TalkBack 📱 |
+| A-01 labels on icon buttons | 🔧 📱 | All icon-only buttons found by a code scan now have labels; confirm with TalkBack |
 | A-08 plurals | 🔧 | i18next v4 plurals; new Russian strings use one/few/many |
 | A-09 +40% text | 📱 | Check Russian/Uzbek on small phone |
 | A-10 locale formats | ✅ | Intl date/number formatting |
